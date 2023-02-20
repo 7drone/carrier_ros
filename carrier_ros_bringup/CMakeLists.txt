@@ -23,16 +23,16 @@ catkin_python_setup()
 ################################################
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-  FILES
-  # MotorPacket.msg
-)
+# add_message_files(
+#   FILES
+#   MotorPacket.msg
+# )
 
 ## Generate services in the 'srv' folder
-add_service_files(
-  FILES
-  # ResetOdom.srv
-)
+# add_service_files(
+#   FILES
+#   ResetOdom.srv
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -73,7 +73,7 @@ generate_messages(
 ## catkin specific configuration ##
 ###################################
 catkin_package(
-  INCLUDE_DIRS include
+  # INCLUDE_DIRS include
 #  LIBRARIES carrier_ros_bringup
   CATKIN_DEPENDS  rospy ##msgs와 roscpp만 해당
                 std_msgs
