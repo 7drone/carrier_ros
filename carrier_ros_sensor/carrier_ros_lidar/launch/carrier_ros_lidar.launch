@@ -4,7 +4,7 @@
   <arg name="set_frame_id" default="base_scan"/>
   <arg name="frequency" default="10.0"/>
   
-  <node pkg="carrier_ros_lidar"  type="carrier_ros_node" name="carrier_ros_lidar" output="screen" respawn="false" machine="$(arg machine)">
+  <node pkg="carrier_ros_lidar"  type="carrier_ros_lidar_node" name="carrier_ros_lidar" output="screen" respawn="false" machine="$(arg machine)">
     <!-- string property -->
     <param name="port"         type="string" value="$(arg set_port)"/>  
     <param name="frame_id"     type="string" value="$(arg set_frame_id)"/>
@@ -38,6 +38,6 @@
     <param name="frequency"    type="double" value="$(arg frequency)"/>
   </node>
   
-  <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser"
-    args="0.168 0.0 0.0712 0.0 0.0 0.0 /base_scan /base_link 40" /> -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_laser"
+    args="0.168 0.0 0.0712 0.0 0.0 0.0 /base_scan /base_link 40" />
 </launch>
