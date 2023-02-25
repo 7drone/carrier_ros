@@ -1,0 +1,5 @@
+<launch>
+  <include file="$(find carrier_ros_bringup)/launch/carrier_ros_remote.launch"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find carrier_ros_gazebo)/rviz/carrier_ros_gazebo_model.rviz"/>
+</launch>
