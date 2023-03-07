@@ -117,20 +117,20 @@ class PacketHandler2:
                 packet = whole_packet.split(b",")
                 print(whole_packet.decode())
                 try:
-                    header = packet[0].split("#")[1]
-                    if header.startswith(b'QVW'):
+                    header = packet[0].split(b"#")[1]
+                    if header.startswith(b'VW'):
                         self._vel = [int(packet[1]), int(packet[2])]
-                    elif header.startswith('QENCOD'):
+                    elif header.startswith(b'ENCOD'):
                         self._enc = [int(packet[1]), int(packet[2])]
-                    elif header.startswith('QODO'):
+                    elif header.startswith(b'ODO'):
                         self._wodom = [int(packet[1]), int(packet[2])]
-                    elif header.startswith('QRPM'):
+                    elif header.startswith(b'RPM'):
                         self._rpm = [int(packet[1]), int(packet[2])]
-                    elif header.startswith('QDIFFV'):
+                    elif header.startswith(b'DIFFV'):
                         self._wvel = [int(packet[1]), int(packet[2])]
-                    elif header.startswith('QGYRO'):
+                    elif header.startswith(b'GYRO'):
                         self._gyro = [float(packet[1]), float(packet[2]), float(packet[3])]
-                    elif header.startswith('QPOSE'):
+                    elif header.startswith(b'POSE'):
                         self._imu = [float(packet[1]), float(packet[2]), float(packet[3])]
                 except:
                     pass
