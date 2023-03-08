@@ -1,0 +1,15 @@
+<launch>
+  <arg name="machine" default=""/>     
+  <node pkg="carrier_ros_bringup" 
+        type="carrier_ros_motor_node.py" 
+        name="carrier_ros_motor_node"  
+        machine="$(arg machine)"
+  />
+
+  <node pkg="carrier_ros_bringup" 
+        type="carrier_ros_control_node" 
+        name="carrier_ros_control_node"  
+        machine="$(arg machine)"
+  /> 
+
+</launch>

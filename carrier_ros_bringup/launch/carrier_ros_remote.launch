@@ -1,6 +1,6 @@
 <launch>
   <arg name="machine" default=""/>     
-  <include file="$(find eric_a_bringup)/launch/include/description.launch.xml"/>
+  <include file="$(find carrier_ros_bringup)/launch/include/description.launch.xml"/>
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" machine="$(arg machine)">
     <param name="publish_frequency" type="double" value="100.0" />
