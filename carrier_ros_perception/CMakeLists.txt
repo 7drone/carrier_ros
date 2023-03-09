@@ -106,9 +106,9 @@ find_package(PCL 1.8 REQUIRED)
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+ INCLUDE_DIRS include
 #  LIBRARIES carrier_ros_perception
- CATKIN_DEPENDS roscpp sensor_msgs 
+ CATKIN_DEPENDS roscpp sensor_msgs
 #  DEPENDS system_lib
 )
 
@@ -123,6 +123,7 @@ add_definitions(${PCL_DEFINITIONS})
 include_directories(${PCL_INCLUDE_DIRS})
 
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src
 )
