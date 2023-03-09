@@ -1,56 +1,169 @@
 #include <ros/ros.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <pcl/filters/voxel_grid.h>
-// #include <pcl/conversions.h>
-#include <pcl/point_cloud.h>
 #include <pcl_conversions/pcl_conversions.h>
 #include <iostream>
-
+#include <pcl/features/normal_3d.h>
+#include <pcl/filters/extract_indices.h>
+#include <pcl/segmentation/extract_clusters.h>
+#include <pcl/sample_consensus/method_types.h> // RANSAC 헤더파일
+#include <pcl/sample_consensus/model_types.h> // RANSAC 헤더파일
+#include <pcl/ModelCoefficients.h>
+#include <pcl/point_types.h>
+#include <pcl/segmentation/sac_segmentation.h> // RANSAC 헤더파일
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/sample_consensus/sac_model_plane.h>
+#include "carrier_ros_perception/test.h"
 class PointCloudSubscriber {
 public:
   PointCloudSubscriber() {
     // Initialize the ROS node
-    ros::NodeHandle nh("~");
+    ros::NodeHandle nh("");
     
-    // Create the subscriber to the PointCloud2 topic
-    pc_sub_ = nh.subscribe("point_cloud_topic", 10, &PointCloudSubscriber::cloudmsg2cloud);
+    // Create the subscriber to the PointCloud2 topic9
+    pc_sub_ = nh.subscribe("camera/depth/color/points", 10, &PointCloudSubscriber::cloudmsg2cloud, this);
+    
+    // Create the publisher for the downsampled point cloud topic
+    pc_pub_ = nh.advertise<sensor_msgs::PointCloud2>("downsampled_point_cloud", 1);
   }
   
-  pcl::PointCloud<pcl::PointXYZ> cloudmsg2cloud(sensor_msgs::PointCloud2 cloudmsg)
+  void cloudmsg2cloud(const sensor_msgs::PointCloud2ConstPtr& cloudmsg)
   {
-    pcl::PointCloud<pcl::PointXYZ> cloud_dst;
-    pcl::fromROSMsg(cloudmsg, cloud_dst);
-    return cloud_dst;
+    // Convert the PointCloud2 message to a PCL point cloud object
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_input (new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::fromROSMsg(*cloudmsg, *cloud_input); //cloudmsg(ROS)를 cloud_input(pcl)으로 변환
+    
+    // Create the voxel grid downsampling filter
+    pcl::VoxelGrid<pcl::PointXYZ> sor;
+    sor.setInputCloud(cloud_input);
+    sor.setLeafSize(0.03f, 0.03f, 0.03f); //downsample
+    
+    // Apply the downsampling filter to the input point cloud
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_downsampled(new pcl::PointCloud<pcl::PointXYZ>);
+    sor.filter(*cloud_downsampled); //voxelGrid에서 downsample 된 것을 pcl output형태에 넣기.
+    
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
+    ne.setInputCloud(cloud_downsampled);
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ> ());
+    ne.setSearchMethod (tree);
+
+    pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
+    
+    ne.setRadiusSearch (0.03);
+    ne.compute (*normals);
+
+    // 3. Euclidean Cluster Extraction을 수행하여 클러스터를 추출합니다.
+    pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+    ec.setClusterTolerance (0.03);
+    ec.setMinClusterSize (100);
+    ec.setMaxClusterSize (25000);
+    ec.setSearchMethod (tree);
+    ec.setInputCloud (cloud_downsampled);
+    std::vector<pcl::PointIndices> cluster_indices;
+    ec.extract (cluster_indices);
+
+    float max_cluster_size = 0.0f;
+    int max_cluster_index = -1;
+    for (int i = 0; i < cluster_indices.size (); i++)
+    {
+      if (cluster_indices[i].indices.size () > max_cluster_size)
+      {
+        max_cluster_size = cluster_indices[i].indices.size ();
+        max_cluster_index = i;
+      }
+    }
+
+    // 5. 선택된 바닥 클러스터를 추출합니다.
+    pcl::ExtractIndices<pcl::PointXYZ> extract;  
+    extract.setInputCloud (cloud_downsampled);
+    extract.setIndices (boost::make_shared<const pcl::PointIndices> (cluster_indices[max_cluster_index]));
+    
+    // extract.setIndices (cluster_indices[max_cluster_index]);
+    extract.setNegative (false);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_floor (new pcl::PointCloud<pcl::PointXYZ>);
+    extract.filter (*cloud_floor);
+
+    pcl::IndicesPtr floor_inliers (new std::vector<int>(cluster_indices[max_cluster_index].indices));
+
+    // 바닥 평면 모델 추정
+    pcl::ModelCoefficients::Ptr coefficients(new pcl::ModelCoefficients);
+    pcl::PointIndices::Ptr inliers(new pcl::PointIndices);
+    
+    pcl::SACSegmentation<pcl::PointXYZ> seg;
+    seg.setOptimizeCoefficients(true);
+    seg.setModelType(pcl::SACMODEL_PLANE);
+    seg.setMethodType(pcl::SAC_RANSAC);
+    seg.setMaxIterations(100);
+    seg.setDistanceThreshold(0.1);
+    seg.setInputCloud(cloud_floor);
+    seg.segment(*inliers, *coefficients);
+    // std::cout << "Floor coefficients: " << *coefficients << std::endl;
+
+    // if (inliers->indices.size () == 0)
+    // {
+    //   PCL_ERROR ("Could not estimate a planar model for the given dataset.");
+    //   return (-1);
+    // }
+
+    // 바닥이 아닌 포인트들 제거
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor2;
+    sor2.setInputCloud(cloud_floor);
+    sor2.setMeanK(50);
+    sor2.setStddevMulThresh(1.0);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr floor_filtered(new pcl::PointCloud<pcl::PointXYZ>);
+    sor2.filter(*floor_filtered);
+    std::cout << "Filtered floor cloud has " << floor_filtered->size() << " points." << std::endl;
+
+    // 추정된 평면 모델을 포인트 클라우드로 변환
+    pcl::ModelCoefficients::Ptr floor_coefficients(new pcl::ModelCoefficients);
+    floor_coefficients->values.resize(4);
+    floor_coefficients->values[0] = coefficients->values[0];
+    floor_coefficients->values[1] = coefficients->values[1];
+    floor_coefficients->values[2] = coefficients->values[2];
+    floor_coefficients->values[3] = coefficients->values[3];
+    pcl::PointCloud<pcl::PointXYZ>::Ptr floor_plane(new pcl::PointCloud<pcl::PointXYZ>);
+    for (const auto& point : *cloud_floor)
+    {
+      // 포인트를 평면 위에 투영
+      pcl::PointXYZ projected_point;
+      float distance = pcl::pointToPlaneDistance(point, *floor_coefficients);
+      pcl::projectPoint(point, -distance, *floor_coefficients, projected_point);
+      floor_plane->push_back(projected_point);
+    }
+
+    // 3D 바닥 모델링
+    pcl::OrganizedFastMesh<pcl::PointXYZ> ofm;
+    ofm.setInputCloud(floor_plane);
+    ofm.setMaxEdgeLength(0.1);
+    pcl::PolygonMesh floor_mesh;
+    ofm.reconstruct(floor_mesh);
+
+
+
+
+
+
+
+
+    // Convert the downsampled PCL point cloud object back to a PointCloud2 message
+    sensor_msgs::PointCloud2 bottom_cloudmsg;
+    pcl::toROSMsg(*cloud_floor, bottom_cloudmsg);
+    bottom_cloudmsg.header = cloudmsg->header;  // Copy the header from the original message
+    
+    // Publish the downsampled point cloud message
+    pc_pub_.publish(bottom_cloudmsg);
   }
 
 private:
   ros::Subscriber pc_sub_;
+  ros::Publisher pc_pub_;
 };
 
 int main(int argc, char** argv) 
 {
   ros::init(argc, argv, "point_cloud_subscriber");
   PointCloudSubscriber pc_sub;
-
-
-//   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_input (new pcl::PointCloud<pcl::PointXYZ>);
-//   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_downsampled (new pcl::PointCloud<pcl::PointXYZ>);
   
-  // 1. 포인트 클라우드 데이터를 로드합니다.
-//   pcl::io::loadPCDFile<pcl::PointXYZ> ("input_cloud.pcd", *cloud_input);
-
-  // 2. Voxel Grid Filter를 생성합니다.
-//   pcl::VoxelGrid<pcl::PointXYZ> sor;
-//   sor.setInputCloud (cloud_input);
-//   sor.setLeafSize (0.01f, 0.01f, 0.01f);
-
-  // 3. 다운샘플링된 포인트 클라우드를 계산합니다.
-//   sor.filter (*cloud_downsampled);
-  
-  // 4. 결과를 출력합니다.
-//   pcl::io::savePCDFile<pcl::PointXYZ> ("downsampled_cloud.pcd", *cloud_downsampled);
-
-
   ros::spin();
   return (0);
 }
