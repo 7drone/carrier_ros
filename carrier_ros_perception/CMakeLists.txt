@@ -176,9 +176,9 @@ include_directories(
 # install(TARGETS ${PROJECT_NAME}_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
-add_executable(carrier_ros_perception src/test.cpp)
-add_dependencies(carrier_ros_perception ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(carrier_ros_perception ${catkin_LIBRARIES})
+add_executable(carrier_ros_floor_detection src/carrier_ros_floor_detection.cpp)
+add_dependencies(carrier_ros_floor_detection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(carrier_ros_floor_detection ${catkin_LIBRARIES})
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}
