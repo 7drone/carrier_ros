@@ -11,6 +11,11 @@ Floor_Detection::Floor_Detection()
   finish_segment(new pcl::PointCloud<pcl::PointXYZ>)
 {
   //param setting
+  /* param_type */ /* param_name */
+  // priv_nh_.getParam("/* param_name */", /* param_name */);
+  // nh.param("wheel_left_joint_name", joint_states_name_[LEFT],  std::string("wheel_left_joint"));
+  // use_moveit_ = priv_node_handle_.param<bool>("use_moveit", false);
+  // std::string yaml_file = nh.param<std::string>("dynamixel_info", "");
 }
 
 Floor_Detection::~Floor_Detection(){}
@@ -124,7 +129,7 @@ void Floor_Detection::initPublisher()
 
 void Floor_Detection::initSubscriber()
 {
-  camera_pcl2_sub = nh.subscribe("camera/depth/color/points", 100, &Floor_Detection::pcl2Callback, this);
+  camera_pcl2_sub = nh.subscribe("input_cloud", 100, &Floor_Detection::pcl2Callback, this);
 }
 
 void Floor_Detection::pcl2Callback(const sensor_msgs::PointCloud2ConstPtr &cloudmsg)
@@ -152,7 +157,7 @@ int main(int argc, char** argv)
   Floor_Detection floor_cluster;
   floor_cluster.initPublisher();
   floor_cluster.initSubscriber();
-
+  
   ros::spin();
   return (0);
 }
