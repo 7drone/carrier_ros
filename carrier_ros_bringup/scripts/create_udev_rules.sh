@@ -15,34 +15,43 @@ else
 fi
 
 echo ""
-echo "Carrier_ros LiDAR (USB Serial) : /dev/ttyUSBx to /dev/ttyLiDAR :"
+echo "Carrier_ros LiDAR (USB Serial) : /dev/ttyUSBx to /dev/ttyLEFTLiDAR :"
 if [ -f "/etc/udev/rules.d/Carrier_ros_lidar.rules" ]; then
     echo "Carrier_ros_lidar.rules file already exist."
 else 
-    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="1111", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyLIDAR"' >/etc/udev/rules.d/Carrier_ros_lidar.rules    
+    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0002", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyLEFTLiDAR"' >/etc/udev/rules.d/Carrier_ros_leftlidar.rules    
 
     echo 'Carrier_ros_lidar.rules created'
 fi
 
-echo ""
-echo "Carrier_ros dynamixel (USB Serial) : /dev/ttyUSBx to /dev/ttyDYNAMIXEL :"
-if [ -f "/etc/udev/rules.d/Carrier_ros_dynamixel.rules" ]; then
-    echo "Carrier_ros_dynamixel.rules file already exist."
+echo "Carrier_ros LiDAR (USB Serial) : /dev/ttyUSBx to /dev/ttyRIGHTLiDAR :"
+if [ -f "/etc/udev/rules.d/Carrier_ros_lidar.rules" ]; then
+    echo "Carrier_ros_lidar.rules file already exist."
 else 
-    echo  'KERNEL=="tty*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT78LEKI", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyDYNAMIXEL"' >/etc/udev/rules.d/Carrier_ros_dynamixel.rules    
+    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0003", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyRIGHTLiDAR"' >/etc/udev/rules.d/Carrier_ros_rightlidar.rules    
 
-    echo 'Carrier_ros_dynamixel.rules created'
+    echo 'Carrier_ros_lidar.rules created'
 fi
 
-echo ""
-echo "Carrier_ros arduino (USB Serial) : /dev/ttyACMx to /dev/ttyARDUINO :"
-if [ -f "/etc/udev/rules.d/Carrier_ros_arduino.rules" ]; then
-    echo "Carrier_ros_arduino.rules file already exist."
-else 
-    echo  'KERNEL=="tty*", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="9593132303235180C0A1", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyARDUINO"' >/etc/udev/rules.d/Carrier_ros_arduino.rules    
+# echo ""
+# echo "Carrier_ros dynamixel (USB Serial) : /dev/ttyUSBx to /dev/ttyDYNAMIXEL :"
+# if [ -f "/etc/udev/rules.d/Carrier_ros_dynamixel.rules" ]; then
+#     echo "Carrier_ros_dynamixel.rules file already exist."
+# else 
+#     echo  'KERNEL=="tty*", ATTRS{idVendor}=="0403", ATTRS{idProduct}=="6014", ATTRS{serial}=="FT78LEKI", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyDYNAMIXEL"' >/etc/udev/rules.d/Carrier_ros_dynamixel.rules    
 
-    echo 'Carrier_ros_arduino.rules created'
-fi
+#     echo 'Carrier_ros_dynamixel.rules created'
+# fi
+
+# echo ""
+# echo "Carrier_ros arduino (USB Serial) : /dev/ttyACMx to /dev/ttyARDUINO :"
+# if [ -f "/etc/udev/rules.d/Carrier_ros_arduino.rules" ]; then
+#     echo "Carrier_ros_arduino.rules file already exist."
+# else 
+#     echo  'KERNEL=="tty*", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="9593132303235180C0A1", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyARDUINO"' >/etc/udev/rules.d/Carrier_ros_arduino.rules    
+
+#     echo 'Carrier_ros_arduino.rules created'
+# fi
 
 
 echo ""
