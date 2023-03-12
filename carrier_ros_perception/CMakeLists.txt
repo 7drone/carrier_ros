@@ -12,6 +12,9 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   pcl_ros
   pcl_conversions
+  tf2
+  tf2_ros 
+  tf2_geometry_msgs
 )
 
 find_package(Boost 1.58 REQUIRED)
@@ -108,7 +111,7 @@ find_package(PCL 1.8 REQUIRED)
 catkin_package(
  INCLUDE_DIRS include
 #  LIBRARIES carrier_ros_perception
- CATKIN_DEPENDS roscpp sensor_msgs
+ CATKIN_DEPENDS roscpp sensor_msgs tf2_ros tf2_geometry_msgs
 #  DEPENDS system_lib
 )
 
@@ -182,7 +185,11 @@ target_link_libraries(carrier_ros_floor_detection ${catkin_LIBRARIES})
 
 add_executable(test2 src/test.cpp)
 add_dependencies(test2 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(test2 ${catkin_LIBRARIES})
+target_link_libraries(test2 ${catkin_LIBRARIES} )
+
+add_executable(test3 src/test2.cpp)
+add_dependencies(test3 ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(test3 ${catkin_LIBRARIES} )
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}

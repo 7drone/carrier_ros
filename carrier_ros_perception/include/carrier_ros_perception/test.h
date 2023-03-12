@@ -3,7 +3,12 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <sensor_msgs/PointCloud.h>
 #include <sensor_msgs/point_cloud_conversion.h>
-#include <pcl_ros/point_cloud.h>
+#include <tf2_ros/transform_listener.h>
+#include <geometry_msgs/TransformStamped.h>
+#include <pcl/point_cloud.h>
+#include <pcl/point_types.h>
+#include <pcl_conversions/pcl_conversions.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 class Pcl_to_pcl2
 {
@@ -13,6 +18,10 @@ class Pcl_to_pcl2
         ros::NodeHandle priv_nh;
 
         //ROS parameter
+        int sensor_number;
+        std::string base_frame, 
+                    input_sensor1_topic, input_sensor2_topic, input_sensor3_topic,
+                    output_topic;
 
         // ROS Topic Publisher
         ros::Publisher pcl2_pub;
@@ -29,10 +38,14 @@ class Pcl_to_pcl2
         // ROS Timer
         ros::Timer timer;
 
-        int sensor_number;
+        // ROS TF2
+        tf2_ros::Buffer tf_buffer;
+        tf2_ros::TransformListener tf_listener;
+
+
         int queue_size_;
-        std::string points_in_, pcl2_out_;
-        sensor_msgs::PointCloud2 pcl2_data1, pcl2_data2, pcl2_data3, pcl2_integrate;
+        sensor_msgs::PointCloud2 pcl2_data1, pcl2_data2, pcl2_data3;
+        pcl::PointCloud<pcl::PointXYZ>::Ptr combined_cloud;
 
     public:
         Pcl_to_pcl2();
@@ -47,13 +60,64 @@ class Pcl_to_pcl2
         void initPublisher(void);
         void initSubscriber(void);
       
-        void Sensor1Callback(const sensor_msgs::PointCloudConstPtr &cloudmsg);
-        void Sensor2Callback(const sensor_msgs::PointCloudConstPtr &cloudmsg);
-        void Sensor3Callback(const sensor_msgs::PointCloudConstPtr &cloudmsg); 
+        void Sensor1Callback(const sensor_msgs::PointCloudConstPtr &pointcloudmsg);
+        void Sensor2Callback(const sensor_msgs::PointCloudConstPtr &pointcloudmsg);
+        void Sensor3Callback(const sensor_msgs::PointCloudConstPtr &pointcloudmsg); 
 
         void TimerPclIntegrate(const ros::TimerEvent& event);
 
 };
+
+
+
+void Pcl_to_pcl2::Sensor1Callback(const sensor_msgs::PointCloudConstPtr &pointcloudmsg)
+{
+  sensor_msgs::PointCloud2  pointcloud2msg;
+  // Convert to the old point cloud format
+  if (!sensor_msgs::convertPointCloudToPointCloud2 (*pointcloudmsg, pointcloud2msg))
+  {
+    ROS_ERROR ("[point_cloud_converter] Conversion from sensor_msgs::PointCloud to sensor_msgs::PointCloud2 failed!");
+    return;
+  }
+
+
+  //pointcloud에 담긴내용을 cloud에 넣는다.
+  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::fromROSMsg(pointcloud2msg, *cloud);
+
+  // Transform the pointcloud into the desired frame of reference
+  geometry_msgs::TransformStamped transform;
+  try
+  {
+    transform = tf_buffer.lookupTransform(base_frame, pointcloud2msg.header.frame_id, ros::Time(0));
+  }
+  catch (tf2::TransformException& ex)
+  {
+    ROS_WARN("%s", ex.what());
+    return;
+  }
+  //pointcloud, transform에 담긴 것을 변환해서 transformed_cloud에 넣는다.
+  sensor_msgs::PointCloud2 transformed_cloud;
+  tf2::doTransform(pointcloud2msg, transformed_cloud, transform);
+  
+  // // transformed_cloud에 담긴내용을 transformed에 넣는다.
+  pcl::PointCloud<pcl::PointXYZ>::Ptr transformed(new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::fromROSMsg(transformed_cloud, *transformed);
+
+  *combined_cloud += *transformed;
+
+  // publishCombinedPointCloud();
+}
+
+
+
+
+
+
+
+
+
+
 
 
 class PointCloudConverter 
