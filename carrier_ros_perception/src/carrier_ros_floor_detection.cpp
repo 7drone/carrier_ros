@@ -5,11 +5,13 @@
 Floor_Detection::Floor_Detection()
   :nh(""),
   priv_nh("~"),
+  input_cloud(""),
   cloud_input(new pcl::PointCloud<pcl::PointXYZ>),
   finish_downsample(new pcl::PointCloud<pcl::PointXYZ>),
   finish_clustering(new pcl::PointCloud<pcl::PointXYZ>),
   finish_segment(new pcl::PointCloud<pcl::PointXYZ>)
 {
+  input_cloud = nh.<std::string>("input_cloud", "camera/depth/color/points");
   //param setting
   /* param_type */ /* param_name */
   // priv_nh_.getParam("/* param_name */", /* param_name */);
@@ -129,7 +131,7 @@ void Floor_Detection::initPublisher()
 
 void Floor_Detection::initSubscriber()
 {
-  camera_pcl2_sub = nh.subscribe("input_cloud", 100, &Floor_Detection::pcl2Callback, this);
+  camera_pcl2_sub = nh.subscribe(input_cloud, 100, &Floor_Detection::pcl2Callback, this);
 }
 
 void Floor_Detection::pcl2Callback(const sensor_msgs::PointCloud2ConstPtr &cloudmsg)

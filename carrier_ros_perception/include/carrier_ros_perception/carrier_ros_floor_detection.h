@@ -23,7 +23,7 @@ class Floor_Detection
     ros::NodeHandle priv_nh;
 
     //ROS parameter
-
+    std::string input_cloud;
     // ROS Topic Publisher
     ros::Publisher floor_pcl2_pub;
 
