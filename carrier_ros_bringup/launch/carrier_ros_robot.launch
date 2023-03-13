@@ -18,7 +18,7 @@
         <machine name="control_machine" address="192.168.3.52" env-loader="/opt/ros/noetic/env_remote.sh" default="true" user="ubuntu" />
         <machine name="rpi_main_machine" address="192.168.3.127" env-loader="/opt/ros/noetic/env_remote.sh" default="true" user="ubuntu" />
 
-        <machine name="jetson" address="192.168.3.24" env-loader="/opt/ros/melodic/env_remote.sh" default="true" user="crashlab" />
+        <machine name="jetson" address="192.168.3.24" env-loader="/opt/ros/noetic/env_remote.sh" default="true" user="john" />
 
 
         <include file="$(find carrier_ros_bringup)/launch/carrier_ros_motor.launch">

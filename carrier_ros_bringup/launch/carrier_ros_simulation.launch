@@ -6,27 +6,13 @@
             address="192.168.240.22" 
             env-loader="/opt/ros/noetic/env_remote.sh"
             default="true"
-            user="jeonghan"
+            user="john"
         />
-        <!-- simulation -->
-        <include file="$(find carrier_ros_gazebo)/launch/omo_r1_erica.launch">
+        <include file="$(find carrier_ros_gazebo)/launch/carrier_ros_erica.launch">
             <arg name="x_pos" default="-10.0"/>
             <arg name="y_pos" default="-1.5"/>
             <arg name="z_pos" default="0.0"/>
         </include>
-
-        <!-- kalman, init_odom -->
-        <!-- <include file="$(find carrier_ros_navigation)/launch/carrier_ros_configuration.launch">
-            <arg name="machine" default="main_machine"/>
-        </include>   -->
-
-        <!-- amcl -->
-        <!-- <include file="$(find carrier_ros_navigation)/launch/amcl.launch">
-            <arg name="machine" default="main_machine"/>
-            <arg name="ekf_option"     default="0"/>
-        </include> -->
-
-        <!-- slam -->
         <include file="$(find carrier_ros_slam)/launch/carrier_ros_gmapping.launch">
             <arg name="set_base_frame" default="base_link"/>
             <arg name="set_odom_frame" default="odom"/>
