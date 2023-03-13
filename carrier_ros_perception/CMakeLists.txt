@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0.2)
 project(carrier_ros_perception)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+set(CMAKE_CXX_STANDARD 17)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -10,8 +10,18 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   sensor_msgs
+  pcl_ros
+  pcl_conversions
+  tf
+  tf2
+  tf2_ros 
+  tf2_geometry_msgs
+  geometry_msgs
+  nav_msgs
 )
 
+find_package(Boost 1.58 REQUIRED)
+find_package(PCL 1.8 REQUIRED)
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -102,9 +112,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+ INCLUDE_DIRS include
 #  LIBRARIES carrier_ros_perception
- CATKIN_DEPENDS roscpp sensor_msgs
+ CATKIN_DEPENDS roscpp sensor_msgs geometry_msgs nav_msgs
 #  DEPENDS system_lib
 )
 
@@ -114,11 +124,15 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+include_directories(${PCL_INCLUDE_DIRS})
+
 include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src
 )
-
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/carrier_ros_perception.cpp
@@ -168,9 +182,13 @@ include_directories(
 # install(TARGETS ${PROJECT_NAME}_node
 #   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 # )
-add_executable(carrier_ros_perception src/main.cpp src/k_means.cpp)
-add_dependencies(carrier_ros_perception ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(carrier_ros_perception ${catkin_LIBRARIES})
+add_executable(carrier_ros_floor_detection src/carrier_ros_floor_detection.cpp)
+add_dependencies(carrier_ros_floor_detection ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(carrier_ros_floor_detection ${catkin_LIBRARIES})
+
+add_executable(carrier_ros_sensor_fusion src/carrier_ros_sensor_fusion.cpp)
+add_dependencies(carrier_ros_sensor_fusion ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(carrier_ros_sensor_fusion ${catkin_LIBRARIES} )
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}
@@ -180,11 +198,9 @@ target_link_libraries(carrier_ros_perception ${catkin_LIBRARIES})
 # )
 
 ## Mark cpp header files for installation
-# install(DIRECTORY include/${PROJECT_NAME}/
-#   DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
-#   FILES_MATCHING PATTERN "*.h"
-#   PATTERN ".svn" EXCLUDE
-# )
+install(DIRECTORY launch bag rviz
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
 
 ## Mark other files for installation (e.g. launch and bag files, etc.)
 # install(FILES

@@ -1,0 +1,16 @@
+<launch>
+    <arg name="machine" default=""/>     
+    <arg name="set_base_frame_id" default="base_link"/>
+    <arg name="sensor1_topic" default="right/point_cloud"/>
+    <arg name="sensor2_topic" default="left/point_cloud"/>
+    <arg name="sensor3_topic" default="sensor3"/>
+
+    <node pkg="carrier_ros_perception" type="carrier_ros_sensor_fusion" name="carrier_ros_sensor_fusion" output="screen">
+        <param name="base_frame"  type="string" value="$(arg set_base_frame_id)"/>
+        <param name="input_sensor1_topic"  type="string" value="$(arg sensor1_topic)"/>
+        <param name="input_sensor2_topic"  type="string" value="$(arg sensor2_topic)"/>
+        <param name="input_sensor3_topic"  type="string" value="$(arg sensor3_topic)"/>
+        <param name="output_topic" type="string" value="point_cloud2"/>
+    </node>
+
+</launch>
