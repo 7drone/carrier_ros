@@ -11,7 +11,7 @@ Floor_Detection::Floor_Detection()
   finish_clustering(new pcl::PointCloud<pcl::PointXYZ>),
   finish_segment(new pcl::PointCloud<pcl::PointXYZ>)
 {
-  input_cloud = nh.<std::string>("input_cloud", "camera/depth/color/points");
+  input_cloud = nh.param<std::string>("input_cloud", "camera/depth/color/points");
   //param setting
   /* param_type */ /* param_name */
   // priv_nh_.getParam("/* param_name */", /* param_name */);
