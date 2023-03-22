@@ -2,6 +2,8 @@
   <arg name="machine" default=""/>     
   <include file="$(find carrier_ros_bringup)/launch/include/description.launch.xml"/>
 
+  <node pkg="tf" type="static_transform_publisher" name="world_to_odom"
+  args="0.0 0.0 0.0 0.0 0.0 0.0 /world /odom 40" />
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" machine="$(arg machine)">
     <param name="publish_frequency" type="double" value="100.0" />
     <param name="tf_prefix" value=""/>

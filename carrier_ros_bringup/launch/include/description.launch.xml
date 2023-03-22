@@ -1,5 +1,5 @@
 <launch>
-  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find carrier_ros_description)/urdf/carrier_ros.urdf.xacro'" />
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find carrier_ros_description)/urdf/carrier_ros.urdf.g2.xacro'" />
   <!-- <param name="robot_description" textfile="$(find carrier_ros_description)/urdf/carrier_ros.urdf" /> -->
 
   <param name="robot_description" command="$(arg urdf_file)" />

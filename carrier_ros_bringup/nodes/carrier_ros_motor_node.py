@@ -15,6 +15,8 @@ from geometry_msgs.msg import Twist, Pose, Point, Vector3, Quaternion
 from tf.broadcaster import TransformBroadcaster
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
 from carrier_ros_bringup.srv import ResetOdom, ResetOdomResponse
+# from omo_r1_bringup.srv import ResetOdom, ResetOdomResponse
+# from carrier_ros_bringup import ResetOdom
 
 class OdomPose(object):
    x = 0.0
@@ -114,26 +116,26 @@ class PacketHandler2:
             whole_packet = self.read_port()
             print(whole_packet)
             if whole_packet:
-                packet = whole_packet.split(b",")
-                print(whole_packet.decode())
-                try:
-                    header = packet[0].split(b"#")[1]
-                    if header.startswith(b'VW'):
-                        self._vel = [int(packet[1]), int(packet[2])]
-                    elif header.startswith(b'ENCOD'):
-                        self._enc = [int(packet[1]), int(packet[2])]
-                    elif header.startswith(b'ODO'):
-                        self._wodom = [int(packet[1]), int(packet[2])]
-                    elif header.startswith(b'RPM'):
-                        self._rpm = [int(packet[1]), int(packet[2])]
-                    elif header.startswith(b'DIFFV'):
-                        self._wvel = [int(packet[1]), int(packet[2])]
-                    elif header.startswith(b'GYRO'):
-                        self._gyro = [float(packet[1]), float(packet[2]), float(packet[3])]
-                    elif header.startswith(b'POSE'):
-                        self._imu = [float(packet[1]), float(packet[2]), float(packet[3])]
-                except:
-                    pass
+               packet = whole_packet.split(b",")
+               print(whole_packet.decode())
+               try:
+                  header = packet[0].split(b"#")[1]
+                  if header.startswith(b'VW'):
+                     self._vel = [int(packet[1]), int(packet[2])]
+                  elif header.startswith(b'ENCOD'):
+                     self._enc = [int(packet[1]), int(packet[2])]
+                  elif header.startswith(b'ODO'):
+                     self._wodom = [int(packet[1]), int(packet[2])]
+                  elif header.startswith(b'RPM'):
+                     self._rpm = [int(packet[1]), int(packet[2])]
+                  elif header.startswith(b'DIFFV'):
+                     self._wvel = [int(packet[1]), int(packet[2])]
+                  elif header.startswith(b'GYRO'):
+                     self._gyro = [float(packet[1]), float(packet[2]), float(packet[3])]
+                  elif header.startswith(b'POSE'):
+                     self._imu = [float(packet[1]), float(packet[2]), float(packet[3])]
+               except:
+                  pass
 
     def get_base_velocity(self):
         return self._vel
@@ -158,6 +160,10 @@ class PacketHandler2:
         self.write_port("$cODO,0")
         sleep(0.05)
 
+    def write_encoder_reset(self):
+        self.write_port("$CENCOD,0")
+        sleep(0.05)
+
     def write_base_velocity(self, lin_vel, ang_vel):
         # lin_vel : mm/s, ang_vel : mrad/s
         self.write_port('$CVW,{:.0f},{:.0f}'.format(lin_vel, ang_vel))
@@ -179,8 +185,9 @@ class CarrierRosMotorNode:
       if self.model_name == 'r1':
          self.ph = PacketHandler2()
          self.ph.write_odometry_reset()
+         self.ph.write_encoder_reset()
          sleep(0.1)
-         self.ph.incomming_info = ['QENCOD', 'QODO', 'QDIFFV', '0', '0']
+         self.ph.incomming_info = ['ENCOD', 'ODO', 'DIFFV', '0', '0']
          self.ph.set_periodic_info(50)
          sleep(0.1)
       elif self.model_name == 'r1d2':
@@ -275,8 +282,6 @@ class CarrierRosMotorNode:
                            self.odom_pose.theta*180/math.pi )
       else:
          self.odom_pose.theta += orient_vel * dt
-         #rospy.loginfo('R1mini state : wheel pos %s, %s, speed %s, %s',
-         #                odo_l, odo_r, trans_vel, orient_vel)
 
       d_x = trans_vel * math.cos(self.odom_pose.theta) 
       d_y = trans_vel * math.sin(self.odom_pose.theta) 
@@ -326,7 +331,7 @@ class CarrierRosMotorNode:
       self.joint.joint_vel = [wheel_ang_vel_left, wheel_ang_vel_right]
 
       joint_states = JointState()
-      joint_states.header.frame_id = self.tf_prefix+"/base_link"
+      joint_states.header.frame_id = self.tf_prefix+"/base_link"  # /base_link -> /base_footprint
       joint_states.header.stamp = rospy.Time.now()
       joint_states.name = self.joint.joint_name
       joint_states.position = self.joint.joint_pos
@@ -500,7 +505,7 @@ class CarrierRosMotorNode:
       self.joint.joint_vel = [wheel_ang_vel_left, wheel_ang_vel_right]
 
       joint_states = JointState()
-      joint_states.header.frame_id = self.tf_prefix+"/base_link"
+      joint_states.header.frame_id = self.tf_prefix+"/base_link" #/base_link -> /base_footprint
       joint_states.header.stamp = rospy.Time.now()
       joint_states.name = self.joint.joint_name
       joint_states.position = self.joint.joint_pos

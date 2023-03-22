@@ -153,13 +153,13 @@
 
   <link name="imu_link"/>
 
-  <joint name="scan_joint" type="fixed">
+  <joint name="scan_left_joint" type="fixed">
     <parent link="base_link"/>
-    <child link="base_scan"/>
-    <origin xyz="0.06 0 0.230" rpy="0.0 0.0 0.0"/>
+    <child link="left_scan"/>
+    <origin xyz="0.045 0.222 0.370" rpy="0.0 0.0 0.0"/>
   </joint>
 
-  <link name="base_scan">
+  <link name="left_scan">
     <visual>
       <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
       <geometry>
@@ -184,11 +184,43 @@
     </inertial>
   </link>
 
+  <link name="right_scan">
+    <visual>
+      <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
+      <geometry>
+        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_lidar.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+      <material name="dark"/>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
+      <geometry>
+        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_lidar.stl" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <inertial>
+      <mass value="0.114" />
+      <origin xyz="0 0 0" />
+      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
+               iyy="0.001" iyz="0.0"
+               izz="0.001" />
+    </inertial>
+  </link>
+
+  <joint name="scan_right_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="right_scan"/>
+    <origin xyz="0.045 -0.222 0.370" rpy="0.0 0.0 0.0"/>
+  </joint>
+
   <joint name="camera_joint" type="fixed">
-    <origin xyz="0.07 0.0 0.63" rpy="0 0.7 0"/>
+    <origin xyz="0.105 -0.015 0.225" rpy="0 0.7 0"/>
     <parent link="base_link"/>
     <child link="camera_link"/>
   </joint>
+
 
   <link name="camera_link">
     <visual>
