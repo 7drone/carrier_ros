@@ -33,6 +33,7 @@
             <arg name="usb_port"                default="/dev/ttyDYNAMIXEL"/>
             <arg name="dxl_baud_rate"           default="57600"/>
         </include>
+
     </group>
 
 </launch>

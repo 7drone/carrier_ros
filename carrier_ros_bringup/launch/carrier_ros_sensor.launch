@@ -1,0 +1,5 @@
+<launch>
+    <include file="$(find carrier_ros_lidar)/launch/carrier_ros_lidar.launch"/>
+    <include file="$(find carrier_ros_perception)/launch/carrier_ros_sensor_fusion.launch"/>
+    
+</launch>
