@@ -10,7 +10,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <pcl_ros/transforms.h>
 
-class camera_detection
+class Camera_detection
 {
   private:
     //ROS NodeHandle
@@ -50,8 +50,8 @@ class camera_detection
 
 
   public:
-    camera_detection();
-    ~camera_detection();
+    Camera_detection();
+    ~Camera_detection();
 
 
     

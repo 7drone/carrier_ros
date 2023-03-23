@@ -3,7 +3,7 @@
 
 
 
-camera_detection::camera_detection()
+Camera_detection::Camera_detection()
   :nh(""),
   priv_nh("~"),
   queue_size_ (100),
@@ -24,7 +24,7 @@ camera_detection::camera_detection()
   downthershold = priv_nh.param<float>("downthershold", -0.3f);
   upthershold = priv_nh.param<float>("upthershold", 0.3f);
 
-  timer = nh.createTimer(ros::Duration(0.02), &camera_detection::TimerPclIntegrate, this); //50hz
+  timer = nh.createTimer(ros::Duration(0.02), &Camera_detection::TimerPclIntegrate, this); //50hz
 
   ROS_INFO ("floor_filter and obstacle detect (%s), (%s) and (%s) to PointCloud2 (%s).", nh.resolveName (input_depth_topic1).c_str (), 
                                                                                          nh.resolveName (input_depth_topic2).c_str (),
@@ -32,9 +32,9 @@ camera_detection::camera_detection()
                                                                                          nh.resolveName (output_topic).c_str ());
 }
 
-camera_detection::~camera_detection(){}
+Camera_detection::~Camera_detection(){}
 
-void camera_detection::Camera1callback(const sensor_msgs::PointCloud2ConstPtr &pointcloud2msg)
+void Camera_detection::Camera1callback(const sensor_msgs::PointCloud2ConstPtr &pointcloud2msg)
 {
     // Convert pointcloud2 to pcl pointcloud
     PointCloud::Ptr pcl_cloud(new PointCloud);
@@ -43,7 +43,7 @@ void camera_detection::Camera1callback(const sensor_msgs::PointCloud2ConstPtr &p
 
 }
 
-void camera_detection::Camera2callback(const sensor_msgs::PointCloud2ConstPtr &pointcloud2msg)
+void Camera_detection::Camera2callback(const sensor_msgs::PointCloud2ConstPtr &pointcloud2msg)
 {
     // Convert pointcloud2 to pcl pointcloud
     PointCloud::Ptr pcl_cloud(new PointCloud);
@@ -52,7 +52,7 @@ void camera_detection::Camera2callback(const sensor_msgs::PointCloud2ConstPtr &p
 
 }
 
-void camera_detection::Camera3callback(const sensor_msgs::PointCloud2ConstPtr &pointcloud2msg)
+void Camera_detection::Camera3callback(const sensor_msgs::PointCloud2ConstPtr &pointcloud2msg)
 {
     // Convert pointcloud2 to pcl pointcloud
     PointCloud::Ptr pcl_cloud(new PointCloud);
@@ -61,7 +61,7 @@ void camera_detection::Camera3callback(const sensor_msgs::PointCloud2ConstPtr &p
 
 }
 
-void camera_detection::transformation_frame(const std::string frame_id, const PointCloud::Ptr input, PointCloud::Ptr &output)
+void Camera_detection::transformation_frame(const std::string frame_id, const PointCloud::Ptr input, PointCloud::Ptr &output)
 {
     geometry_msgs::TransformStamped transform;
     try
@@ -78,7 +78,7 @@ void camera_detection::transformation_frame(const std::string frame_id, const Po
 
 
 
-void camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
+void Camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
 {
   *combined_cloud = *transformed_cloud_1 + *transformed_cloud_2 + *transformed_cloud_3;
   //pcl2_data1,pcl2_data2,pcl2_data3data를 가지고 합쳐서 내보내야함.
@@ -86,7 +86,7 @@ void camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
 
 
   sensor_msgs::PointCloud2 obstacle_detect;
-  pcl::toROSMsg(*camera_detection::Filter_floor(combined_cloud), obstacle_detect);
+  pcl::toROSMsg(*Camera_detection::Filter_floor(combined_cloud), obstacle_detect);
 
   obstacle_detect.header.frame_id = base_frame;
   obstacle_detect.header.stamp = ros::Time::now();
@@ -96,7 +96,7 @@ void camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
 
 
 
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr camera_detection::Filter_floor(const PointCloud::Ptr filter_input)
+pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const PointCloud::Ptr filter_input)
 {
     
     // Filter out floors below threshold
@@ -124,24 +124,25 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr camera_detection::Filter_floor(const Poin
 }
 
 
-void camera_detection::initPublisher()
+void Camera_detection::initPublisher()
 {
   obstacle_pub = nh.advertise<sensor_msgs::PointCloud2>(output_topic, 100);
 }
 
-void camera_detection::initSubscriber()
+void Camera_detection::initSubscriber()
 {
-  camera1_sub = nh.subscribe(input_depth_topic1, 100, &camera_detection::Camera1callback, this);
-  camera1_sub = nh.subscribe(input_depth_topic1, 100, &camera_detection::Camera2callback, this);
-  camera1_sub = nh.subscribe(input_depth_topic1, 100, &camera_detection::Camera3callback, this);
+  camera1_sub = nh.subscribe(input_depth_topic1, 100, &Camera_detection::Camera1callback, this);
+  camera2_sub = nh.subscribe(input_depth_topic2, 100, &Camera_detection::Camera2callback, this);
+  camera3_sub = nh.subscribe(input_depth_topic3, 100, &Camera_detection::Camera3callback, this);
 }
 
 int main(int argc, char** argv) 
 {
-  ros::init(argc, argv, "carrier_ros_sensor_fusion");
-  ROS_INFO("start carrier_ros_sensor_fusion node");
-
-
+  ros::init(argc, argv, "carrier_ros_obstacle_detect");
+  ROS_INFO("start carrier_ros_obstacle_detect node");
+  Camera_detection Camera_detection;
+  Camera_detection.initPublisher();
+  Camera_detection.initSubscriber();
   ros::spin();
   return (0);
 }
