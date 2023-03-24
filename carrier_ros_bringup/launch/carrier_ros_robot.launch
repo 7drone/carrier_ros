@@ -1,0 +1,16 @@
+<launch>
+    <arg name="open_rviz" default="true"/>
+    <!-- sensor -->
+    <include file="$(find carrier_ros_bringup)/launch/carrier_ros_sensor.launch"/>
+
+    <!-- remote -->
+    <include file="$(find carrier_ros_bringup)/launch/carrier_ros_remote.launch"/>
+
+    <!-- motor -->
+    <include file="$(find carrier_ros_bringup)/launch/carrier_ros_motor.launch"/>
+
+    <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+            args="-d $(find carrier_ros_navigation)/rviz/carrier_ros_navigation.rviz"/>
+    </group>
+</launch>

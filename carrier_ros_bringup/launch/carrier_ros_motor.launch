@@ -1,0 +1,12 @@
+<launch>
+  <arg name="set_port" default="/dev/ttyMotor"/>  
+  <arg name="set_odom_mode" default="wheel_only"/>
+  <arg name="set_model_name" default="carrier_ros"/>
+  <node pkg="carrier_ros_bringup" type="carrier_ros_motor_node.py" name="carrier_ros_motor_node" >
+      <param name="port" value="$(arg set_port)"/>
+      <param name="baud" value="115200"/>
+      <param name="odom_mode" value="$(arg set_odom_mode)"/>
+      <param name="use_imu_during_odom_calc/use_imu" value="False"/>
+  </node>
+    <rosparam command="load" file="$(find carrier_ros_bringup)/config/motion.yaml" />
+</launch>

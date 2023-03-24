@@ -1,0 +1,7 @@
+<launch>
+
+    <node pkg="carrier_ros_perception" type="carrier_ros_floor_detection" name="carrier_ros_floor_detection" output="screen">
+        <remap from="input_cloud" to="camera/depth/color/points" />
+    </node>
+
+</launch>

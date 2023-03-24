@@ -1,0 +1,32 @@
+<launch>
+
+    <group>
+        <machine           
+            name="main_machine"
+            address="192.168.240.22" 
+            env-loader="/opt/ros/noetic/env_remote.sh"
+            default="true"
+            user="john"
+        />
+        <include file="$(find carrier_ros_gazebo)/launch/carrier_ros_erica.launch">
+            <arg name="x_pos" default="-10.0"/>
+            <arg name="y_pos" default="-1.5"/>
+            <arg name="z_pos" default="0.0"/>
+        </include>
+        <include file="$(find carrier_ros_slam)/launch/carrier_ros_gmapping.launch">
+            <arg name="set_base_frame" default="base_link"/>
+            <arg name="set_odom_frame" default="odom"/>
+            <arg name="set_map_frame"  default="map"/>
+        </include>
+
+        <include file="$(find carrier_ros_navigation)/launch/move_base.launch">
+            <arg name="move_forward_only" value="true"/>
+        </include>
+
+        <!-- tf -->
+        <!-- <include file="$(find carrier_ros_bringup)/launch/carrier_ros_remote.launch"/> -->
+
+        <node pkg="rviz" type="rviz" name="rviz" required="true" args="-d $(find carrier_ros_slam)/rviz/carrier_ros_gmapping.rviz"/>
+    </group>
+
+</launch>
