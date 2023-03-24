@@ -11,8 +11,8 @@
         <!-- <param name="input_depth_topic2"  type="string" value="$(arg sensor2_topic)"/>
         <param name="input_depth_topic3"  type="string" value="$(arg sensor3_topic)"/> -->
         <param name="output_topic" type="string" value="camera_pointcloud2"/>
-        <param name="downthershold"  value="-0.2"/>
-        <param name="upthershold"  value="0.2"/>
+        <param name="downthershold"  value="0.05"/>
+        <param name="upthershold"  value="0.4"/>
     </node>
 
 </launch>
