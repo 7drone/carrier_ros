@@ -148,7 +148,7 @@
   <joint name="imu_joint" type="fixed">
     <parent link="base_link"/>
     <child link="imu_link"/>
-    <origin xyz="0.0 0 0.190" rpy="0 0 1.5758"/>
+    <origin xyz="0.175 0 0.405" rpy="0 0 0"/>
   </joint>
 
   <link name="imu_link"/>
@@ -156,7 +156,7 @@
   <joint name="scan_left_joint" type="fixed">
     <parent link="base_link"/>
     <child link="left_scan"/>
-    <origin xyz="0.045 0.236 0.370" rpy="0.0 0.0 0.0"/>
+    <origin xyz="-0.345 0.236 0.370" rpy="0.0 0.0 3.141592"/>
   </joint>
 
   <link name="left_scan">
@@ -212,7 +212,7 @@
   <joint name="scan_right_joint" type="fixed">
     <parent link="base_link"/>
     <child link="right_scan"/>
-    <origin xyz="0.045 -0.236 0.370" rpy="0.0 0.0 0.0"/>
+    <origin xyz="0.095 -0.236 0.370" rpy="0.0 0.0 0.0"/>
   </joint>
 
   <joint name="camera_joint" type="fixed">
