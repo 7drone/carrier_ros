@@ -6,7 +6,7 @@ global_costmap:
     - {name: obstacles,  type: "costmap_2d::ObstacleLayer" }
     - {name: inflation,  type: "costmap_2d::InflationLayer" }
 
-  rolling_window: false
+  rolling_window: true  
   track_unknown_space: true
   always_send_full_costmap: false
   # 만약 실외에서 장애물인식이 안될경우 true로 바꿀수 있음
@@ -14,11 +14,11 @@ global_costmap:
   map_type: costmap
   footprint_topic : footprint_topic
   published_footprint_topic : published_footprint
-
-
+  
   max_obstacle_height: 1.0
-  raytrace_range: 11.0
-  obstacle_range: 12.0
+
+  width: 12.0
+  height: 12.0
 
   update_frequency: 2.0
   publish_frequency: 2.0
