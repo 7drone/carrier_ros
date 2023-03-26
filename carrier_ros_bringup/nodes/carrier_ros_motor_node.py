@@ -236,16 +236,16 @@ class CarrierRosMotorNode:
       #rospy.loginfo('Serial port: %s', self.port_handler.get_port_name())
 
       # subscriber
-      rospy.Subscriber(self.tf_prefix+"/cmd_vel", Twist, self.cbSubCmdVelTMsg, queue_size=1)        # command velocity data subscriber
-      rospy.Subscriber(self.tf_prefix+"/imu", Imu, self.cbSubIMUTMsg, queue_size=1)                 # imu data subscriber
+      rospy.Subscriber(self.tf_prefix+"cmd_vel", Twist, self.cbSubCmdVelTMsg, queue_size=1)        # command velocity data subscriber
+      rospy.Subscriber(self.tf_prefix+"imu", Imu, self.cbSubIMUTMsg, queue_size=1)                 # imu data subscriber
 
       # publisher
-      self.pub_joint_states = rospy.Publisher(self.tf_prefix+'/joint_states', JointState, queue_size=10)
-      self.odom_pub = rospy.Publisher(self.tf_prefix+"/odom", Odometry, queue_size=10)
+      self.pub_joint_states = rospy.Publisher(self.tf_prefix+'joint_states', JointState, queue_size=10)
+      self.odom_pub = rospy.Publisher(self.tf_prefix+"odom", Odometry, queue_size=10)
       self.odom_broadcaster = TransformBroadcaster()
-      self.pub_pose = rospy.Publisher(self.tf_prefix+"/pose", Pose, queue_size=1000)
+      self.pub_pose = rospy.Publisher(self.tf_prefix+"pose", Pose, queue_size=1000)
 
-      rospy.Service(self.tf_prefix+'/reset_odom', ResetOdom, self.reset_odom_handle)
+      rospy.Service(self.tf_prefix+'reset_odom', ResetOdom, self.reset_odom_handle)
       
       # timer
       rospy.Timer(rospy.Duration(0.01), self.cbTimerUpdateDriverData) # 10 hz update
@@ -296,12 +296,12 @@ class CarrierRosMotorNode:
       self.odom_vel.w = orient_vel
 
       odom = Odometry()
-      odom.header.frame_id = self.tf_prefix+"/odom"
-      odom.child_frame_id = self.tf_prefix+"/base_footprint"
+      odom.header.frame_id = self.tf_prefix+"odom"
+      odom.child_frame_id = self.tf_prefix+"base_footprint"
 
-      self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), 
-                                             odom_orientation_quat, self.odom_pose.timestamp, 
-                                             odom.child_frame_id, odom.header.frame_id)
+      # self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), 
+      #                                        odom_orientation_quat, self.odom_pose.timestamp, 
+      #                                        odom.child_frame_id, odom.header.frame_id)
 
       odom.header.stamp = rospy.Time.now()
       odom.pose.pose = Pose(Point(self.odom_pose.x, self.odom_pose.y, 0.), Quaternion(*odom_orientation_quat))
@@ -331,7 +331,7 @@ class CarrierRosMotorNode:
       self.joint.joint_vel = [wheel_ang_vel_left, wheel_ang_vel_right]
 
       joint_states = JointState()
-      joint_states.header.frame_id = self.tf_prefix+"/base_link"  # /base_link -> /base_footprint
+      joint_states.header.frame_id = self.tf_prefix+"base_link"  # /base_link -> /base_footprint
       joint_states.header.stamp = rospy.Time.now()
       joint_states.name = self.joint.joint_name
       joint_states.position = self.joint.joint_pos
@@ -433,11 +433,11 @@ class CarrierRosMotorNode:
       self.odom_vel.y = 0.0
       self.odom_vel.w = d_theta / d_time
 
-      parent_frame_id = self.tf_prefix+"/odom"
-      child_frame_id = self.tf_prefix+"/base_footprint"
+      parent_frame_id = self.tf_prefix+"odom"
+      child_frame_id = self.tf_prefix+"base_footprint"
 
       odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
-      self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, child_frame_id, parent_frame_id)
+      # self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, child_frame_id, parent_frame_id)
       
       odom = Odometry()
       odom.header.stamp = timestamp_now
@@ -479,8 +479,8 @@ class CarrierRosMotorNode:
       self.odom_vel.y = 0.0
       self.odom_vel.w = d_theta / d_time
 
-      parent_frame_id = self.tf_prefix+"/odom"
-      child_frame_id = self.tf_prefix+"/base_footprint"
+      parent_frame_id = self.tf_prefix+"odom"
+      child_frame_id = self.tf_prefix+"base_footprint"
 
       odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
       self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, child_frame_id, parent_frame_id)
@@ -505,7 +505,7 @@ class CarrierRosMotorNode:
       self.joint.joint_vel = [wheel_ang_vel_left, wheel_ang_vel_right]
 
       joint_states = JointState()
-      joint_states.header.frame_id = self.tf_prefix+"/base_link" #/base_link -> /base_footprint
+      joint_states.header.frame_id = self.tf_prefix+"base_link" #/base_link -> /base_footprint
       joint_states.header.stamp = rospy.Time.now()
       joint_states.name = self.joint.joint_name
       joint_states.position = self.joint.joint_pos
