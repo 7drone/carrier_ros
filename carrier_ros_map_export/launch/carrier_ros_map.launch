@@ -1,0 +1,12 @@
+<launch>
+  <arg name="map_file" default="$(find carrier_ros_map_export)/maps/map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+
+  <!-- Map server -->
+  <node pkg="carrier_ros_map_export" name="map_server" type="map_server" args="$(arg map_file)"/>
+  <node pkg="carrier_ros_map_export" name="map_export" type="map_export" />
+
+
+</launch>
