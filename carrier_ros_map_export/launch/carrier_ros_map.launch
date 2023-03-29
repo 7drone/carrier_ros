@@ -5,8 +5,8 @@
 
 
   <!-- Map server -->
-  <node pkg="carrier_ros_map_export" name="map_server" type="map_server" args="$(arg map_file)"/>
-  <node pkg="carrier_ros_map_export" name="map_export" type="map_export" />
+  <node pkg="carrier_ros_map_export" name="map_server" type="map_server" args="$(arg map_file)" output="screen"/>
+  <node pkg="carrier_ros_map_export" name="map_export" type="map_export" output="screen" />
 
 
 </launch>

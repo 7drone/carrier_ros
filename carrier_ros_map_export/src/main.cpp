@@ -39,14 +39,15 @@
 #include <stdlib.h>
 #include <fstream>
 #include <boost/filesystem.hpp>
+#include <vector>
 
 #include "ros/ros.h"
+#include <tf/transform_listener.h>
 #include "ros/console.h"
 #include "map_server/image_loader.h"
 #include "nav_msgs/MapMetaData.h"
 #include "nav_msgs/LoadMap.h"
 #include "yaml-cpp/yaml.h"
-
 #ifdef HAVE_YAMLCPP_GT_0_5_0
 // The >> operator disappeared in yaml-cpp 0.5, so this function is
 // added to provide support for code written under the yaml-cpp 0.3 API.
@@ -56,6 +57,13 @@ void operator >> (const YAML::Node& node, T& i)
   i = node.as<T>();
 }
 #endif
+
+typedef struct 
+{
+  int threshold;
+  int center_x;
+  int center_y;
+}parameter;
 
 class MapServer
 {
@@ -69,8 +77,17 @@ class MapServer
       double occ_th, free_th;
       MapMode mode = TRINARY;
       ros::NodeHandle private_nh("~");
-      private_nh.param("frame_id", frame_id_, std::string("map"));
 
+      cuttingparam.threshold = 50;
+      cuttingparam.center_x = 100;
+      cuttingparam.center_y = 100;
+      private_nh.param("frame_id", frame_id_, std::string("map"));
+      // private_nh.param("partition_x", partition_x ,0);
+      // private_nh.param("partition_y", partition_y ,0);
+      private_nh.param("threshold", partition_threshold);
+
+      ROS_INFO("partition_x : %f, partition_y : %f, threshold : %f",
+                partition_x,      partition_y,       partition_threshold);
       //When called this service returns a copy of the current map
       get_map_service_ = nh_.advertiseService("static_map", &MapServer::mapCallback, this);
 
@@ -82,6 +99,8 @@ class MapServer
 
       // Latched publisher for data
       map_pub_ = nh_.advertise<nav_msgs::OccupancyGrid>("map", 1, true);
+
+      partition_map_pub_ = nh_.advertise<nav_msgs::OccupancyGrid>("partition_map", 1, true);
 
       deprecated_ = (res != 0);
       if (!deprecated_) {
@@ -101,11 +120,17 @@ class MapServer
     ros::NodeHandle nh_;
     ros::Publisher map_pub_;
     ros::Publisher metadata_pub_;
+    ros::Publisher partition_map_pub_;
     ros::ServiceServer get_map_service_;
     ros::ServiceServer change_map_srv_;
     bool deprecated_;
     std::string frame_id_;
-
+    nav_msgs::MapMetaData meta_data_message_;
+    nav_msgs::GetMap::Response map_resp_;
+    nav_msgs::OccupancyGrid modified_map;
+    parameter cuttingparam;
+    double partition_x, partition_y, partition_threshold;
+    tf::StampedTransform transform;
     /** Callback invoked when someone requests our service */
     bool mapCallback(nav_msgs::GetMap::Request  &req,
                      nav_msgs::GetMap::Response &res )
@@ -151,10 +176,14 @@ class MapServer
         return false;
       }
 
+      Modified_map(&cuttingparam);
       // To make sure get a consistent time in simulation
       ros::Time::waitForValid();
-      map_resp_.map.info.map_load_time = ros::Time::now();
+      modified_map.info.map_load_time =ros::Time::now();
+      map_resp_.map.info.map_load_time =ros::Time::now();
       map_resp_.map.header.frame_id = frame_id_;
+      modified_map.header.frame_id = frame_id_;
+      modified_map.header.stamp = ros::Time::now();
       map_resp_.map.header.stamp = ros::Time::now();
       ROS_INFO("Read a %d X %d map @ %.3lf m/cell",
                map_resp_.map.info.width,
@@ -165,6 +194,7 @@ class MapServer
       //Publish latched topics
       metadata_pub_.publish( meta_data_message_ );
       map_pub_.publish( map_resp_.map );
+      partition_map_pub_.publish(modified_map);
       return true;
     }
 
@@ -282,17 +312,65 @@ class MapServer
       return loadMapFromValues(mapfname, res, negate, occ_th, free_th, origin, mode);
     }
 
-    /** The map data is cached here, to be sent out to service callers
+    /** Load a partition map 
      */
-    nav_msgs::MapMetaData meta_data_message_;
-    nav_msgs::GetMap::Response map_resp_;
 
-    /*
-    void metadataSubscriptionCallback(const ros::SingleSubscriberPublisher& pub)
+
+    
+
+
+    void Modified_map(parameter *input)
     {
-      pub.publish( meta_data_message_ );
+      modified_map.info = map_resp_.map.info;
+      int start_col = std::max(input->center_x - input->threshold,0);
+      int end_col = std::min(input->center_x + input->threshold, 
+                             (int)map_resp_.map.info.width - 1);
+      int start_row = std::max(input->center_y - input->threshold, 0);
+      int end_row = std::min(input->center_y + input->threshold, 
+                             (int)map_resp_.map.info.height - 1);
+      ROS_INFO("x_1 : %d , x_2 : %d, x_3 : %d, x_4 : %d", 
+              start_col, end_col, start_row, end_row);
+      int width = end_col - start_col + 1;
+      int height = end_row - start_row + 1;
+
+      modified_map.data.resize(width * height);
+      std::vector<int8_t>::iterator start_iter, finish_iter;
+      std::vector<int8_t> v;
+      start_iter = map_resp_.map.data.begin() + start_col;
+      finish_iter = map_resp_.map.data.begin() + end_col;
+      ROS_INFO(" size : %ld", map_resp_.map.data.size());
+      for (int j = start_row; j < end_row; j++) {
+        v.insert(v.end(), start_iter+j*map_resp_.map.info.width,
+                          finish_iter+j*map_resp_.map.info.width);
+
+        //if you want to check data size...
+        // ROS_INFO(" v size : %ld", v.size());
+      }
+      modified_map.info.width = width;
+      modified_map.info.height = height;
+
+      modified_map.info.origin.position.x = map_resp_.map.info.origin.position.x + (start_col + end_col) * map_resp_.map.info.resolution / 2;
+      modified_map.info.origin.position.y = map_resp_.map.info.origin.position.y + (start_row + end_row) * map_resp_.map.info.resolution / 2;
+
     }
-    */
+
+
+    // void robotpose(const std::string source_frame, const std::string target_frame)
+    // {
+    //   try
+    //   {
+    //     listener.lookupTransform(target_frame, source_frame, ros::Time(0), transform);
+    //   }
+    //   catch (tf::TransformException& ex)
+    //   {
+    //     ROS_ERROR("%s", ex.what());
+    //     ros::Duration(1.0).sleep();
+    //     continue;
+    //   }
+    //   partition_x = transform.getOrigin().x();
+    //   partition_y = transform.getOrigin().y();
+    // }
+
 
 };
 
@@ -313,6 +391,7 @@ int main(int argc, char **argv)
 
   try
   {
+    ROS_INFO("main.cpp");
     MapServer ms(fname, res);
     ros::spin();
   }

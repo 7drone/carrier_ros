@@ -26,8 +26,6 @@ public:
     // Copy over the header and info fields
     modified_map.header = msg->header;
     modified_map.info = msg->info;
-    modified_map.info.width = threshold*2;
-    modified_map.info.height = threshold*2;
     // Compute the start and end indices for the rows and columns to be copied
     int start_col = std::max(center_x - threshold, 0);
     int end_col = std::min(center_x + threshold, (int)msg->info.width - 1);
@@ -41,7 +39,7 @@ public:
     // Allocate memory for the modified map data
     modified_map.data.resize(width * height);
 
-    // Copy the map data from the original map to the modified map
+    // // Copy the map data from the original map to the modified map
     for (int j = start_row; j <= end_row; j++) {
       for (int i = start_col; i <= end_col; i++) {
         // Compute the index in the modified map
@@ -62,6 +60,10 @@ public:
     // Set the origin of the modified map to the center of the cutout
     modified_map.info.origin.position.x = msg->info.origin.position.x + (start_col + end_col) * msg->info.resolution / 2;
     modified_map.info.origin.position.y = msg->info.origin.position.y + (start_row + end_row) * msg->info.resolution / 2;
+
+    //set ros time
+    modified_map.info.map_load_time = ros::Time::now();
+    modified_map.header.stamp       = ros::Time::now();
 
     // Publish the modified map
     metadata_pub_.publish(modified_map.info);

@@ -38,7 +38,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-
+#include "ros/ros.h"
 // We use SDL_image to load the image from disk
 #include <SDL/SDL_image.h>
 
@@ -72,6 +72,7 @@ loadMapFromFile(nav_msgs::GetMap::Response* resp,
   int color_sum;
   double color_avg;
   int x_min, x_max, y_min, y_max;
+  int RED, BLUE, GREEN;
   x_min = 0;
   x_max = 0;
   y_min = 0;
@@ -105,7 +106,6 @@ loadMapFromFile(nav_msgs::GetMap::Response* resp,
   // Get values that we'll need to iterate through the pixels
   rowstride = img->pitch;
   n_channels = img->format->BytesPerPixel;
-
   // NOTE: Trinary mode still overrides here to preserve existing behavior.
   // Alpha will be averaged in with color channels when using trinary mode.
   if (mode==TRINARY || !img->format->Amask)
@@ -113,53 +113,74 @@ loadMapFromFile(nav_msgs::GetMap::Response* resp,
   else
     avg_channels = n_channels - 1;
 
+  ROS_INFO("avg_channels : %d",avg_channels);
   // Copy pixel data into the map structure
   pixels = (unsigned char*)(img->pixels);
+  ROS_INFO("%hhn",pixels);
   for(j = y_min; j < resp->map.info.height-y_max; j++)
   {
     for (i = x_min; i < resp->map.info.width-x_max; i++)
     {
       // Compute mean of RGB for this pixel
       p = pixels + j*rowstride + i*n_channels;
-      color_sum = 0;
-      for(k=0;k<avg_channels;k++)
-        color_sum += *(p + (k));
-      color_avg = color_sum / (double)avg_channels;
-
-      if (n_channels == 1)
-          alpha = 1;
+      if(avg_channels>2)
+      {
+        color_sum = 0;
+        RED = *p;
+        GREEN = *(p+1);
+        GREEN = *(p+2);
+        ROS_INFO_ONCE("RED : %d, blue:%d, green:%d",RED,BLUE,GREEN);
+        // ROS_INFO("RED : %d, blue:%d, green:%d",RED,BLUE,GREEN);
+        if (RED == 226 || RED == 247|| (RED < 221 && RED>100))
+        {
+          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = 100;
+        }
+        else
+        {
+          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = 0;
+        }
+      }
       else
-          alpha = *(p+n_channels-1);
+      {
+        for(k=0;k<avg_channels;k++)
+          color_sum += *(p + (k));
+        color_avg = color_sum / (double)avg_channels;
+      
+        if (n_channels == 1)
+            alpha = 1;
+        else
+            alpha = *(p+n_channels-1);
 
-      if(negate)
-        color_avg = 255 - color_avg;
+        if(negate)
+          color_avg = 255 - color_avg;
 
-      if(mode==RAW){
-          value = color_avg;
-          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = value;
-          continue;
+        if(mode==RAW){
+            value = color_avg;
+            resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = value;
+            continue;
+        }
+
+
+        // If negate is true, we consider blacker pixels free, and whiter
+        // pixels occupied.  Otherwise, it's vice versa.
+        occ = (255 - color_avg) / 255.0;
+
+        // Apply thresholds to RGB means to determine occupancy values for
+        // map.  Note that we invert the graphics-ordering of the pixels to
+        // produce a map with cell (0,0) in the lower-left corner.
+        if(occ > occ_th)
+          value = +100;
+        else if(occ < free_th)
+          value = 0;
+        else if(mode==TRINARY || alpha < 1.0)
+          value = -1;
+        else {
+          double ratio = (occ - free_th) / (occ_th - free_th);
+          value = 1 + 98 * ratio;
+        }
+
+        resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = value;
       }
-
-
-      // If negate is true, we consider blacker pixels free, and whiter
-      // pixels occupied.  Otherwise, it's vice versa.
-      occ = (255 - color_avg) / 255.0;
-
-      // Apply thresholds to RGB means to determine occupancy values for
-      // map.  Note that we invert the graphics-ordering of the pixels to
-      // produce a map with cell (0,0) in the lower-left corner.
-      if(occ > occ_th)
-        value = +100;
-      else if(occ < free_th)
-        value = 0;
-      else if(mode==TRINARY || alpha < 1.0)
-        value = -1;
-      else {
-        double ratio = (occ - free_th) / (occ_th - free_th);
-        value = 1 + 98 * ratio;
-      }
-
-      resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = value;
     }
   }
 

@@ -1,7 +1,13 @@
-image: ./map.pgm
-resolution: 0.050000
+image: ./7995_7526_20_map.png
+resolution: 0.025
 origin: [0.000000, 0.000000, 0.000000]
 negate: 0
 occupied_thresh: 0.65
-free_thresh: 0.13
-
+free_thresh: 0.0442
+# 0.13
+# building R G B 247 246 245
+# human    R G B 243 241 236
+# road     R G B 249 249 249
+# no road  R G B 226 235 241
+# water    R G B 158 200 233
+# grass    R G B 203 229 177

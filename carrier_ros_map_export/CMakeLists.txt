@@ -1,10 +1,14 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(carrier_ros_map_export)
 
+set(CMAKE_CXX_STANDARD 17)
+
+
 find_package(catkin REQUIRED
         COMPONENTS
             roscpp
             nav_msgs
+            tf
             tf2
         )
 
@@ -35,6 +39,7 @@ catkin_package(
     CATKIN_DEPENDS
         roscpp
         nav_msgs
+        tf
         tf2
 )
 
