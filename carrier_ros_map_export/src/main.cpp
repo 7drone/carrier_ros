@@ -78,9 +78,9 @@ class MapServer
       MapMode mode = TRINARY;
       ros::NodeHandle private_nh("~");
 
-      cuttingparam.threshold = 50;
-      cuttingparam.center_x = 100;
-      cuttingparam.center_y = 100;
+      cuttingparam.threshold = 1000;
+      cuttingparam.center_x = 1000;
+      cuttingparam.center_y = 1000;
       private_nh.param("frame_id", frame_id_, std::string("map"));
       // private_nh.param("partition_x", partition_x ,0);
       // private_nh.param("partition_y", partition_y ,0);
@@ -176,9 +176,10 @@ class MapServer
         return false;
       }
 
-      Modified_map(&cuttingparam);
-      // To make sure get a consistent time in simulation
       ros::Time::waitForValid();
+      Modified_map(&cuttingparam);
+      ros::Time::waitForValid();
+      // To make sure get a consistent time in simulation
       modified_map.info.map_load_time =ros::Time::now();
       map_resp_.map.info.map_load_time =ros::Time::now();
       map_resp_.map.header.frame_id = frame_id_;
@@ -333,19 +334,29 @@ class MapServer
       int width = end_col - start_col + 1;
       int height = end_row - start_row + 1;
 
-      modified_map.data.resize(width * height);
+      modified_map.data.resize(0);
+      ROS_INFO("size : %ld",modified_map.data.size());
       std::vector<int8_t>::iterator start_iter, finish_iter;
       std::vector<int8_t> v;
       start_iter = map_resp_.map.data.begin() + start_col;
       finish_iter = map_resp_.map.data.begin() + end_col;
-      ROS_INFO(" size : %ld", map_resp_.map.data.size());
-      for (int j = start_row; j < end_row; j++) {
-        v.insert(v.end(), start_iter+j*map_resp_.map.info.width,
-                          finish_iter+j*map_resp_.map.info.width);
+      int number = 0;
+      for (int j = start_row; j <= end_row; j++) {
+        modified_map.data.insert(modified_map.data.end(), 
+                                 start_iter+j*map_resp_.map.info.width,
+                                 finish_iter+j*map_resp_.map.info.width + 1);
+      }
+      
+        // start_iter+=1;
 
         //if you want to check data size...
-        // ROS_INFO(" v size : %ld", v.size());
-      }
+        // if(*start_iter != 0)
+        // ROS_INFO("start iter : %d", *start_iter);
+        // ROS_INFO("array : %d", map_resp_.map.data[number]);
+        // number++;
+
+      // for(int i=0; i<100000; i++)
+      //   ROS_INFO("%d", map_resp_.map.data[i]);
       modified_map.info.width = width;
       modified_map.info.height = height;
 

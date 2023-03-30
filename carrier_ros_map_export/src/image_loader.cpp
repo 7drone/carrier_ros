@@ -128,7 +128,7 @@ loadMapFromFile(nav_msgs::GetMap::Response* resp,
         color_sum = 0;
         RED = *p;
         GREEN = *(p+1);
-        GREEN = *(p+2);
+        BLUE = *(p+2);
         ROS_INFO_ONCE("RED : %d, blue:%d, green:%d",RED,BLUE,GREEN);
         // ROS_INFO("RED : %d, blue:%d, green:%d",RED,BLUE,GREEN);
         if (RED == 226 || RED == 247|| (RED < 221 && RED>100))
@@ -183,7 +183,7 @@ loadMapFromFile(nav_msgs::GetMap::Response* resp,
       }
     }
   }
-
+  
   SDL_FreeSurface(img);
 }
 

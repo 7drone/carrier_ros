@@ -1,5 +1,5 @@
 image: ./7995_7526_20_map.png
-resolution: 0.025
+resolution: 0.125
 origin: [0.000000, 0.000000, 0.000000]
 negate: 0
 occupied_thresh: 0.65
