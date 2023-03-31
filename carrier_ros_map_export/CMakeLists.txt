@@ -10,6 +10,8 @@ find_package(catkin REQUIRED
             nav_msgs
             tf
             tf2
+            tf2_ros
+            geometry_msgs
         )
 
 find_package(Bullet REQUIRED)
@@ -41,6 +43,7 @@ catkin_package(
         nav_msgs
         tf
         tf2
+        geometry_msgs
 )
 
 include_directories(
