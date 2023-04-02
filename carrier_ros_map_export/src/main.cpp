@@ -1,32 +1,36 @@
-
-
 #include "carrier_ros_map_export/carrier_ros_map_export.h"
-
 
 
 MapServer::MapServer()
   :nh_(""),
   private_nh("~"),
   map_frame_id_(""), robot_frame_id_(""),
-  tfListener(tf_buffer)
+  tf_listener(tf_buffer),
+  saved_fname(""), saved_res(0.0)
 {
-  map_frame_id_ = private_nh.param<std::string>("map_frame_id", "map");
-  robot_frame_id_=private_nh.param<std::string>("robot_frame_id", "odom");
-  partition_threshold = private_nh.param<double>("threshold", 1000);
-  
+  map_frame_id_ = nh_.param<std::string>("map_frame_id", "map");
+  robot_frame_id_=nh_.param<std::string>("robot_frame_id", "base_footprint");
+  partition_threshold = private_nh.param<double>("threshold", 160);
+  initPublisher();
+  initSubscriber();
+  initService();
+  cuttingparam.threshold=partition_threshold*8;
+  timer = nh_.createTimer(ros::Duration(0.1), &MapServer::TimerTFListen, this); //50hz
+
 }
 
 MapServer::~MapServer(){}
 
 void MapServer::map_export(const std::string& fname, double res)
 {
+  saved_fname = fname;
+  saved_res = res;
   std::string mapfname = "";
   double origin[3];
   int negate;
   double occ_th, free_th;
   MapMode mode = TRINARY;
 
-  cuttingparam.threshold = 1000;
 
   // robot pose sub
   robotpose(map_frame_id_,robot_frame_id_);
@@ -44,15 +48,16 @@ void MapServer::map_export(const std::string& fname, double res)
   }
 }
 
-bool MapServer::mapCallback(nav_msgs::GetMap::Request  &req,
+bool MapServer::UpdateCallback(nav_msgs::GetMap::Request  &req,
                             nav_msgs::GetMap::Response &res )
 {
   // request is empty; we ignore it
 
   // = operator is overloaded to make deep copy (tricky!)
-  res = map_resp_;
-  ROS_INFO("Sending map");
-
+  map_export(saved_fname, saved_res);
+  ROS_INFO("map update");
+  ROS_INFO("pixel_x : %d, pixel_y : %d", cuttingparam.pixel_x
+                                       , cuttingparam.pixel_y);
   return true;
 }
 
@@ -69,25 +74,8 @@ void MapServer::initPublisher(void)
 void MapServer::initService(void)
 {
   //When called this service returns a copy of the current map
-  get_map_service_ = nh_.advertiseService("static_map", &MapServer::mapCallback, this);
+  robot_map_update = nh_.advertiseService("map_update", &MapServer::UpdateCallback, this);
 
-  //Change the currently published map
-  change_map_srv_ = nh_.advertiseService("change_map", &MapServer::changeMapCallback, this);
-}
-
-bool MapServer::changeMapCallback(nav_msgs::LoadMap::Request  &request,
-                                  nav_msgs::LoadMap::Response &response )
-{
-  if (loadMapFromYaml(request.map_url))
-  {
-    response.result = response.RESULT_SUCCESS;
-    ROS_INFO("Changed map to %s", request.map_url.c_str());
-  }
-  else
-  {
-    response.result = response.RESULT_UNDEFINED_FAILURE;
-  }
-  return true;
 }
 
 bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,
@@ -140,7 +128,6 @@ bool MapServer::loadMapFromParams(std::string map_file_name, double resolution)
   origin[0] = origin[1] = origin[2] = 0.0;
   return loadMapFromValues(map_file_name, resolution, negate, occ_th, free_th, origin, TRINARY);
 }
-
 
 bool MapServer::loadMapFromYaml(std::string path_to_yaml)
   {
@@ -238,14 +225,14 @@ bool MapServer::loadMapFromYaml(std::string path_to_yaml)
     return loadMapFromValues(mapfname, res, negate, occ_th, free_th, origin, mode);
   }
 
-void MapServer::Modified_map(parameter *input)
+void MapServer::Modified_map(const parameter *input)
 {
   modified_map.info = map_resp_.map.info;
-  int start_col = std::max(input->center_x - input->threshold,0);
-  int end_col = std::min(input->center_x + input->threshold, 
+  int start_col = std::max(input->pixel_x - input->threshold,0);
+  int end_col = std::min(input->pixel_x + input->threshold, 
                           (int)map_resp_.map.info.width - 1);
-  int start_row = std::max(input->center_y - input->threshold, 0);
-  int end_row = std::min(input->center_y + input->threshold, 
+  int start_row = std::max(input->pixel_y - input->threshold, 0);
+  int end_row = std::min(input->pixel_y + input->threshold, 
                           (int)map_resp_.map.info.height - 1);
   ROS_INFO("x_1 : %d , x_2 : %d, x_3 : %d, x_4 : %d", 
           start_col, end_col, start_row, end_row);
@@ -270,32 +257,35 @@ void MapServer::Modified_map(parameter *input)
   modified_map.info.height = height;
 
   modified_map.info.origin.position.x = map_resp_.map.info.origin.position.x 
-                                        + cuttingparam.center_x
-                                        - (input->center_x-input->threshold/8);
+                                        + (start_col)/8;
   modified_map.info.origin.position.y = map_resp_.map.info.origin.position.y 
-                                        + cuttingparam.center_y
-                                        - (input->center_y-input->threshold/8);
+                                        + (start_row)/8;
 
 }
 
 void MapServer::robotpose(const std::string source_frame, const std::string target_frame)
 {
+  // tfListener.waitForTransform(source_frame, target_frame, ros::Time(0), ros::Duration(5.0));
+  
   try
   {
-    transform = tf_buffer.lookupTransform(source_frame, target_frame, ros::Time(0));
+    transform =tf_buffer.lookupTransform(source_frame, target_frame, ros::Time(0),ros::Duration(10));
   }
-  catch (tf::TransformException& ex)
+  catch (tf2::TransformException& ex)
   {
-    ROS_ERROR("%s", ex.what());
-    ros::Duration(1.0).sleep();
+    ROS_WARN("%s", ex.what());
     return;
   }
-
-  cuttingparam.center_x = floor(transform.transform.translation.x*8+0.5);
-  cuttingparam.center_y = floor(transform.transform.translation.y*8+0.5);
+  //
+  cuttingparam.pixel_x = int(floor(transform.transform.translation.x+0.5))*8;
+  cuttingparam.pixel_y = int(floor(transform.transform.translation.y+0.5))*8;
+  
 }
 
-
+void MapServer::TimerTFListen(const ros::TimerEvent& event)
+{
+  robotpose(map_frame_id_,robot_frame_id_);
+}
 
 int main(int argc, char **argv)
 {
@@ -317,6 +307,7 @@ int main(int argc, char **argv)
     ROS_INFO("main.cpp");
     MapServer ms;
     ms.map_export(fname, res);
+
     ros::spin();
   }
   catch(std::runtime_error& e)

@@ -39,8 +39,8 @@ void operator >> (const YAML::Node& node, T& i)
 typedef struct 
 {
   int threshold = 1000;
-  int center_x = 2000;
-  int center_y = 2000;
+  int pixel_x = 2000;
+  int pixel_y = 2000;
 }parameter;
 
 class MapServer
@@ -59,13 +59,10 @@ class MapServer
                        partition_map_pub_;
 
         // ROS Topic Subscriber
-        ros::Subscriber sensor1_sub,
-                        sensor2_sub,
-                        sensor3_sub;
+
 
         // ROS Service Server
-        ros::ServiceServer get_map_service_,
-                           change_map_srv_;
+        ros::ServiceServer robot_map_update;
 
         // ROS Service Client
 
@@ -81,34 +78,35 @@ class MapServer
 
         // ROS TF2
         tf2_ros::Buffer tf_buffer;
-        tf2_ros::TransformListener tfListener;
+        tf2_ros::TransformListener tf_listener;
+        tf::TransformListener listener;
 
         parameter cuttingparam;
         bool deprecated_;
-        int queue_size_;
-        double partition_x, partition_y, partition_threshold;
-    
+        double partition_threshold,
+               saved_res;
+        std::string saved_fname;
+        
+
     public:
         MapServer();
         ~MapServer();
         
         void map_export(const std::string& fname, double res);
 
-        bool mapCallback(nav_msgs::GetMap::Request  &req,
+        bool UpdateCallback(nav_msgs::GetMap::Request  &req,
                          nav_msgs::GetMap::Response &res );
-
-        bool changeMapCallback(nav_msgs::LoadMap::Request  &request,
-                               nav_msgs::LoadMap::Response &response );
 
         bool loadMapFromValues(std::string map_file_name, double resolution,
                                int negate, double occ_th, double free_th,
                                double origin[3], MapMode mode);
+        
 
         bool loadMapFromParams(std::string map_file_name, double resolution);
 
         bool loadMapFromYaml(std::string path_to_yaml);
 
-        void Modified_map(parameter *input);
+        void Modified_map(const parameter *input);
 
         void robotpose(const std::string source_frame, const std::string target_frame);
 
@@ -116,4 +114,5 @@ class MapServer
         void initSubscriber(void){}
         void initService(void);
 
+        void TimerTFListen(const ros::TimerEvent& event);
 };
