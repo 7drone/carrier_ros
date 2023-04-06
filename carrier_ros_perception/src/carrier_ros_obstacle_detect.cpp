@@ -103,24 +103,12 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const Poin
     pcl::PassThrough<pcl::PointXYZRGB> pass;
     pass.setInputCloud(filter_input);
     pass.setFilterFieldName("z");
-    pass.setFilterLimits(downthershold, upthershold); // Change these values to adjust threshold
+    pass.setFilterLimits(downthershold, upthershold);
     pass.setFilterLimitsNegative(false);
     PointCloud::Ptr filtered_cloud(new PointCloud);
     pass.filter(*filtered_cloud);
 
-    // Extract indices of everything above threshold as obstacles
-    pcl::ExtractIndices<pcl::PointXYZRGB> extract;
-    pcl::PointIndices::Ptr indices(new pcl::PointIndices);
-    for (int i = 0; i < filtered_cloud->size(); i++) {
-        if (filtered_cloud->points[i].z > 1.0) { // Change this value to adjust threshold
-            indices->indices.push_back(i);
-        }
-    }
-    extract.setInputCloud(filtered_cloud);
-    extract.setIndices(indices);
-    PointCloud::Ptr obstacles(new PointCloud);
-    extract.filter(*obstacles);
-    return obstacles;
+    return filtered_cloud;
 }
 
 

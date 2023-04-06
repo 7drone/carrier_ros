@@ -10,7 +10,7 @@
         <param name="input_sensor1_topic"  type="string" value="$(arg sensor1_topic)"/>
         <param name="input_sensor2_topic"  type="string" value="$(arg sensor2_topic)"/>
         <param name="input_sensor3_topic"  type="string" value="$(arg sensor3_topic)"/>
-        <param name="output_topic" type="string" value="point_cloud"/>
+        <param name="output_topic" type="string" value="lidrar_point_cloud2"/>
     </node>
 
 </launch>
