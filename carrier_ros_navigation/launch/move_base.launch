@@ -12,9 +12,12 @@
     <rosparam file="$(find carrier_ros_navigation)/param/test_local_costmap_params.yaml" command="load" />
     <rosparam file="$(find  carrier_ros_navigation)/param/test_global_costmap_params.yaml" command="load" />
     <rosparam file="$(find carrier_ros_navigation)/param/move_base_params.yaml" command="load" />
-    <rosparam file="$(find carrier_ros_navigation)/param/dwa_local_planner_params.yaml" command="load" />
+    <rosparam file="$(find carrier_ros_navigation)/param/base_global_planner_params.yaml" command="load" />
+    <rosparam file="$(find carrier_ros_navigation)/param/teb_local_planner_params.yaml" command="load" />
     <remap from="cmd_vel" to="$(arg cmd_vel_topic)"/>
-    <!-- <remap from="odom" to="$(arg odom_topic)"/> -->
-    <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" />
+    <remap from="odom" to="$(arg odom_topic)"/>
+    <param name="base_global_planner" value="global_planner/GlobalPlanner"/>
+    <param name="base_local_planner" value="teb_local_planner/TebLocalPlannerROS" />
+    <!-- <param name="DWAPlannerROS/min_vel_x" value="0.0" if="$(arg move_forward_only)" /> -->
   </node>
 </launch>

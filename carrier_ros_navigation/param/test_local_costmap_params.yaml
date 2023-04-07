@@ -1,8 +1,9 @@
 local_costmap:
+  rolling_window: true
   global_frame: odom
   robot_base_frame: base_footprint
 
-  map_type: costmap
+  # map_type: costmap
   update_frequency: 7.0
   publish_frequency: 7.0
   transform_tolerance: 1.5 # default 0.5  
@@ -13,7 +14,6 @@ local_costmap:
 #보다 transform_tolerance 초 더 오래된 경우 탐색 스택이 로봇을 중지합니다.
 
   static_map: false  
-  rolling_window: true
   width: 6
   height: 6
   resolution: 0.05 # default 0.05

@@ -1,5 +1,5 @@
 global_costmap:
-  global_frame: odom
+  global_frame: map
   robot_base_frame: base_footprint
   
   plugins:
@@ -10,7 +10,7 @@ global_costmap:
   track_unknown_space: true
   always_send_full_costmap: false
   # 만약 실외에서 장애물인식이 안될경우 true로 바꿀수 있음
-  static_map: false
+  static_map: true
   map_type: costmap
   footprint_topic : footprint_topic
   published_footprint_topic : published_footprint
@@ -25,3 +25,4 @@ global_costmap:
   transform_tolerance: 1.0
 
   resolution : 0.01
+  
