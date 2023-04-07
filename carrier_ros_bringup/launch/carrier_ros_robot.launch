@@ -13,4 +13,10 @@
     <node pkg="rviz" type="rviz" name="rviz" required="true"
             args="-d $(find carrier_ros_navigation)/rviz/carrier_ros_navigation.rviz"/>
     </group>
+
+    <!-- map export -->
+    <include file="$(find carrier_ros_map_export)/launch/carrier_ros_map.launch"/>
+
+    <!-- kalman_filter -->
+    <include file="$(find carrier_ros_navigation)/launch/carrier_ros_kalman.launch"/>
 </launch>

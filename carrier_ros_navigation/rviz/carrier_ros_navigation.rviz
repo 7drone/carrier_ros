@@ -5,6 +5,8 @@ Panels:
     Property Tree Widget:
       Expanded:
         - /Global Options1
+        - /Status1
+        - /Grid1
         - /PointCloud21
         - /TF1/Frames1
         - /TF1/Tree1
@@ -14,6 +16,7 @@ Panels:
         - /Local Map1/Polygon1
         - /Local Map1/Costmap1
         - /Local Map1/Planner1
+        - /Map2
       Splitter Ratio: 0.5
     Tree Height: 787
   - Class: rviz/Selection
@@ -56,7 +59,7 @@ Visualization Manager:
         Z: 0
       Plane: XY
       Plane Cell Count: 20
-      Reference Frame: <Fixed Frame>
+      Reference Frame: map
       Value: true
     - Alpha: 1
       Autocompute Intensity Bounds: true
@@ -167,6 +170,16 @@ Visualization Manager:
           Value: true
         base_link:
           Value: true
+        camera_aligned_depth_to_color_frame:
+          Value: true
+        camera_color_frame:
+          Value: true
+        camera_color_optical_frame:
+          Value: true
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
         camera_link:
           Value: true
         camera_rgb_frame:
@@ -203,6 +216,14 @@ Visualization Manager:
             base_footprint:
               base_link:
                 camera_link:
+                  camera_aligned_depth_to_color_frame:
+                    camera_color_optical_frame:
+                      {}
+                  camera_color_frame:
+                    {}
+                  camera_depth_frame:
+                    camera_depth_optical_frame:
+                      {}
                   camera_rgb_frame:
                     camera_rgb_optical_frame:
                       {}
@@ -420,7 +441,7 @@ Visualization Manager:
       Draw Behind: false
       Enabled: true
       Name: Map
-      Topic: /partition_map
+      Topic: /world_map
       Unreliable: false
       Use Timestamp: false
       Value: true
@@ -447,7 +468,7 @@ Visualization Manager:
   Value: true
   Views:
     Current:
-      Angle: -1.5007951259613037
+      Angle: -1.5757946968078613
       Class: rviz/TopDownOrtho
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
@@ -457,10 +478,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 121.59535217285156
+      Scale: 0.8218944668769836
       Target Frame: <Fixed Frame>
-      X: 499.7071838378906
-      Y: 500.0455322265625
+      X: 389.10235595703125
+      Y: 443.7707214355469
     Saved: ~
 Window Geometry:
   Displays:

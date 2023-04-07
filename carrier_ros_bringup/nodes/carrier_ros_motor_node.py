@@ -417,7 +417,7 @@ class CarrierRosMotorNode:
       child_frame_id = self.tf_prefix+"base_footprint"
 
       odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
-      self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, child_frame_id, parent_frame_id)
+      # self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, child_frame_id, parent_frame_id)
       
       odom = Odometry()
       odom.header.stamp = timestamp_now
