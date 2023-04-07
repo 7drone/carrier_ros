@@ -15,7 +15,7 @@ MapServer::MapServer()
   initSubscriber();
   initService();
   cuttingparam.threshold=partition_threshold*8;
-  timer = nh_.createTimer(ros::Duration(0.1), &MapServer::TimerTFListen, this); //50hz
+  timer = nh_.createTimer(ros::Duration(0.1), &MapServer::TimerTFListen, this); //10hz
 
 }
 
@@ -98,7 +98,7 @@ bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,
   // To make sure get a consistent time in simulation
   modified_map.info.map_load_time =ros::Time::now();
   map_resp_.map.info.map_load_time =ros::Time::now();
-  map_resp_.map.header.frame_id = map_frame_id_;
+  map_resp_.map.header.frame_id = "world";
   modified_map.header.frame_id = map_frame_id_;
   modified_map.header.stamp = ros::Time::now();
   map_resp_.map.header.stamp = ros::Time::now();
@@ -285,6 +285,7 @@ void MapServer::robotpose(const std::string source_frame, const std::string targ
 void MapServer::TimerTFListen(const ros::TimerEvent& event)
 {
   robotpose(map_frame_id_,robot_frame_id_);
+  map_export(saved_fname, saved_res);
 }
 
 int main(int argc, char **argv)
