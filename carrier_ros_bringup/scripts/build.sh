@@ -12,7 +12,8 @@ sudo apt install -y ros-noetic-rosserial \
  ros-noetic-actionlib \
  ros-noetic-tf2-ros \
  ros-noetic-tf2 \
- ros-noetic-geographic-msgs
-
+ ros-noetic-geographic-msgs \
+ teb-local-planner
+ 
 
 
