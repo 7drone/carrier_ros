@@ -98,7 +98,7 @@ bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,
   // To make sure get a consistent time in simulation
   modified_map.info.map_load_time =ros::Time::now();
   map_resp_.map.info.map_load_time =ros::Time::now();
-  map_resp_.map.header.frame_id = map_frame_id_;
+  map_resp_.map.header.frame_id = "world";
   modified_map.header.frame_id = map_frame_id_;
   modified_map.header.stamp = ros::Time::now();
   map_resp_.map.header.stamp = ros::Time::now();
