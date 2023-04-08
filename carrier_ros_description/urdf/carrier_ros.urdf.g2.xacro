@@ -1,7 +1,10 @@
 <?xml version="1.0" ?>
 <robot name="carrier_ros" xmlns:xacro="http://ros.org/wiki/xacro">
   <xacro:include filename="$(find carrier_ros_description)/urdf/common_properties.xacro"/>
-
+  <xacro:include filename="$(find carrier_ros_description)/urdf/_d435.urdf.xacro" />
+  <xacro:arg name="use_nominal_extrinsics" default="false"/>
+  <xacro:arg name="add_plug" default="false" />
+  <xacro:arg name="use_mesh" default="true" />
   <link name="base_footprint"/>
 
   <joint name="base_joint" type="fixed">
@@ -11,245 +14,446 @@
   </joint>
 
   <link name="base_link">
+    <inertial>
+      <origin
+        xyz="-0.095893191948139 -0.00104793895259603 0.176795547513261"
+        rpy="0 0 0" />
+      <mass
+        value="17.5317355516981" />
+      <inertia
+        ixx="0.205437907378618"
+        ixy="-0.000398495513921591"
+        ixz="-0.0145274975724525"
+        iyy="0.161877006415615"
+        iyz="5.52723423270774E-05"
+        izz="0.324325160314618" />
+    </inertial>
     <visual>
-      <origin xyz="0.097 0.276 0.19" rpy="3.14 0 -1.57"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/bases/carrier_ros_body.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/base_link.STL" />
       </geometry>
       <material name="light_black"/>
     </visual>
-
     <collision>
-      <origin xyz="0.097 0.276 0.19" rpy="3.14 0 -1.57"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/bases/carrier_ros_body.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/base_link.STL" />
       </geometry>
     </collision>
-
-    <inertial>
-      <origin xyz="-0.028 0 0" rpy="0 0 0"/>
-      <mass value="8.2573504"/>
-      <inertia ixx="2.2124416e-02" ixy="-1.2294101e-04" ixz="3.4938785e-04"
-               iyy="2.1193702e-02" iyz="-5.0120904e-05"
-               izz="2.0064271e-02" />
-    </inertial>
   </link>
 
   <joint name="wheel_left_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="wheel_left_link"/>
-    <origin xyz="0.0 0.275 0.037" rpy="0.0 0.0 0"/>
-    <axis xyz="0 1 0"/>
+    <origin
+      xyz="0 0.2984 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_left_link" />
+    <axis
+      xyz="0 1 0" />
   </joint>
 
   <link name="wheel_left_link">
+    <inertial>
+      <origin
+        xyz="-1.56639466697417E-06 -0.000248150469096986 1.2599418907841E-07"
+        rpy="0 0 0" />
+      <mass
+        value="1.66304746233929" />
+      <inertia
+        ixx="0.00548062697372228"
+        ixy="-1.93840292664045E-08"
+        ixz="-8.23099175090847E-08"
+        iyy="0.0101318792809441"
+        iyz="-2.99598538887581E-09"
+        izz="0.0054807146545969" />
+    </inertial>
     <visual>
-      <origin xyz="-0.1105 -0.06 0.1104" rpy="-1.57 0 0"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/wheels/carrier_ros_wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/wheels/wheel_left_link.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
-
     <collision>
-      <origin xyz="-0.1105 -0.06 0.1104" rpy="-1.57 0 0"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/wheels/carrier_ros_wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/wheels/wheel_left_link.STL" />
       </geometry>
     </collision>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="2.8498940" />
-      <inertia ixx="1.1175580e-03" ixy="-4.2369783e-08" ixz="-5.9381719e-07"
-               iyy="1.1192413e-03" iyz="-1.4400107e-08"
-               izz="2.0712558e-03" />
-      </inertial>
   </link>
 
   <joint name="wheel_right_joint" type="continuous">
-    <parent link="base_link"/>
-    <child link="wheel_right_link"/>
-    <origin xyz="0.0 -0.275 0.037" rpy="0.0 0 0"/>
-    <axis xyz="0 1 0"/>
+    <origin
+      xyz="0 -0.2984 0"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="wheel_right_link" />
+    <axis
+      xyz="0 1 0" />
   </joint>
 
   <link name="wheel_right_link">
+    <inertial>
+      <origin
+        xyz="-4.34578360256066E-07 0.000248150471021003 1.51019723534235E-06"
+        rpy="0 0 0" />
+      <mass
+        value="1.66304746253739" />
+      <inertia
+        ixx="0.00548074326538937"
+        ixy="9.09949805107524E-10"
+        ixz="-5.87292880407946E-08"
+        iyy="0.0101318792823064"
+        iyz="-1.95952583399667E-08"
+        izz="0.00548059836439867" />
+    </inertial>
     <visual>
-      <origin xyz="-0.110 0.06 -0.1103" rpy="1.57 0 0"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/wheels/carrier_ros_wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/wheels/wheel_right_link.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
-
     <collision>
-      <origin xyz="-0.110 0.06 -0.1103" rpy="1.57 0 0"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/wheels/carrier_ros_wheel.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/wheels/wheel_right_link.STL" />
       </geometry>
     </collision>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="2.8498940" />
-      <inertia ixx="1.1175580e-03" ixy="-4.2369783e-08" ixz="-5.9381719e-07"
-               iyy="1.1192413e-03" iyz="-1.4400107e-08"
-               izz="2.0712558e-03" />
-      </inertial>
   </link>
 
   <joint name="caster_back_right_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_back_right_link"/>
-    <origin xyz="-0.33 -0.148 0.06" rpy="0 0 0"/>
+    <origin
+      xyz="-0.338 -0.13956 -0.038402"
+      rpy="0.0001028 0 0.0089456" />
+    <parent
+      link="base_link" />
+    <child
+      link="caster_back_right_link" />
+    <axis
+      xyz="0 0 0" />
   </joint>
 
   <link name="caster_back_right_link">
-    <collision>
-      <origin xyz="0 0.000 -0.133" rpy="0 0 0"/>
+    <inertial>
+      <origin
+        xyz="-1.20264760039568E-06 3.07378011932258E-10 2.31588306248698E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.403877366193409" />
+      <inertia
+        ixx="0.000411204039086698"
+        ixy="1.90104113445269E-08"
+        ixz="1.68832488350693E-09"
+        iyy="0.000744038452368421"
+        iyz="-3.38092644665103E-08"
+        izz="0.000411189300659489" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <box size="0.01 0.01 0.01"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/caster_back_right_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/caster_back_right_link.STL" />
       </geometry>
     </collision>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="0.000005" />
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0"
-               iyy="0.000001" iyz="0.0"
-               izz="0.000001" />
-    </inertial>
   </link>
 
   <joint name="caster_back_left_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="caster_back_left_link"/>
-    <origin xyz="-0.33 0.148 0.06" rpy="0 0 0"/>
+    <origin
+      xyz="-0.438 0.13956 -0.038402"
+      rpy="-0.0001028 0 0.0089456" />
+    <parent
+      link="base_link" />
+    <child
+      link="caster_back_left_link" />
+    <axis
+      xyz="0 0 0" />
   </joint>
 
   <link name="caster_back_left_link">
-    <collision>
-      <origin xyz="0 0.000 -0.133" rpy="0 0 0"/>
+    <inertial>
+      <origin
+        xyz="1.20264760039568E-06 -3.07377900909955E-10 2.31588306253555E-06"
+        rpy="0 0 0" />
+      <mass
+        value="0.40387736619341" />
+      <inertia
+        ixx="0.000411204039086696"
+        ixy="1.90104113442004E-08"
+        ixz="-1.68832488368198E-09"
+        iyy="0.000744038452368419"
+        iyz="3.38092644661994E-08"
+        izz="0.000411189300659489" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <box size="0.01 0.01 0.01"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/caster_back_left_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.501960784313725 0.501960784313725 0.501960784313725 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/caster_back_left_link.STL" />
       </geometry>
     </collision>
-
-    <inertial>
-      <origin xyz="0 0 0" />
-      <mass value="0.000005" />
-      <inertia ixx="0.000001" ixy="0.0" ixz="0.0"
-               iyy="0.000001" iyz="0.0"
-               izz="0.000001" />
-    </inertial>
   </link>
 
   <joint name="imu_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="imu_link"/>
-    <origin xyz="0.175 0 0.405" rpy="0 0 0"/>
+    <origin
+      xyz="0.0864999999999934 0 0.300600000000007"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="imu_link" />
+    <axis
+      xyz="0 0 0" />
   </joint>
 
-  <link name="imu_link"/>
+  <link name="imu_link">
+    <inertial>
+      <origin
+        xyz="2.77555756156289E-17 0 0.00500000000000006"
+        rpy="0 0 0" />
+      <mass
+        value="0.0121907348874802" />
+      <inertia
+        ixx="1.3394481325568E-06"
+        ixy="4.26520130943558E-22"
+        ixz="1.30862557845298E-22"
+        iyy="1.3394481325568E-06"
+        iyz="3.57650601765471E-22"
+        izz="2.47744069984949E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/imu_link.STL" />
+      </geometry>
+      <material name="dark"/>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/imu_link.STL" />
+      </geometry>
+    </collision>
+  </link>
 
-  <joint name="scan_left_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="left_scan"/>
-    <origin xyz="-0.345 0.236 0.370" rpy="0.0 0.0 3.141592"/>
+  <joint name="left_scan_joint" type="fixed">
+    <origin
+      xyz="-0.39506 0.21696 0.3362"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="left_scan" />
+    <axis
+      xyz="0 0 0" />
   </joint>
 
   <link name="left_scan">
+    <inertial>
+      <origin
+        xyz="0.000572396433583977 0.0181632948989268 -0.0144132091904235"
+        rpy="0 0 0" />
+      <mass
+        value="0.183681647482413" />
+      <inertia
+        ixx="6.73196363637099E-05"
+        ixy="3.5606396763628E-07"
+        ixz="-1.67642303129574E-08"
+        iyy="6.77456043568129E-05"
+        iyz="-2.97229403359293E-08"
+        izz="0.000121995764586317" />
+    </inertial>
     <visual>
-      <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_lidar.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/left_scan.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
-
     <collision>
-      <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_lidar.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/left_scan.STL" />
       </geometry>
     </collision>
-
-    <inertial>
-      <mass value="0.114" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
-               iyy="0.001" iyz="0.0"
-               izz="0.001" />
-    </inertial>
   </link>
 
   <link name="right_scan">
-    <visual>
-      <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
-      <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_lidar.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-      <material name="dark"/>
-    </visual>
-
-    <collision>
-      <origin xyz="0 0 0.0" rpy="0.0 0 0.0"/>
-      <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_lidar.stl" scale="0.001 0.001 0.001"/>
-      </geometry>
-    </collision>
-
     <inertial>
-      <mass value="0.114" />
-      <origin xyz="0 0 0" />
-      <inertia ixx="0.001" ixy="0.0" ixz="0.0"
-               iyy="0.001" iyz="0.0"
-               izz="0.001" />
+      <origin
+        xyz="-0.000572396433582728 -0.0181632948989271 -0.0144132091904234"
+        rpy="0 0 0" />
+      <mass
+        value="0.183681647482413" />
+      <inertia
+        ixx="6.73196363637099E-05"
+        ixy="3.56063967636237E-07"
+        ixz="1.67642303129485E-08"
+        iyy="6.77456043568128E-05"
+        iyz="2.97229403359362E-08"
+        izz="0.000121995764586317" />
     </inertial>
-  </link>
-
-  <joint name="scan_right_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="right_scan"/>
-    <origin xyz="0.095 -0.236 0.370" rpy="0.0 0.0 0.0"/>
-  </joint>
-
-  <joint name="camera_joint" type="fixed">
-    <origin xyz="0.105 -0.015 0.225" rpy="0 0.4325 0"/>
-    <parent link="base_link"/>
-    <child link="camera_link"/>
-  </joint>
-
-
-  <link name="camera_link">
     <visual>
-      <origin xyz="0 0 0.0" rpy="1.5758 0.0 1.5758"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_camera.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/right_scan.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
-
     <collision>
-      <origin xyz="0 0 0.0" rpy="1.5758 0.0 1.5758"/>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
       <geometry>
-        <mesh filename="package://carrier_ros_description/meshes/sensors/carrier_ros_camera.stl" scale="0.001 0.001 0.001"/>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/right_scan.STL" />
       </geometry>
     </collision>
   </link>
 
-  <joint name="camera_rgb_joint" type="fixed">
-    <origin xyz="0.03 0.0 0.0" rpy="0 0 0"/>
-    <parent link="camera_link"/>
-    <child link="camera_rgb_frame"/>
+  <joint name="right_scan_joint" type="fixed">
+    <origin
+      xyz="0.015059 -0.21696 0.3662"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="right_scan" />
+    <axis
+      xyz="0 0 0" />
   </joint>
-  <link name="camera_rgb_frame"/>
 
-  <joint name="camera_rgb_optical_joint" type="fixed">
-    <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
-    <parent link="camera_rgb_frame"/>
-    <child link="camera_rgb_optical_frame"/>
+  <link name="front_ir_camera">
+    <inertial>
+      <origin
+        xyz="0.0142051602118883 0 3.17780369068488E-05"
+        rpy="0 0 0" />
+      <mass
+        value="0.0199465698563223" />
+      <inertia
+        ixx="2.14349587551696E-06"
+        ixy="7.98587711163703E-22"
+        ixz="9.32105451249217E-09"
+        iyy="2.81747525794409E-06"
+        iyz="1.12648763668854E-22"
+        izz="2.81717846944406E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/front_ir_camera.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://carrier_ros_description/meshes/bases/front_ir_camera.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="front_ir_camera_joint" type="fixed">
+    <origin
+      xyz="0.106 0.005 0.2436"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="front_ir_camera" />
+    <axis
+      xyz="0 0 0" />
   </joint>
-  <link name="camera_rgb_optical_frame"/>
+
+  <xacro:sensor_d435 parent="base_link"  name="front_camera" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
+    <origin xyz="0.11565 0.005 0.1931" rpy="0 0 0"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link"  name="right_camera" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
+    <origin xyz="-0.145 -0.26565 0.1931" rpy="0 0 -1.5708"/>
+  </xacro:sensor_d435>
+
+  <xacro:sensor_d435 parent="base_link"  name="left_camera" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
+    <origin xyz="-0.145000000000006 0.26565 0.193100000000011" rpy="0 0 1.57079632679489"/>
+  </xacro:sensor_d435>
 </robot>
