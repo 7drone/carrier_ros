@@ -282,7 +282,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/imu_link.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/imu_link.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
@@ -292,7 +292,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/imu_link.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/imu_link.STL" />
       </geometry>
     </collision>
   </link>
@@ -330,7 +330,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/left_scan.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/left_scan.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
@@ -340,7 +340,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/left_scan.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/left_scan.STL" />
       </geometry>
     </collision>
   </link>
@@ -366,7 +366,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/right_scan.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/right_scan.STL" />
       </geometry>
       <material name="dark"/>
     </visual>
@@ -376,7 +376,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/right_scan.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/right_scan.STL" />
       </geometry>
     </collision>
   </link>
@@ -414,7 +414,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/front_ir_camera.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/front_ir_camera.STL" />
       </geometry>
       <material
         name="">
@@ -428,7 +428,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="package://carrier_ros_description/meshes/bases/front_ir_camera.STL" />
+          filename="package://carrier_ros_description/meshes/sensors/front_ir_camera.STL" />
       </geometry>
     </collision>
   </link>
