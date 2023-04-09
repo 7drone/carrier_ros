@@ -7,7 +7,7 @@
     <include file="$(find carrier_ros_perception)/launch/carrier_ros_sensor_fusion.launch"/>
 
     <!-- camera -->
-    
+    <include file="$(find carrier_ros_camera)/launch/carrier_ros_front_camera.launch"/>
     <include file="$(find carrier_ros_perception)/launch/carrier_ros_obstacle_detection.launch"/>
 
 </launch>

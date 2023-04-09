@@ -1,15 +1,15 @@
 <launch>
     <arg name="machine" default=""/>     
     <arg name="set_base_frame_id" default="base_footprint"/>
-    <arg name="sensor1_topic" default="camera/depth/color/points"/>
-    <arg name="sensor2_topic" default="left/point_cloud"/>
-    <arg name="sensor3_topic" default="sensor3"/>
+    <arg name="sensor1_topic" default="front_camera/depth/color/points"/>
+    <arg name="sensor2_topic" default="left_camera/depth/color/points"/>
+    <arg name="sensor3_topic" default="right_camera/depth/color/points"/>
 
     <node pkg="carrier_ros_perception" type="carrier_ros_obstacle_detect" name="carrier_ros_obstacle_detect" output="screen">
         <param name="base_frame"  type="string" value="$(arg set_base_frame_id)"/>
         <param name="input_depth_topic1"  type="string" value="$(arg sensor1_topic)"/>
-        <!-- <param name="input_depth_topic2"  type="string" value="$(arg sensor2_topic)"/>
-        <param name="input_depth_topic3"  type="string" value="$(arg sensor3_topic)"/> -->
+        <param name="input_depth_topic2"  type="string" value="$(arg sensor2_topic)"/>
+        <param name="input_depth_topic3"  type="string" value="$(arg sensor3_topic)"/>
         <param name="output_topic" type="string" value="camera_pointcloud2"/>
         <param name="downthershold"  value="0.05"/>
         <param name="upthershold"  value="0.4"/>
