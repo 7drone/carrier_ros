@@ -1,0 +1,36 @@
+<!--
+     This launch file provides an example of how to work with GPS data using robot_localization. It runs three nodes:
+       (1) An EKF instance that fuses odometry and IMU data and outputs an odom-frame state estimate
+       (2) A second EKF instance that fuses the same data, but also fuses the transformed GPS data from (3)
+       (3) An instance of navsat_transform_node, which takes in GPS data and produces pose data that has been
+           transformed into your robot's world frame (here, map). The node produces a map-frame state estimate.
+
+       The first EKF instance produces the odom->base_link transform. The second EKF produces the map->odom transform,
+       but requires the odom->base_link transform from the first instance in order to do so. See the
+       params/dual_ekf_navsat_example.yaml file for parameter specification.
+-->
+     <!-- The output of this node is an odometry message that contains the GPS data transformed into the robot's world
+     coordinate frame (i.e., the frame specified by input (2)'s frame_id), or the coordinate frame defined by the
+     message sent to the "datum" service. Optionally, the node can also produce a NavSatFix message corresponding
+     to the filtered odometry, transformed back into lat/long coordinates. The node can also optionally publish the
+     transform from the UTM frame the the world frame. -->
+
+<launch>
+  <rosparam command="load" file="$(find carrier_ros_navigation)/param/dual_ekf_navsat_example.yaml" />
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="carrier_ros_ekf_se_odom" clear_params="true"/>
+
+  <node pkg="robot_localization" type="ekf_localization_node" name="carrier_ros_ekf_se_map" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+  </node>
+
+  <node pkg="robot_localization" type="navsat_transform_node" name="carrier_ros_navsat_transform" clear_params="true">
+    <remap from="odometry/filtered" to="odometry/filtered_map"/>
+          <!-- Placeholders for input remapping. Set your topic names as the "to" values. -->
+      <!-- <remap from="imu/data" to=""/>
+      <remap from="odometry/filtered" to=""/> -->
+      <remap from="gps/fix" to="fix"/>
+     
+  </node>
+
+</launch>
