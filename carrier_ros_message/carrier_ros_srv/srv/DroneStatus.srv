@@ -1,0 +1,9 @@
+int8 status #0 : wait
+           #1 : prepare to fly
+           #2 : flying
+           #3 : come back
+           #4 : landing
+           #5 : prepare to charge
+           #6 : complete to charge
+---
+bool success
