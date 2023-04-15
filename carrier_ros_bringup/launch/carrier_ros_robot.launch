@@ -17,6 +17,4 @@
     <!-- map export -->
     <include file="$(find carrier_ros_map_export)/launch/carrier_ros_map.launch"/>
 
-    <!-- kalman_filter -->
-    <include file="$(find carrier_ros_navigation)/launch/carrier_ros_kalman.launch"/>
 </launch>
