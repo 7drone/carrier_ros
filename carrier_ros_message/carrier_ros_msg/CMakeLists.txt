@@ -1,14 +1,13 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(carrier_ros_msg)
-find_package(catkin REQUIRED COMPONENTS message_generation)
+find_package(catkin REQUIRED COMPONENTS std_msgs message_generation)
 
 add_message_files(DIRECTORY msg
-FILES
-# RobotStart.srv
-  test.msg
+  FILES
+  Battery.msg
 )
 
 
-generate_messages()
+generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(CATKIN_DEPENDS message_runtime)
