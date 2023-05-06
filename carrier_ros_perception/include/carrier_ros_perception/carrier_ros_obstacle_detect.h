@@ -74,4 +74,3 @@ class Camera_detection
 };
 
 
-

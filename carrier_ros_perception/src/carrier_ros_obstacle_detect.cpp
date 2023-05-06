@@ -24,7 +24,7 @@ Camera_detection::Camera_detection()
   downthershold = priv_nh.param<float>("downthershold", -0.3f);
   upthershold = priv_nh.param<float>("upthershold", 0.3f);
 
-  timer = nh.createTimer(ros::Duration(0.02), &Camera_detection::TimerPclIntegrate, this); //50hz
+  timer = nh.createTimer(ros::Duration(0.05), &Camera_detection::TimerPclIntegrate, this); //50hz
 
   ROS_INFO ("floor_filter and obstacle detect (%s), (%s) and (%s) to PointCloud2 (%s).", nh.resolveName (input_depth_topic1).c_str (), 
                                                                                          nh.resolveName (input_depth_topic2).c_str (),
@@ -95,13 +95,12 @@ void Camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
 }
 
 
-
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const PointCloud::Ptr filter_input)
 {
     //downsampling 
     pcl::VoxelGrid<pcl::PointXYZRGB> vg;
     vg.setInputCloud(filter_input);
-    vg.setLeafSize(0.01f, 0.01f, 0.01f); //unit(m)
+    vg.setLeafSize(0.030f, 0.030f, 0.030f); //unit(m)
     vg.filter(*filter_input);
 
     // Filter bound
@@ -115,27 +114,53 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const Poin
     
     
     std::map<std::pair<float, float>, float> max_z_points;
+    std::pair<float, float> xy;
+    
     for (const auto& point : filter_input->points) {
-      std::pair<float, float> xy = std::make_pair(point.x, point.y);
-      auto search = max_z_points.find(xy);
+      xy = std::make_pair(round(point.x*100)/100, round(point.y*100)/100);
+      auto search1 = max_z_points.find(xy);
       //max_z_pints안에 해당 (xy)가 없거나,  기존의  값이 작으면 새로운 값보다 작으면
-      if (search == max_z_points.end() || search->second < point.z) {
+      if (search1 == max_z_points.end() || search1->second < point.z) {
         max_z_points[xy] = point.z;
+        // std::cout << "point.x : " << point.x << "point.y : " << point.y << std::endl;
       }
     }
+    std::cout << "finish" << std::endl << std::endl;
+
+    int grid[300][300];
+    for(auto iter=max_z_points.begin(); iter!=max_z_points.end(); iter++)
+    { 
+      //0.03
+      grid[int(iter->first.first*100/3)][int(iter->first.second*100/3)] = iter->second;
+
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     PointCloud::Ptr filtered_cloud(new PointCloud);
     for (const auto& point : filter_input->points) {
-      std::pair<float, float> xy = std::make_pair(point.x, point.y);
-      auto search = max_z_points.find(xy);
+      xy = std::make_pair(round(point.x*100)/100, round(point.y*100)/100);
       //max_z_points안에 해당 (xy)가 있고 가장 큰 z 일경우
-      if (search != max_z_points.end() && search->second == point.z) {
+      if ((max_z_points[xy] - point.z)<0.00001) {
+        
+
         filtered_cloud->push_back(point);
       }
     }
 
 
-
+    // ROS_INFO("MP is %ld, FI is %ld, FO is %ld", max_z_points.size(),
+    //                                             filter_input->size(),
+    //                                             filtered_cloud->size());
 
 
 
