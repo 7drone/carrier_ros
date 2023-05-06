@@ -9,6 +9,8 @@
 #include <geometry_msgs/TransformStamped.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <pcl_ros/transforms.h>
+#include <pcl/filters/voxel_grid.h>
+
 
 class Camera_detection
 {
@@ -59,11 +61,12 @@ class Camera_detection
     void Camera2callback(const sensor_msgs::PointCloud2ConstPtr &pointcloudmsg);
     void Camera3callback(const sensor_msgs::PointCloud2ConstPtr &pointcloudmsg); 
 
-    void transformation_frame(const std::string frame_id, const PointCloud::Ptr input, PointCloud::Ptr &output);
+    void Transformation_frame(const std::string frame_id, const PointCloud::Ptr input, PointCloud::Ptr &output);
 
     void TimerPclIntegrate(const ros::TimerEvent& event);
 
     pcl::PointCloud<pcl::PointXYZRGB>::Ptr Filter_floor(const PointCloud::Ptr filter_input);
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr Projection(const PointCloud::Ptr projection_input); 
 
     void initPublisher(void);
     void initSubscriber(void);

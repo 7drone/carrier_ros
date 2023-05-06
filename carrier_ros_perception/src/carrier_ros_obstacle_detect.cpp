@@ -39,7 +39,7 @@ void Camera_detection::Camera1callback(const sensor_msgs::PointCloud2ConstPtr &p
     // Convert pointcloud2 to pcl pointcloud
     PointCloud::Ptr pcl_cloud(new PointCloud);
     pcl::fromROSMsg(*pointcloud2msg, *pcl_cloud);
-    transformation_frame(pointcloud2msg->header.frame_id, pcl_cloud, transformed_cloud_1);
+    Transformation_frame(pointcloud2msg->header.frame_id, pcl_cloud, transformed_cloud_1);
 
 }
 
@@ -48,7 +48,7 @@ void Camera_detection::Camera2callback(const sensor_msgs::PointCloud2ConstPtr &p
     // Convert pointcloud2 to pcl pointcloud
     PointCloud::Ptr pcl_cloud(new PointCloud);
     pcl::fromROSMsg(*pointcloud2msg, *pcl_cloud);
-    transformation_frame(pointcloud2msg->header.frame_id, pcl_cloud, transformed_cloud_2);
+    Transformation_frame(pointcloud2msg->header.frame_id, pcl_cloud, transformed_cloud_2);
 
 }
 
@@ -57,11 +57,11 @@ void Camera_detection::Camera3callback(const sensor_msgs::PointCloud2ConstPtr &p
     // Convert pointcloud2 to pcl pointcloud
     PointCloud::Ptr pcl_cloud(new PointCloud);
     pcl::fromROSMsg(*pointcloud2msg, *pcl_cloud);
-    transformation_frame(pointcloud2msg->header.frame_id, pcl_cloud, transformed_cloud_3);
+    Transformation_frame(pointcloud2msg->header.frame_id, pcl_cloud, transformed_cloud_3);
 
 }
 
-void Camera_detection::transformation_frame(const std::string frame_id, const PointCloud::Ptr input, PointCloud::Ptr &output)
+void Camera_detection::Transformation_frame(const std::string frame_id, const PointCloud::Ptr input, PointCloud::Ptr &output)
 {
     geometry_msgs::TransformStamped transform;
     try
@@ -98,18 +98,58 @@ void Camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
 
 pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const PointCloud::Ptr filter_input)
 {
-    
-    // Filter out floors below threshold
+    //downsampling 
+    pcl::VoxelGrid<pcl::PointXYZRGB> vg;
+    vg.setInputCloud(filter_input);
+    vg.setLeafSize(0.01f, 0.01f, 0.01f); //unit(m)
+    vg.filter(*filter_input);
+
+    // Filter bound
     pcl::PassThrough<pcl::PointXYZRGB> pass;
     pass.setInputCloud(filter_input);
     pass.setFilterFieldName("z");
     pass.setFilterLimits(downthershold, upthershold);
     pass.setFilterLimitsNegative(false);
+    
+    pass.filter(*filter_input);
+    
+    
+    std::map<std::pair<float, float>, float> max_z_points;
+    for (const auto& point : filter_input->points) {
+      std::pair<float, float> xy = std::make_pair(point.x, point.y);
+      auto search = max_z_points.find(xy);
+      //max_z_pints안에 해당 (xy)가 없거나,  기존의  값이 작으면 새로운 값보다 작으면
+      if (search == max_z_points.end() || search->second < point.z) {
+        max_z_points[xy] = point.z;
+      }
+    }
+
     PointCloud::Ptr filtered_cloud(new PointCloud);
-    pass.filter(*filtered_cloud);
+    for (const auto& point : filter_input->points) {
+      std::pair<float, float> xy = std::make_pair(point.x, point.y);
+      auto search = max_z_points.find(xy);
+      //max_z_points안에 해당 (xy)가 있고 가장 큰 z 일경우
+      if (search != max_z_points.end() && search->second == point.z) {
+        filtered_cloud->push_back(point);
+      }
+    }
+
+
+
+
+
+
+
 
     return filtered_cloud;
 }
+
+// pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Projection(const PointCloud::Ptr projection_input)
+// {
+
+
+// } 
+
 
 
 void Camera_detection::initPublisher()
