@@ -125,25 +125,16 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const Poin
         // std::cout << "point.x : " << point.x << "point.y : " << point.y << std::endl;
       }
     }
-    std::cout << "finish" << std::endl << std::endl;
+    // std::cout << "finish" << std::endl << std::endl;
 
-    int grid[300][300];
-    for(auto iter=max_z_points.begin(); iter!=max_z_points.end(); iter++)
-    { 
-      //0.03
-      grid[int(iter->first.first*100/3)][int(iter->first.second*100/3)] = iter->second;
+    // int grid[300][300];
+    // for(auto iter=max_z_points.begin(); iter!=max_z_points.end(); iter++)
+    // { 
+    //   //0.03
+    //   if(grid[int(ceil(iter->first.first*100/3))][int(ceil(iter->first.second*100/3))] < iter->second)
+    //     grid[int(ceil(iter->first.first*100/3))][int(ceil(iter->first.second*100/3))] = iter->second;
 
-    }
-
-
-
-
-
-
-
-
-
-
+    // }
 
 
     PointCloud::Ptr filtered_cloud(new PointCloud);
@@ -156,6 +147,55 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const Poin
         filtered_cloud->push_back(point);
       }
     }
+
+
+
+
+
+    std::map<std::pair<float, float>, float> max_z_changes;
+    std::pair<float, float> xy;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+    pcl::KdTreeFLANN<pcl::PointXYZRGB> kdtree;
+
+    // cloud 데이터를 kdtree에 삽입합니다.
+    kdtree.setInputCloud(cloud);
+
+    int k = 8;
+    //vector를 크기를 resize해준다. //주변의 8point를 사용할 예정
+    std::vector<int> pointIdxNKNSearch(k);
+    std::vector<float> pointNKNSquaredDistance(k);
+
+    for (int i = 0; i < cloud->size(); ++i) {
+      pcl::PointXYZRGB searchPoint = cloud->points[i];
+      xy = std::make_pair(round(searchPoint.x*100)/100, round(searchPoint.y*100)/100);
+
+      if (kdtree.nearestKSearch(searchPoint, k, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
+        float max_z = searchPoint.z;
+        float min_z = searchPoint.z;
+        for (int j = 0; j < pointIdxNKNSearch.size(); ++j) {
+          pcl::PointXYZRGB pt = cloud->points[pointIdxNKNSearch[j]];
+          
+          float z_diff = 0;
+          if()
+          // x,y의 좌표가 같다면 
+          if (xy == std::make_pair(round(pt.x*100)/100, round(pt.y*100)/100)) {
+            if (pt.z > max_z) {
+              max_z = pt.z;
+            }
+            if (pt.z < min_z) {
+              min_z = pt.z;
+            }
+          }
+        }
+        max_z_changes[xy] = max_z - min_z;
+      }
+    }
+
+
+
+
+
+
 
 
     // ROS_INFO("MP is %ld, FI is %ld, FO is %ld", max_z_points.size(),

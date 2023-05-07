@@ -10,7 +10,7 @@
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <pcl_ros/transforms.h>
 #include <pcl/filters/voxel_grid.h>
-
+#include <pcl/kdtree/kdtree_flann.h>
 
 class Camera_detection
 {
