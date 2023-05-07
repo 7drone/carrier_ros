@@ -9,27 +9,32 @@ Camera_detection::Camera_detection()
   queue_size_ (100),
   base_frame (""),
   input_depth_topic1(""), input_depth_topic2(""), input_depth_topic3(""),
-  output_topic(""),
   tf_listener(tf_buffer),
   transformed_cloud_1(new PointCloud),
   transformed_cloud_2(new PointCloud),
   transformed_cloud_3(new PointCloud),
-  combined_cloud(new PointCloud)
+  combined_cloud(new PointCloud),
+  projection_cloud(new PointCloud),
+  difference_cloud(new PointCloud),
+  diff_filter_cloud(new PointCloud)
 {
   base_frame = priv_nh.param<std::string>("base_frame", "base_link");
   input_depth_topic1 = priv_nh.param<std::string>("input_depth_topic1", "sensor1");
   input_depth_topic2 = priv_nh.param<std::string>("input_depth_topic2", "sensor2");
   input_depth_topic3 = priv_nh.param<std::string>("input_depth_topic3", "sensor3");
-  output_topic = priv_nh.param<std::string>("output_topic", "point_cloud2");
   downthershold = priv_nh.param<float>("downthershold", -0.3f);
   upthershold = priv_nh.param<float>("upthershold", 0.3f);
+  wheelthershold = priv_nh.param<float>("wheelthershold", 0.05f);
 
-  timer = nh.createTimer(ros::Duration(0.05), &Camera_detection::TimerPclIntegrate, this); //50hz
+  kd_tree_search_point = priv_nh.param<int>("kd_tree_search_point", 8);
+  
 
-  ROS_INFO ("floor_filter and obstacle detect (%s), (%s) and (%s) to PointCloud2 (%s).", nh.resolveName (input_depth_topic1).c_str (), 
-                                                                                         nh.resolveName (input_depth_topic2).c_str (),
-                                                                                         nh.resolveName (input_depth_topic3).c_str (),
-                                                                                         nh.resolveName (output_topic).c_str ());
+  timer = nh.createTimer(ros::Duration(0.10), &Camera_detection::TimerPclIntegrate, this); //50hz
+
+  // ROS_INFO ("floor_filter and obstacle detect (%s), (%s) and (%s) to PointCloud2 (%s).", nh.resolveName (input_depth_topic1).c_str (), 
+  //                                                                                        nh.resolveName (input_depth_topic2).c_str (),
+  //                                                                                        nh.resolveName (input_depth_topic3).c_str (),
+  //                                                                                        nh.resolveName (output_topic).c_str ());
 }
 
 Camera_detection::~Camera_detection(){}
@@ -85,113 +90,152 @@ void Camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
 
 
 
-  sensor_msgs::PointCloud2 obstacle_detect;
-  pcl::toROSMsg(*Camera_detection::Filter_floor(combined_cloud), obstacle_detect);
+  sensor_msgs::PointCloud2 pub1,pub2,pub3;
+  if(!(combined_cloud->empty()))
+  {
+  Camera_detection::RestrictedEnv(combined_cloud,
+                                 projection_cloud,
+                                 difference_cloud,
+                                 diff_filter_cloud);
+  }
+  // ROS_INFO("hi");
+  // pclPublish(projection_cloud, base_frame, "projection_cloud");
+  // pclPublish(difference_cloud, base_frame, "difference_cloud");
+  // pclPublish(diff_filter_cloud, base_frame, "diff_filter_cloud");
 
-  obstacle_detect.header.frame_id = base_frame;
-  obstacle_detect.header.stamp = ros::Time::now();
+  pcl::toROSMsg(*projection_cloud, pub1);
+  pub1.header.frame_id = base_frame;
+  pub1.header.stamp = ros::Time::now();
+  projection_pub.publish(pub1);
+  
+  pcl::toROSMsg(*difference_cloud, pub2);
+  pub2.header.frame_id = base_frame;
+  pub2.header.stamp = ros::Time::now();
+  difference_pub.publish(pub2);
 
-  obstacle_pub.publish(obstacle_detect);
+  pcl::toROSMsg(*diff_filter_cloud, pub3);
+  pub3.header.frame_id = base_frame;
+  pub3.header.stamp = ros::Time::now();
+  diff_filter_pub.publish(pub3);
 }
 
-
-pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const PointCloud::Ptr filter_input)
+/* filter_input is input , otherwise is output*/
+void Camera_detection::RestrictedEnv(const PointCloud::Ptr filter_input, 
+                                     const PointCloud::Ptr& projection_cloud,
+                                     const PointCloud::Ptr& difference_cloud,
+                                     const PointCloud::Ptr& diff_filter_cloud)
 {
+    projection_cloud->clear();
+    difference_cloud->clear();
+    diff_filter_cloud->clear();
     //downsampling 
-    pcl::VoxelGrid<pcl::PointXYZRGB> vg;
-    vg.setInputCloud(filter_input);
-    vg.setLeafSize(0.030f, 0.030f, 0.030f); //unit(m)
-    vg.filter(*filter_input);
-
-    // Filter bound
-    pcl::PassThrough<pcl::PointXYZRGB> pass;
-    pass.setInputCloud(filter_input);
-    pass.setFilterFieldName("z");
-    pass.setFilterLimits(downthershold, upthershold);
-    pass.setFilterLimitsNegative(false);
-    
-    pass.filter(*filter_input);
-    
-    
-    std::map<std::pair<float, float>, float> max_z_points;
-    std::pair<float, float> xy;
-    
-    for (const auto& point : filter_input->points) {
-      xy = std::make_pair(round(point.x*100)/100, round(point.y*100)/100);
-      auto search1 = max_z_points.find(xy);
-      //max_z_pints안에 해당 (xy)가 없거나,  기존의  값이 작으면 새로운 값보다 작으면
-      if (search1 == max_z_points.end() || search1->second < point.z) {
-        max_z_points[xy] = point.z;
-        // std::cout << "point.x : " << point.x << "point.y : " << point.y << std::endl;
-      }
+    {
+      pcl::VoxelGrid<pcl::PointXYZRGB> vg;
+      vg.setInputCloud(filter_input);
+      vg.setLeafSize(0.030f, 0.030f, 0.030f); //unit(m)
+      vg.filter(*filter_input);
     }
-    // std::cout << "finish" << std::endl << std::endl;
+    // Filter x bound
+    {
+      pcl::PassThrough<pcl::PointXYZRGB> pass;
+      pass.setInputCloud(filter_input);
+      pass.setFilterFieldName("x");
+      pass.setFilterLimits(0, 5);
+      pass.setFilterLimitsNegative(false);
+      
+      pass.filter(*filter_input);
+    }   
 
-    // int grid[300][300];
-    // for(auto iter=max_z_points.begin(); iter!=max_z_points.end(); iter++)
-    // { 
-    //   //0.03
-    //   if(grid[int(ceil(iter->first.first*100/3))][int(ceil(iter->first.second*100/3))] < iter->second)
-    //     grid[int(ceil(iter->first.first*100/3))][int(ceil(iter->first.second*100/3))] = iter->second;
+    // Filter z bound
+    {
+      pcl::PassThrough<pcl::PointXYZRGB> pass;
+      pass.setInputCloud(filter_input);
+      pass.setFilterFieldName("z");
+      pass.setFilterLimits(downthershold, upthershold);
+      pass.setFilterLimitsNegative(false);
+      
+      pass.filter(*filter_input);
+    }    
 
-    // }
-
-
-    PointCloud::Ptr filtered_cloud(new PointCloud);
-    for (const auto& point : filter_input->points) {
-      xy = std::make_pair(round(point.x*100)/100, round(point.y*100)/100);
-      //max_z_points안에 해당 (xy)가 있고 가장 큰 z 일경우
-      if ((max_z_points[xy] - point.z)<0.00001) {
-        
-
-        filtered_cloud->push_back(point);
-      }
-    }
-
-
-
-
-
-    std::map<std::pair<float, float>, float> max_z_changes;
-    std::pair<float, float> xy;
-    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
-    pcl::KdTreeFLANN<pcl::PointXYZRGB> kdtree;
-
-    // cloud 데이터를 kdtree에 삽입합니다.
-    kdtree.setInputCloud(cloud);
-
-    int k = 8;
-    //vector를 크기를 resize해준다. //주변의 8point를 사용할 예정
-    std::vector<int> pointIdxNKNSearch(k);
-    std::vector<float> pointNKNSquaredDistance(k);
-
-    for (int i = 0; i < cloud->size(); ++i) {
-      pcl::PointXYZRGB searchPoint = cloud->points[i];
-      xy = std::make_pair(round(searchPoint.x*100)/100, round(searchPoint.y*100)/100);
-
-      if (kdtree.nearestKSearch(searchPoint, k, pointIdxNKNSearch, pointNKNSquaredDistance) > 0) {
-        float max_z = searchPoint.z;
-        float min_z = searchPoint.z;
-        for (int j = 0; j < pointIdxNKNSearch.size(); ++j) {
-          pcl::PointXYZRGB pt = cloud->points[pointIdxNKNSearch[j]];
-          
-          float z_diff = 0;
-          if()
-          // x,y의 좌표가 같다면 
-          if (xy == std::make_pair(round(pt.x*100)/100, round(pt.y*100)/100)) {
-            if (pt.z > max_z) {
-              max_z = pt.z;
-            }
-            if (pt.z < min_z) {
-              min_z = pt.z;
-            }
-          }
+    //projection
+    {
+      std::map<std::pair<float, float>, float> max_z_points;
+      std::pair<float, float> xy;
+      for (const auto& point : filter_input->points) {
+        xy = std::make_pair(round(point.x*100)/100, round(point.y*100)/100);
+        auto search1 = max_z_points.find(xy);
+        //max_z_pints안에 해당 (xy)가 없거나,  기존의  값이 작으면 새로운 값보다 작으면
+        if (search1 == max_z_points.end() || search1->second < point.z) {
+          max_z_points[xy] = point.z;
+          // std::cout << "point.x : " << point.x << "point.y : " << point.y << std::endl;
         }
-        max_z_changes[xy] = max_z - min_z;
       }
+      // std::cout << "finish" << std::endl << std::endl;
+
+      for (const auto& point : filter_input->points) {
+        xy = std::make_pair(round(point.x*100)/100, round(point.y*100)/100);
+        //max_z_points안에 해당 (xy)가 있고 가장 큰 z 일경우
+        if ((max_z_points[xy] - point.z)<0.00001) {
+          
+
+          projection_cloud->push_back(point);
+        }
+      }
+    // ROS_INFO("MP is %ld, fi is %ld, pc is %ld", max_z_points.size(),
+    //                                             filter_input->size(),
+    //                                             projection_cloud->size());
     }
 
+    pcl::copyPointCloud(*projection_cloud, *difference_cloud);
+    
 
+    pcl::KdTreeFLANN<pcl::PointXYZRGB>::Ptr kdtree(new pcl::KdTreeFLANN<pcl::PointXYZRGB>);
+
+    std::vector<float> z_diff;
+    // difference_cloud 데이터를 kdtree에 삽입합니다.
+
+    PointCloud::Ptr z0cloud(new PointCloud);
+    PointCloud::Ptr copy(new PointCloud); 
+    pcl::copyPointCloud(*projection_cloud, *z0cloud);
+    pcl::copyPointCloud(*projection_cloud, *copy);
+    for (size_t i = 0; i < z0cloud->points.size(); ++i) 
+    {
+      z0cloud->points[i].z = 0.0f;
+    }
+    kdtree->setInputCloud(z0cloud);
+
+    float max_z = 0.0f;
+    //vector를 크기를 resize해준다.
+    std::vector<int> search_Point_Idx(kd_tree_search_point);
+    std::vector<float> search_Point_Distance(kd_tree_search_point);
+
+    for (int i = 0; i < copy->size(); ++i) {
+      pcl::PointXYZRGB target_Point = z0cloud->points[i];
+
+      /*target_Point 근처의 k개의 point를 찾아 search_Point_Idx 안에 indexing한다. */
+      if (kdtree->nearestKSearch(target_Point, kd_tree_search_point, search_Point_Idx, search_Point_Distance) > 0) 
+      {
+        for (int j = 0; j < search_Point_Idx.size(); ++j) 
+        {
+          pcl::PointXYZRGB pt = copy->points[search_Point_Idx[j]];          
+          z_diff.push_back(abs(pt.z-copy->points[i].z));
+        }
+        max_z = *std::max_element(z_diff.begin(),z_diff.end());
+        z_diff.clear();
+      }
+      difference_cloud->points[i].z = max_z;
+      // ROS_INFO("z : %lf",max_z);
+    }
+
+    {
+      pcl::PassThrough<pcl::PointXYZRGB> pass;
+      pass.setInputCloud(difference_cloud);
+      pass.setFilterFieldName("z");
+      pass.setFilterLimits(0, wheelthershold);
+      pass.setFilterLimitsNegative(false);
+      
+      pass.filter(*diff_filter_cloud);
+    }
 
 
 
@@ -200,13 +244,9 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const Poin
 
     // ROS_INFO("MP is %ld, FI is %ld, FO is %ld", max_z_points.size(),
     //                                             filter_input->size(),
-    //                                             filtered_cloud->size());
+    //                                             projection_cloud->size());
 
 
-
-
-
-    return filtered_cloud;
 }
 
 // pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Projection(const PointCloud::Ptr projection_input)
@@ -215,11 +255,20 @@ pcl::PointCloud<pcl::PointXYZRGB>::Ptr Camera_detection::Filter_floor(const Poin
 
 // } 
 
+void Camera_detection::pclPublish(const PointCloud::Ptr pcl_publish, 
+                                  const std::string frame_id, 
+                                  std::string topic_name)
+{
+  //
+}
+
 
 
 void Camera_detection::initPublisher()
 {
-  obstacle_pub = nh.advertise<sensor_msgs::PointCloud2>(output_topic, 100);
+  projection_pub = nh.advertise<sensor_msgs::PointCloud2>("projection_cloud", 100);
+  difference_pub = nh.advertise<sensor_msgs::PointCloud2>("difference_cloud", 100);
+  diff_filter_pub = nh.advertise<sensor_msgs::PointCloud2>("diff_filter_cloud", 100);
 }
 
 void Camera_detection::initSubscriber()
