@@ -99,11 +99,11 @@ void Pcl_to_pcl2::Sensor3Callback(const sensor_msgs::PointCloudConstPtr &pointcl
     return;
   }
 
+  
 
   //pointcloud에 담긴내용을 cloud에 넣는다.
   pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
   pcl::fromROSMsg(pointcloud2msg, *cloud);
-
   // Transform the pointcloud into the desired frame of reference
   geometry_msgs::TransformStamped transform;
   try
@@ -122,6 +122,7 @@ void Pcl_to_pcl2::Sensor3Callback(const sensor_msgs::PointCloudConstPtr &pointcl
 void Pcl_to_pcl2::initPublisher()
 {
   pcl2_pub = nh.advertise<sensor_msgs::PointCloud2>(output_topic, 100);
+  pcl_pub = nh.advertise<sensor_msgs::PointCloud>("lidar_pointcloud", 100);
 }
 
 void Pcl_to_pcl2::initSubscriber()
@@ -136,11 +137,17 @@ void Pcl_to_pcl2::TimerPclIntegrate(const ros::TimerEvent& event)
   *combined_cloud = *transformed_cloud_1 + *transformed_cloud_2 + *transformed_cloud_3;
   //pcl2_data1,pcl2_data2,pcl2_data3data를 가지고 합쳐서 내보내야함.
   sensor_msgs::PointCloud2 pcl2_integrate;
+  sensor_msgs::PointCloud pcl1_integrate;
   pcl::toROSMsg(*combined_cloud, pcl2_integrate);
-
   pcl2_integrate.header.frame_id = base_frame;
   pcl2_integrate.header.stamp = ros::Time::now();
+  if (!sensor_msgs::convertPointCloud2ToPointCloud (pcl2_integrate, pcl1_integrate))
+  {
+    ROS_ERROR ("[point_cloud_converter] Conversion from sensor_msgs::PointCloud to sensor_msgs::PointCloud2 failed!");
+    return;
+  }
 
+  pcl_pub.publish(pcl1_integrate);
   pcl2_pub.publish(pcl2_integrate);
 }
 
