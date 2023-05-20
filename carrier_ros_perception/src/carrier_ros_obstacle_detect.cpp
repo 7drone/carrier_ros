@@ -231,7 +231,7 @@ void Camera_detection::RestrictedEnv(const PointCloud::Ptr filter_input,
       pcl::PassThrough<pcl::PointXYZRGB> pass;
       pass.setInputCloud(difference_cloud);
       pass.setFilterFieldName("z");
-      pass.setFilterLimits(0, wheelthershold);
+      pass.setFilterLimits(wheelthershold, 10);
       pass.setFilterLimitsNegative(false);
       
       pass.filter(*diff_filter_cloud);
