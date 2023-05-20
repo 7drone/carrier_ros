@@ -44,15 +44,15 @@ else
 fi
 
 
-# echo ""
-# echo "Carrier_ros arduino (USB Serial) : /dev/ttyACMx to /dev/ttyARDUINO :"
-# if [ -f "/etc/udev/rules.d/Carrier_ros_arduino.rules" ]; then
-#     echo "Carrier_ros_arduino.rules file already exist."
-# else 
-#     echo  'KERNEL=="tty*", ATTRS{idVendor}=="2341", ATTRS{idProduct}=="0043", ATTRS{serial}=="9593132303235180C0A1", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyARDUINO"' >/etc/udev/rules.d/Carrier_ros_arduino.rules    
+echo ""
+echo "Carrier_ros_gps (USB Serial) : /dev/ttyACMx to /dev/ttyGPS :"
+if [ -f "/etc/udev/rules.d/Carrier_ros_gps.rules" ]; then
+    echo "Carrier_ros_gps.rules file already exist."
+else 
+    echo  'KERNEL=="ttyACM*", ATTRS{idVendor}=="0424", ATTRS{idProduct}=="2514", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyGPS"' >/etc/udev/rules.d/Carrier_ros_gps.rules    
 
-#     echo 'Carrier_ros_arduino.rules created'
-# fi
+    echo 'Carrier_ros_gps.rules created'
+fi
 
 
 echo ""
