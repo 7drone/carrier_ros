@@ -1,5 +1,5 @@
 <launch>
-    <arg name="open_rviz" default="true"/>
+    <arg name="open_rviz" default="false"/>
     <!-- sensor -->
     <include file="$(find carrier_ros_bringup)/launch/carrier_ros_sensor.launch"/>
 
@@ -17,4 +17,6 @@
     <!-- map export -->
     <include file="$(find carrier_ros_map_export)/launch/carrier_ros_map.launch"/>
 
+    <!-- kalman_filter -->
+    <include file="$(find carrier_ros_navigation)/launch/carrier_ros_dual_ekf_navsat.launch"/>
 </launch>
