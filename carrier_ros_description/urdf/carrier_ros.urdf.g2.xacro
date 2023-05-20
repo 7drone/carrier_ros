@@ -446,14 +446,14 @@
   </joint>
 
   <xacro:sensor_d435 parent="base_link"  name="front_camera" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
-    <origin xyz="0.11565 0.005 0.1931" rpy="0 0 0"/>
+    <origin xyz="0.11565 0.005 0.2230" rpy="0 0 0"/>
   </xacro:sensor_d435>
 
   <xacro:sensor_d435 parent="base_link"  name="right_camera" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
-    <origin xyz="-0.145 -0.26565 0.1931" rpy="0 0 -1.5708"/>
+    <origin xyz="-0.145 -0.26565 0.2230" rpy="0 0 -1.5708"/>
   </xacro:sensor_d435>
 
   <xacro:sensor_d435 parent="base_link"  name="left_camera" use_nominal_extrinsics="$(arg use_nominal_extrinsics)" add_plug="$(arg add_plug)" use_mesh="$(arg use_mesh)">
-    <origin xyz="-0.145000000000006 0.26565 0.193100000000011" rpy="0 0 1.57079632679489"/>
+    <origin xyz="-0.145000000000006 0.26565 0.2230" rpy="0 0 1.57079632679489"/>
   </xacro:sensor_d435>
 </robot>
