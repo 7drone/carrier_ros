@@ -161,9 +161,9 @@ carrier_ros_navsat_transform:
   yaw_offset: 0.0  # IMU reads 0 facing magnetic north, not east
   zero_altitude: false
   broadcast_cartesian_transform: false
-  broadcast_cartesian_transform_as_parent_frame : false
+  broadcast_cartesian_transform_as_parent_frame : true
   publish_filtered_gps: true
   use_odometry_yaw: false
-  wait_for_datum: true
+  wait_for_datum: false
   datum: [37.296903, 126.836649, 0.0]
 
