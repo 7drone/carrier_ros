@@ -14,6 +14,5 @@
     <param name="robot_frame_id"  value="base_footprint" />
     <param name="threshold"       value="50"/>
   </node>
-  <node pkg="carrier_ros_perception" name="carrier_ros_tf_pulisher" type="carrier_ros_tf_pulisher" output="screen" />
 
 </launch>
