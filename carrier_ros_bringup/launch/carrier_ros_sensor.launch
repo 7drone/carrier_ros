@@ -8,6 +8,6 @@
 
     <!-- camera -->
     <include file="$(find carrier_ros_camera)/launch/carrier_ros_front_camera.launch"/>
-    <include file="$(find carrier_ros_perception)/launch/carrier_ros_obstacle_detection.launch"/>
+    <include file="$(find carrier_ros_perception)/launch/carrier_ros_env_perception.launch"/>
 
 </launch>
