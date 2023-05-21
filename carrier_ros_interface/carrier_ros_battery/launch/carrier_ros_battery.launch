@@ -1,0 +1,3 @@
+<launch>
+  <node pkg="carrier_ros_battery" type="battery_node" name="carrier_ros_battery"  output="screen"/>
+</launch>

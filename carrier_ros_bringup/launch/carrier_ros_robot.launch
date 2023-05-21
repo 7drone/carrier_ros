@@ -19,4 +19,8 @@
 
     <!-- kalman_filter -->
     <include file="$(find carrier_ros_navigation)/launch/carrier_ros_dual_ekf_navsat.launch"/>
+
+    <!-- robot battery -->
+    <include file="$(find carrier_ros_battery)/launch/carrier_ros_battery.launch"/>
+    
 </launch>
