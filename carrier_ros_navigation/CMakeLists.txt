@@ -48,7 +48,7 @@ catkin_python_setup()
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
- INCLUDE_DIRS include
+#  INCLUDE_DIRS include
 #  LIBRARIES carrier_ros_teleop
  CATKIN_DEPENDS rospy std_msgs 
 #  DEPENDS system_lib
@@ -64,7 +64,7 @@ target_link_libraries(carrier_ros_nav_interface ${catkin_LIBRARIES})
 add_dependencies(carrier_ros_nav_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 include_directories(
-  include 
+  # include 
   ${catkin_INCLUDE_DIRS} 
   ${PROJECT_SOURCE_DIR}/src
 )

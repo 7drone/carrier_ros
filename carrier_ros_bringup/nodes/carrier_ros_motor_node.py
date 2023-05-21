@@ -94,7 +94,6 @@ class PacketHandler2:
 
     def set_periodic_info(self, param1):
         for idx, each in enumerate(self.incomming_info):
-            #print("$cREGI," + str(idx) + "," + each)
             self.write_port("$cREGI," + str(idx) + "," + each)
 
         self.write_port("$cPERI," + str(param1))
@@ -133,13 +132,6 @@ class PacketHandler2:
                      self._bat = [float(packet[1]), float(packet[2]), float(packet[3])]
                except:
                   pass
-
-   #  def pub_battery_topic(self, battery_data):
-   #       msg = BatteryState()
-   #       msg.voltage = battery_data[0]
-   #       msg.current = battery_data[1]
-   #       msg.percentage = battery_data[2]
-   #       self.battery_pub.publish(msg)
 
     def get_base_velocity(self):
         return self._vel
@@ -322,7 +314,6 @@ class CarrierRosMotorNode:
 
    def cbTimerUpdateDriverData(self, event):
       self.ph.read_packet()
-      # self.ph.pub_battery_state(self.ph._bat[0])
       print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
       self.pub_battery_topic(self.ph._bat)
       if self.model_name == 'carrier_ros':   
