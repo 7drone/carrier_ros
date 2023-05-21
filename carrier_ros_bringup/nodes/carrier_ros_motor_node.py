@@ -8,7 +8,7 @@ import io
 from time import sleep
 # from carrier_ros_packet_handler import PacketHandler
 # from carrier_ros_packet_handler import PacketHandler2
-
+from carrier_ros_msg.msg import BatteryOne
 from sensor_msgs.msg import Imu, JointState
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, Pose, Point, Vector3, Quaternion
@@ -82,13 +82,13 @@ class PacketHandler2:
         self._ser.flushInput()
         self._ser.reset_input_buffer()
         self._ser.reset_output_buffer()
-        self.incomming_info = ['ODO', 'VW', 'POSE', 'ACCL', 'GYRO']
+        self.incomming_info = ['ODO', 'VW', 'POSE', 'ACCL', 'BAT']
         self._vel = [0.0, 0.0]
         self._enc = [0.0, 0.0]
         self._wodom = [0.0, 0.0]
         self._rpm = [0.0, 0.0]
         self._wvel = [0.0, 0.0]
-        self._gyro = [0.0, 0.0, 0.0]
+        self._bat = [0.0, 0.0, 0.0]
         rospy.loginfo('Serial port: %s', port_name)
         rospy.loginfo('Serial baud rate: %s', baud_rate)
 
@@ -129,10 +129,17 @@ class PacketHandler2:
                      self._rpm = [int(packet[1]), int(packet[2])]
                   elif header.startswith(b'DIFFV'):
                      self._wvel = [int(packet[1]), int(packet[2])]
-                  elif header.startswith(b'GYRO'):
-                     self._gyro = [float(packet[1]), float(packet[2]), float(packet[3])]
+                  elif header.startswith(b'BAT'):
+                     self._bat = [float(packet[1]), float(packet[2]), float(packet[3])]
                except:
                   pass
+
+   #  def pub_battery_topic(self, battery_data):
+   #       msg = BatteryState()
+   #       msg.voltage = battery_data[0]
+   #       msg.current = battery_data[1]
+   #       msg.percentage = battery_data[2]
+   #       self.battery_pub.publish(msg)
 
     def get_base_velocity(self):
         return self._vel
@@ -148,7 +155,10 @@ class PacketHandler2:
    
     def get_wheel_velocity(self):
         return self._wvel
-
+    
+    def get_battery_state(self):
+        return self._bat
+    
     def write_periodic_query_enable(self, param):
         self.write_port("$cPEEN," + str(param))
         sleep(0.05)
@@ -184,7 +194,7 @@ class CarrierRosMotorNode:
          self.ph.write_odometry_reset()
          self.ph.write_encoder_reset()
          sleep(0.1)
-         self.ph.incomming_info = ['ENCOD', 'ODO', 'DIFFV', '0', '0']
+         self.ph.incomming_info = ['ENCOD', 'ODO', 'DIFFV', '0', 'BAT']
          self.ph.set_periodic_info(50)
          sleep(0.1)
       else :
@@ -233,15 +243,21 @@ class CarrierRosMotorNode:
       self.odom_pub = rospy.Publisher(self.tf_prefix+"odom", Odometry, queue_size=10)
       self.odom_broadcaster = TransformBroadcaster()
       self.pub_pose = rospy.Publisher(self.tf_prefix+"pose", Pose, queue_size=1000)
+      self.battery_pub = rospy.Publisher(self.tf_prefix+'/battery/robot', BatteryOne, queue_size=10)
 
       rospy.Service(self.tf_prefix+'reset_odom', ResetOdom, self.reset_odom_handle)
       
       # timer
-      rospy.Timer(rospy.Duration(0.01), self.cbTimerUpdateDriverData) # 10 hz update
+      rospy.Timer(rospy.Duration(0.05), self.cbTimerUpdateDriverData) # 50 hz update
       self.odom_pose.timestamp = rospy.Time.now().to_nsec()
       self.odom_pose.pre_timestamp = rospy.Time.now()
       self.reset_odometry()
       rospy.on_shutdown(self.__del__)
+
+   def pub_battery_topic(self, battery_data):
+         msg = BatteryOne()
+         msg.battery = battery_data[1]
+         self.battery_pub.publish(msg)
 
    def reset_odometry(self):
       self.is_enc_offset_set = False
@@ -306,6 +322,9 @@ class CarrierRosMotorNode:
 
    def cbTimerUpdateDriverData(self, event):
       self.ph.read_packet()
+      # self.ph.pub_battery_state(self.ph._bat[0])
+      print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+      self.pub_battery_topic(self.ph._bat)
       if self.model_name == 'carrier_ros':   
          lin_vel_x = self.ph.get_base_velocity()[0]
          ang_vel_z = self.ph.get_base_velocity()[1]

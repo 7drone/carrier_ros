@@ -10,6 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   std_msgs
   message_generation
+  carrier_ros_msg
 )
 
 find_package(PkgConfig REQUIRED)
