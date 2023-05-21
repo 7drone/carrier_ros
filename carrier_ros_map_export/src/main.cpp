@@ -54,7 +54,7 @@ bool MapServer::UpdateCallback(nav_msgs::GetMap::Request  &req,
   // request is empty; we ignore it
 
   // = operator is overloaded to make deep copy (tricky!)
-  map_export(saved_fname, saved_res);
+  // map_export(saved_fname, saved_res);
   ROS_INFO("map update");
   ROS_INFO("pixel_x : %d, pixel_y : %d", cuttingparam.pixel_x
                                        , cuttingparam.pixel_y);

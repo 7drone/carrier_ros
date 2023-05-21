@@ -29,7 +29,7 @@
           <!-- Placeholders for input remapping. Set your topic names as the "to" values. -->
       <!-- <remap from="imu/data" to=""/>
       <remap from="odometry/filtered" to=""/> -->
-      <remap from="gps/fix" to="ublox_gps/fix"/>
+      <remap from="gps/fix" to="carrier_ros_gps/fix"/>
      
   </node>
 
