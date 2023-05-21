@@ -1,0 +1,3 @@
+Header header
+float64 robot_battery
+float64 drone_battery

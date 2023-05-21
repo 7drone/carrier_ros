@@ -1,3 +1,0 @@
-Header header
-int8 robot_battery
-int8 drone_battery
