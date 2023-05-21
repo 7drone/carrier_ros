@@ -9,5 +9,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <exec_depend>carrier_ros_imu</exec_depend>
   <exec_depend>carrier_ros_lidar</exec_depend>
+  <exec_depend>carrier_ros_camera</exec_depend>
+  <exec_depend>carrier_ros_gps_system</exec_depend>
   <export><metapackage/></export>
 </package>
