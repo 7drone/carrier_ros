@@ -4,7 +4,9 @@ find_package(catkin REQUIRED COMPONENTS std_msgs message_generation)
 
 add_message_files(DIRECTORY msg
   FILES
-  Battery.msg
+  BatteryTwo.msg
+  BatteryOne.msg
+
 )
 
 

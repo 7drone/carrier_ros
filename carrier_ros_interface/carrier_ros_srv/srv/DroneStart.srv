@@ -1,0 +1,5 @@
+int8 mode
+float64 latitude
+float64 longitude
+---
+bool success
