@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>carrier_ros_gps_system</name>
+  <version>0.1.0</version>
+  <description>carrier_ros_gps_system metapackage</description>
+  <author email="jungwoohyeon@gmail.com">woohyeon</author>
+  <maintainer email="jungwoohyeon@gmail.com">woohyeon</maintainer>  
+  <license>TODO</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>carrier_ros_gps</exec_depend>
+  <exec_depend>ntrip_ros</exec_depend>
+  <exec_depend>rtcm_msgs</exec_depend>
+  <exec_depend>ublox_msgs</exec_depend>
+  <exec_depend>ublox_serialization</exec_depend>
+  <export><metapackage/></export>
+</package>
