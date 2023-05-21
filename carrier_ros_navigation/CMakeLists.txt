@@ -12,11 +12,12 @@ find_package(catkin REQUIRED COMPONENTS
     actionlib
     actionlib_msgs
     std_msgs
-    message_generation
+    # message_generation
     roscpp
     geometry_msgs
     tf2
     tf2_ros
+    carrier_ros_srv
 )
 
 ################################################################################
@@ -29,16 +30,16 @@ catkin_python_setup()
 # Declare ROS messages, services and actions
 ################################################################################
 
-add_service_files(
-  FILES
-  Speak.srv
-)
+# add_service_files(
+#   FILES
+#   Speak.srv
+# )
 
 
-generate_messages(
-  DEPENDENCIES
-  std_msgs  # Or other packages containing msgs
-)
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+# )
 ################################################################################
 # Declare ROS dynamic reconfigure parameters
 ################################################################################
@@ -47,16 +48,26 @@ generate_messages(
 # Declare catkin specific configuration to be passed to dependent projects
 ################################################################################
 catkin_package(
-#  INCLUDE_DIRS include
+ INCLUDE_DIRS include
 #  LIBRARIES carrier_ros_teleop
  CATKIN_DEPENDS rospy std_msgs 
 #  DEPENDS system_lib
 )
 
+
+
 ################################################################################
 # Build
 ################################################################################
-include_directories(include ${catkin_INCLUDE_DIRS} )
+add_executable(carrier_ros_nav_interface src/carrier_ros_nav_interface.cpp)
+target_link_libraries(carrier_ros_nav_interface ${catkin_LIBRARIES})
+add_dependencies(carrier_ros_nav_interface ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+include_directories(
+  include 
+  ${catkin_INCLUDE_DIRS} 
+  ${PROJECT_SOURCE_DIR}/src
+)
 ################################################################################
 # Install
 ################################################################################
