@@ -106,12 +106,12 @@ void Camera_detection::TimerPclIntegrate(const ros::TimerEvent& event)
   pcl::toROSMsg(*projection_cloud, pub1);
   pub1.header.frame_id = base_frame;
   pub1.header.stamp = ros::Time::now();
-  projection_pub.publish(pub1);
+  // projection_pub.publish(pub1);
   
   pcl::toROSMsg(*difference_cloud, pub2);
   pub2.header.frame_id = base_frame;
   pub2.header.stamp = ros::Time::now();
-  difference_pub.publish(pub2);
+  // difference_pub.publish(pub2);
 
   pcl::toROSMsg(*diff_filter_cloud, pub3);
   pub3.header.frame_id = base_frame;
