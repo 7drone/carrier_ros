@@ -1,7 +1,6 @@
 <launch>
   <arg name="map_file" default="$(find carrier_ros_map_export)/maps/map.yaml"/>
   <arg name="open_rviz" default="true"/>
-  <arg name="move_forward_only" default="false"/>
 
     <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
     args="0.0 0.0 0.0 0.0 0.0 0.0 /map /odom 40" />
