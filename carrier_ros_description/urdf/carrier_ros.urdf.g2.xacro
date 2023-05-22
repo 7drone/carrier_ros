@@ -383,12 +383,26 @@
 
   <joint name="right_scan_joint" type="fixed">
     <origin
-      xyz="0.015 -0.235 0.3662"
-      rpy="0 0 0" />
+      xyz="-0.395 0.235 0.3362"
+      rpy="0 0 3.1416" />
     <parent
       link="base_link" />
     <child
       link="right_scan" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <link name="gps"/>
+
+  <joint name="gps_joint" type="fixed">
+    <origin
+      xyz="0.0864999999999934 0.235 0.300600000000007"
+      rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="gps" />
     <axis
       xyz="0 0 0" />
   </joint>
