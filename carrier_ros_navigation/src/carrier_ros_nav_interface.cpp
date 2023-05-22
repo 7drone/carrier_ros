@@ -14,6 +14,8 @@ public:
   NavInterface()
   {
     ros::NodeHandle nh;
+    nh.param("station_latitude", station_latitude, 0.0);
+    nh.param("station_longitude", station_longitude, 0.0);
 
     // ros service server
     robot_start_server_ = nh.advertiseService("/robot/start", &NavInterface::startCallback, this);
@@ -24,7 +26,7 @@ public:
     robot_status_client_ = nh.serviceClient<carrier_ros_srv::RobotStatus>("/robot/status");
 
     robot_srv.request.status=0;
-    
+
     // ros navigation arction
     action_client_.reset(new MoveBaseClient("move_base", true));
     // MoveBase 서버가 준비될 때까지 대기
@@ -67,41 +69,61 @@ private:
 
   boost::shared_ptr<MoveBaseClient> action_client_;
 
-  double station_latitude, station_logitude; /////////////////////////////////////make param
+  double station_latitude, station_longitude; /////////////////////////////////////make param
 
   bool startCallback(carrier_ros_srv::RobotStart::Request& req, carrier_ros_srv::RobotStart::Response& res)
   {
     
     std::vector<double> dest_que_x, dest_que_y;
+
+    // req.lat,long 에 대한 위/경도 값 -> utm 좌표계로 변환
+    // 변환한 값 -> dest_que 에 저장 
+    // 위도 -> dest_que_x
+    // 경도 -> dest_que_y 
     for (size_t i = 0; i < req.latitude.size(); i++)
     {
       double latitude = req.latitude[i];
       double longitude = req.longitude[i];
 
-      geodesy::UTMPoint utm_point;
-      geographic_msgs::GeoPoint goepoint;
-      goepoint.longitude = longitude;
+      geodesy::UTMPoint utm_point; // 객체 생성
+      geographic_msgs::GeoPoint goepoint; // 포인트 위/경도 값 객체 생성
+      goepoint.longitude = longitude; // 각 포인트에 대한 위 경도 값 변수 설정
       goepoint.latitude = latitude;
-      geodesy::fromMsg(goepoint, utm_point, true, 's', 52);
+      geodesy::fromMsg(goepoint, utm_point, true, 's', 52); // utm_point 에 저장 
 
       dest_que_x.push_back(utm_point.easting);
       dest_que_y.push_back(utm_point.northing);
     }
 
-    //목적지로 이동전 로봇 상태 보내기
-    robot_srv.request.status=0;
+    // robot statue cilent (e)
+    robot_srv.request.status = 0;
     robot_status_client_.call(robot_srv);
-    // 목적지로 이동
-    for(auto v:dest_que_x)
-    {
-      navigateToGoal(dest_que_x.back(), dest_que_y.back()); // 예시로 (1.0, 2.0)으로 설정
-      /////////////////////////////////////////////////////////////////
-      dest_que_x.pop_back();
-      dest_que_y.pop_back();
-    }
+    // Action to goal
+
+    // for(auto v:dest_que_x)
+    // {
+      // navigateToGoal(dest_que_x.back(), dest_que_y.back()); // 예시로 (1.0, 2.0)으로 설정
+      ///////////////////////////////////////////////////////////////
+      // dest_que_x.pop_back();
+      // dest_que_y.pop_back();
+    // }
     //start
-    
+    // initial - 스테이션 위치로 위치
+
+    double intial_state_x = 1.0;
+    double intial_state_y = 2.0;
+    navigateToGoal(intial_state_x, intial_state_y);
+
+    for(size_t i = 1; i < dest_que_x.size(); i++)
+    {
+      navigateToGoal(dest_que_x[i], dest_que_y[i]);
+    }
+    if(!dest_que_x.empty() && !dest_que_y.empty())
+    {
+      navigateToGoal(dest_que_x[0], dest_que_y[0]);
+    }
     res.success = true;
+    // res.message = "Reach Destination Successed";
     return true;
   }
 
@@ -127,7 +149,7 @@ private:
     geodesy::UTMPoint utm_point;
     geographic_msgs::GeoPoint goepoint;
     goepoint.longitude = station_latitude;
-    goepoint.latitude = station_logitude;
+    goepoint.latitude = station_longitude;
     geodesy::fromMsg(goepoint, utm_point, true, 's', 52);
 
 
