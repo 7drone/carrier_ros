@@ -285,7 +285,7 @@ void MapServer::robotpose(const std::string source_frame, const std::string targ
 void MapServer::TimerTFListen(const ros::TimerEvent& event)
 {
   robotpose(map_frame_id_,robot_frame_id_);
-  // map_export(saved_fname, saved_res);
+  map_export(saved_fname, saved_res);
 }
 
 int main(int argc, char **argv)
