@@ -128,13 +128,6 @@ void Camera_detection::RestrictedEnv(const PointCloud::Ptr filter_input,
     projection_cloud->clear();
     difference_cloud->clear();
     diff_filter_cloud->clear();
-    //downsampling 
-    {
-      pcl::VoxelGrid<pcl::PointXYZRGB> vg;
-      vg.setInputCloud(filter_input);
-      vg.setLeafSize(0.030f, 0.030f, 0.030f); //unit(m)
-      vg.filter(*filter_input);
-    }
     // Filter x bound
     {
       pcl::PassThrough<pcl::PointXYZRGB> pass;
@@ -156,6 +149,13 @@ void Camera_detection::RestrictedEnv(const PointCloud::Ptr filter_input,
       
       pass.filter(*filter_input);
     }    
+    //downsampling 
+    {
+      pcl::VoxelGrid<pcl::PointXYZRGB> vg;
+      vg.setInputCloud(filter_input);
+      vg.setLeafSize(0.030f, 0.030f, 0.030f); //unit(m)
+      vg.filter(*filter_input);
+    }
 
     //projection
     {
@@ -266,8 +266,8 @@ void Camera_detection::pclPublish(const PointCloud::Ptr pcl_publish,
 
 void Camera_detection::initPublisher()
 {
-  projection_pub = nh.advertise<sensor_msgs::PointCloud2>("projection_cloud", 100);
-  difference_pub = nh.advertise<sensor_msgs::PointCloud2>("difference_cloud", 100);
+  // projection_pub = nh.advertise<sensor_msgs::PointCloud2>("projection_cloud", 100);
+  // difference_pub = nh.advertise<sensor_msgs::PointCloud2>("difference_cloud", 100);
   diff_filter_pub = nh.advertise<sensor_msgs::PointCloud2>("diff_filter_cloud", 100);
 }
 
