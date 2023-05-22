@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
     actionlib
     actionlib_msgs
     std_msgs
+    geodesy
     # message_generation
     roscpp
     geometry_msgs

@@ -6,7 +6,7 @@ class Battery {
 public:
     Battery();
 
-    double robot_battery, drone_battery;
+    double robot_battery = 0.0, drone_battery = 0.0;
 
 private:
     void robotBatteryCallback(const carrier_ros_msg::BatteryOne::ConstPtr& battery);
