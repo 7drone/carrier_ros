@@ -4,6 +4,9 @@
 #include <move_base_msgs/MoveBaseAction.h>
 #include "carrier_ros_srv/RobotStart.h"
 #include "carrier_ros_srv/RobotStatus.h"
+#include <geodesy/utm.h>
+#include <geographic_msgs/GeoPoint.h>
+#include <vector>
 
 class NavInterface
 {
@@ -64,15 +67,38 @@ private:
 
   boost::shared_ptr<MoveBaseClient> action_client_;
 
+  double station_latitude, station_logitude; /////////////////////////////////////make param
+
   bool startCallback(carrier_ros_srv::RobotStart::Request& req, carrier_ros_srv::RobotStart::Response& res)
   {
-    //add client before send the destination
+    
+    std::vector<double> dest_que_x, dest_que_y;
+    for (size_t i = 0; i < req.latitude.size(); i++)
+    {
+      double latitude = req.latitude[i];
+      double longitude = req.longitude[i];
+
+      geodesy::UTMPoint utm_point;
+      geographic_msgs::GeoPoint goepoint;
+      goepoint.longitude = longitude;
+      goepoint.latitude = latitude;
+      geodesy::fromMsg(goepoint, utm_point, true, 's', 52);
+
+      dest_que_x.push_back(utm_point.easting);
+      dest_que_y.push_back(utm_point.northing);
+    }
+
+    //목적지로 이동전 로봇 상태 보내기
     robot_srv.request.status=0;
     robot_status_client_.call(robot_srv);
-    
     // 목적지로 이동
-    navigateToGoal(req.latitude[0], req.longitude[0]); // 예시로 (1.0, 2.0)으로 설정
-    
+    for(auto v:dest_que_x)
+    {
+      navigateToGoal(dest_que_x.back(), dest_que_y.back()); // 예시로 (1.0, 2.0)으로 설정
+      /////////////////////////////////////////////////////////////////
+      dest_que_x.pop_back();
+      dest_que_y.pop_back();
+    }
     //start
     
     res.success = true;
@@ -83,7 +109,7 @@ private:
   {
     // 이동 중인 액션을 취소
     action_client_->cancelAllGoals();
-    
+    /////////////////////////////////////////////////////////
     //stop
     robot_srv.request.status=1;
     robot_status_client_.call(robot_srv);
@@ -97,7 +123,18 @@ private:
   bool recallCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
   {
     // 목적지로 이동
-    navigateToGoal(3.0, 4.0);
+    
+    geodesy::UTMPoint utm_point;
+    geographic_msgs::GeoPoint goepoint;
+    goepoint.longitude = station_latitude;
+    goepoint.latitude = station_logitude;
+    geodesy::fromMsg(goepoint, utm_point, true, 's', 52);
+
+
+
+
+    action_client_->cancelAllGoals();
+    navigateToGoal(utm_point.easting, utm_point.northing);
 
     //come back
     robot_srv.request.status=2;
