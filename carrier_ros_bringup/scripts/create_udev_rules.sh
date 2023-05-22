@@ -19,7 +19,7 @@ echo "Carrier_ros LiDAR (USB Serial) : /dev/ttyUSBx to /dev/ttyLEFTLiDAR :"
 if [ -f "/etc/udev/rules.d/Carrier_ros_lidar.rules" ]; then
     echo "Carrier_ros_lidar.rules file already exist."
 else 
-    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0002", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyLEFTLiDAR"' >/etc/udev/rules.d/Carrier_ros_leftlidar.rules    
+    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0003", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyLEFTLiDAR"' >/etc/udev/rules.d/Carrier_ros_leftlidar.rules    
 
     echo 'Carrier_ros_lidar.rules created'
 fi
@@ -28,7 +28,7 @@ echo "Carrier_ros LiDAR (USB Serial) : /dev/ttyUSBx to /dev/ttyRIGHTLiDAR :"
 if [ -f "/etc/udev/rules.d/Carrier_ros_lidar.rules" ]; then
     echo "Carrier_ros_lidar.rules file already exist."
 else 
-    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0003", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyRIGHTLiDAR"' >/etc/udev/rules.d/Carrier_ros_rightlidar.rules    
+    echo  'KERNEL=="tty*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0002", MODE:="0666", GROUP:="dialout",  SYMLINK+="ttyRIGHTLiDAR"' >/etc/udev/rules.d/Carrier_ros_rightlidar.rules    
 
     echo 'Carrier_ros_lidar.rules created'
 fi
