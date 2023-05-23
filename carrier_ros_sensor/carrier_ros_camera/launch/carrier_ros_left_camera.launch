@@ -3,12 +3,12 @@
 
     <include file="$(find realsense2_camera)/launch/rs_camera.launch">
             
-        <arg name="serial_no"           default="030522071646"/>
+        <arg name="serial_no"           default="033422070776"/>
         <arg name="usb_port_id"         default=""/>
         <arg name="device_type"         default=""/>
         <arg name="json_file_path"      default=""/>
-        <arg name="camera"              default="front_camera"/>
-        <arg name="tf_prefix"           default="front_camera"/>
+        <arg name="camera"              default="left_camera"/>
+        <arg name="tf_prefix"           default="left_camera"/>
         <arg name="external_manager"    default="false"/>
         <arg name="manager"             default="realsense2_camera_manager"/>
         <arg name="output"              default="screen"/>
