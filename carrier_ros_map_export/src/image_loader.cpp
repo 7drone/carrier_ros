@@ -131,13 +131,13 @@ loadMapFromFile(nav_msgs::GetMap::Response* resp,
         BLUE = *(p+2);
         ROS_INFO_ONCE("RED : %d, blue:%d, green:%d",RED,BLUE,GREEN);
         // ROS_INFO("RED : %d, blue:%d, green:%d",RED,BLUE,GREEN);
-        if (RED == 226 || RED == 247|| (RED < 221 && RED>100))
+        if (RED >= 245 || BLUE >= 226)
         {
-          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = 100;
+          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = 0;
         }
         else
         {
-          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = 0;
+          resp->map.data[MAP_IDX(resp->map.info.width,i,resp->map.info.height - j - 1)] = 100;
         }
       }
       else
