@@ -165,5 +165,5 @@ carrier_ros_navsat_transform:
   publish_filtered_gps: true
   use_odometry_yaw: false
   wait_for_datum: true
-  datum: [37.296903, 126.836649, 0.0]
+  datum: [37.2981593, 126.83712129999999, 0.0]
 
