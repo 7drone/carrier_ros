@@ -1,6 +1,7 @@
 <launch>
-    <include file="$(find carrier_ros_servo)/launch/carrier_ros_dynamixel.launch">
-        <arg name="usb_port"                default="/dev/ttyDYNAMIXEL"/>
-        <arg name="dxl_baud_rate"           default="57600"/>
-    </include>
+    <arg name="open_rviz" default="true"/>
+    <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+            args="-d $(find carrier_ros_navigation)/rviz/test.rviz"/>
+    </group>
 </launch>
