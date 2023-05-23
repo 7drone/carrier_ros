@@ -112,7 +112,7 @@ class PacketHandler2:
     def read_packet(self):
         if self.get_port_state() == True:
             whole_packet = self.read_port()
-            print(whole_packet)
+            # print(whole_packet)
             if whole_packet:
                packet = whole_packet.split(b",")
                print(whole_packet.decode())
@@ -247,9 +247,9 @@ class CarrierRosMotorNode:
       rospy.on_shutdown(self.__del__)
 
    def pub_battery_topic(self, battery_data):
-         msg = BatteryOne()
-         msg.battery = battery_data[1]
-         self.battery_pub.publish(msg)
+      msg = BatteryOne()
+      msg.battery = battery_data[1]
+      self.battery_pub.publish(msg)
 
    def reset_odometry(self):
       self.is_enc_offset_set = False
@@ -258,36 +258,6 @@ class CarrierRosMotorNode:
       self.joint.joint_pos = [0.0, 0.0]
       self.joint.joint_vel = [0.0, 0.0]
 
-   def update_odometry(self, odo_l, odo_r, trans_vel, orient_vel, vel_z):
-      odo_l /= 1000.
-      odo_r /= 1000.
-      trans_vel /= 1000.
-      orient_vel /= 1000.
-
-      self.odom_pose.timestamp = rospy.Time.now()
-      dt = (self.odom_pose.timestamp - self.odom_pose.pre_timestamp).to_sec()
-      self.odom_pose.pre_timestamp = self.odom_pose.timestamp
-
-      d_x = trans_vel * math.cos(self.odom_pose.theta) 
-      d_y = trans_vel * math.sin(self.odom_pose.theta) 
-
-      self.odom_pose.x += d_x * dt
-      self.odom_pose.y += d_y * dt
-
-      odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
-
-      self.odom_vel.x = trans_vel
-      self.odom_vel.y = 0.
-      self.odom_vel.w = orient_vel
-
-      odom = Odometry()
-      odom.header.frame_id = self.tf_prefix+"odom"
-      odom.child_frame_id = self.tf_prefix+"base_footprint"
-      odom.header.stamp = rospy.Time.now()
-      odom.pose.pose = Pose(Point(self.odom_pose.x, self.odom_pose.y, 0.), Quaternion(*odom_orientation_quat))
-      odom.twist.twist = Twist(Vector3(self.odom_vel.x, self.odom_vel.y, 0), Vector3(0, 0, self.odom_vel.w))
-
-      self.odom_pub.publish(odom)
 
    def updateJointStates(self, odo_l, odo_r, trans_vel, orient_vel):
       odo_l /= 1000.
@@ -314,7 +284,6 @@ class CarrierRosMotorNode:
 
    def cbTimerUpdateDriverData(self, event):
       self.ph.read_packet()
-      print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
       self.pub_battery_topic(self.ph._bat)
       if self.model_name == 'carrier_ros':   
          lin_vel_x = self.ph.get_base_velocity()[0]
