@@ -64,7 +64,7 @@ private:
 
   boost::shared_ptr<MoveBaseClient> action_client_;
 
-  double station_latitude, station_longitude; 
+  double station_latitude{1.0}, station_longitude{2.0}; 
 
   bool isNavigating = false;
   bool isFirstStart = true;
@@ -89,9 +89,6 @@ private:
   bool startCallback(carrier_ros_srv::RobotStart::Request& req, carrier_ros_srv::RobotStart::Response& res)
 {
   std::vector<double> dest_que_x, dest_que_y;
-  double initial_state_x = 1.0;
-  double initial_state_y = 2.0; // Have to Transform UTM coordinate
-
   for (size_t i = 0; i < req.latitude.size(); i++)
   {
     double latitude = req.latitude[i];
@@ -102,7 +99,6 @@ private:
     geo_point.longitude = longitude; 
     geo_point.latitude = latitude;
     geodesy::fromMsg(geo_point, utm_point, true, 's', 52);
-
     dest_que_x.push_back(utm_point.easting);
     dest_que_y.push_back(utm_point.northing);
   }
@@ -180,7 +176,6 @@ private:
 
     action_client_->cancelAllGoals();
     navigateToGoal(utm_point.easting, utm_point.northing);
-
     //come back
     robot_srv.request.status=2;
     robot_status_client_.call(robot_srv);
@@ -192,16 +187,15 @@ private:
 
   bool emergencyCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res)
   {
-    action_client_->cancelAllGoals();
-    // action_client_->canceL
-
+    action_client_->cancelAllGoals(); 
+    navigateToGoal(station_latitude, station_longitude);
     //stop
     robot_srv.request.status=1;
     robot_status_client_.call(robot_srv);
 
     // @@@@ stop -> move initial station @@@@
     res.success = true;
-    res.message = "Emergency handled";
+    res.message = "Emergency handled, Return to station";
     return true;
   }
 };
