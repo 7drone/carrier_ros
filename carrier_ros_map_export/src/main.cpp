@@ -8,14 +8,15 @@ MapServer::MapServer()
   tf_listener(tf_buffer),
   saved_fname(""), saved_res(0.0)
 {
-  map_frame_id_ = nh_.param<std::string>("map_frame_id", "map");
+  map_frame_id_ = nh_.param<std::string>("map_frame_id", "utm");
   robot_frame_id_=nh_.param<std::string>("robot_frame_id", "base_footprint");
-  partition_threshold = private_nh.param<double>("threshold", 160);
+  partition_threshold = private_nh.param<double>("threshold", 100); //cutting length
+  meter_pixel = private_nh.param<double>("meter_pixel",4);
   initPublisher();
   initSubscriber();
   initService();
-  cuttingparam.threshold=partition_threshold*8;
-  timer = nh_.createTimer(ros::Duration(0.1), &MapServer::TimerTFListen, this); //10hz
+  cuttingparam.threshold=partition_threshold*meter_pixel;
+  timer = nh_.createTimer(ros::Duration(10), &MapServer::TimerTFListen, this); //10hz
 
 }
 
@@ -256,16 +257,14 @@ void MapServer::Modified_map(const parameter *input)
   modified_map.info.width = width;
   modified_map.info.height = height;
 
-  modified_map.info.origin.position.x = map_resp_.map.info.origin.position.x 
-                                        + (start_col)/8;
-  modified_map.info.origin.position.y = map_resp_.map.info.origin.position.y 
-                                        + (start_row)/8;
-
+  modified_map.info.origin.position.x = robot_position_x
+                                        - width/(meter_pixel*2);
+  modified_map.info.origin.position.y = robot_position_y
+                                        - height/(meter_pixel*2);
 }
 
 void MapServer::robotpose(const std::string source_frame, const std::string target_frame)
 {
-  // tfListener.waitForTransform(source_frame, target_frame, ros::Time(0), ros::Duration(5.0));
   
   try
   {
@@ -277,15 +276,16 @@ void MapServer::robotpose(const std::string source_frame, const std::string targ
     return;
   }
   //
-  cuttingparam.pixel_x = int(floor(transform.transform.translation.x+0.5))*8;
-  cuttingparam.pixel_y = int(floor(transform.transform.translation.y+0.5))*8;
-  
+  cuttingparam.pixel_x = int(floor((transform.transform.translation.x-map_resp_.map.info.origin.position.x)+0.5))*4;
+  cuttingparam.pixel_y = int(floor((transform.transform.translation.y-map_resp_.map.info.origin.position.y)+0.5))*4;
+  robot_position_x = transform.transform.translation.x;
+  robot_position_y = transform.transform.translation.y;
 }
 
 void MapServer::TimerTFListen(const ros::TimerEvent& event)
 {
   robotpose(map_frame_id_,robot_frame_id_);
-  // map_export(saved_fname, saved_res);
+  map_export(saved_fname, saved_res);
 }
 
 int main(int argc, char **argv)

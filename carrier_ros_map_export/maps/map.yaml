@@ -1,6 +1,6 @@
-image: ./map_0452.png
-resolution: 0.125
-origin: [307785.812,4130308.400,0.0]
+image: ./3070_3134.png
+resolution: 0.25
+origin: [-582.007,-501.211,0.0]
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.0442
@@ -35,3 +35,6 @@ free_thresh: 0.0442
 
 
 # origin: [307785.812,4130308.400,0.0] // origin value
+
+
+#1 engineer building 308289.007 4130126.211

@@ -84,9 +84,11 @@ class MapServer
         parameter cuttingparam;
         bool deprecated_;
         double partition_threshold,
-               saved_res;
+               saved_res,
+               meter_pixel;
         std::string saved_fname;
-        
+        double robot_position_x,
+               robot_position_y;
 
     public:
         MapServer();
