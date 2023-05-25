@@ -6,6 +6,7 @@
 #include <tf/transform_datatypes.h>
 #include <geometry_msgs/TransformStamped.h>
 #include <geometry_msgs/Quaternion.h>
+#include <sensor_msgs_ext/magnetometer.h>
 
 //Service_include...
 #include "carrier_ros_imu/all_data_reset.h"
@@ -13,6 +14,7 @@
 #include "carrier_ros_imu/euler_angle_reset.h"
 #include "carrier_ros_imu/pose_velocity_reset.h"
 #include "carrier_ros_imu/reboot_sensor.h"
+
 
 #include <math.h>
 #include <stdio.h>
@@ -59,7 +61,7 @@ double time_offset_in_seconds;
 double dSend_Data[10];
 double m_dRoll, m_dPitch, m_dYaw;
 sensor_msgs::Imu imu_data_msg;
-sensor_msgs::MagneticField magnetic_data_msg;
+sensor_msgs_ext::magnetometer magnetic_data_msg;
 //tf_prefix add
 std::string tf_prefix_;
 std::string frame_id;
@@ -322,7 +324,7 @@ int main (int argc, char** argv)
 
 	ros::NodeHandle nh;
 	ros::Publisher imu_data_pub = nh.advertise<sensor_msgs::Imu>("imu/data", 1);
-	ros::Publisher imu_magnetic_pub = nh.advertise<sensor_msgs::MagneticField>("imu/magnetometer",1);
+	ros::Publisher imu_magnetic_pub = nh.advertise<sensor_msgs_ext::magnetometer>("imu/magnetometer",1);
 	//IMU Service///////////////////////////////////////////////////////////////////////////////////////////////
 	ros::NodeHandle sh;
 	all_data_reset_service = sh.advertiseService("all_data_reset_cmd", All_Data_Reset_Command);
@@ -372,9 +374,9 @@ int main (int argc, char** argv)
 			no_data = SendRecv("m\n", data, max_data);
 			if(no_data >= 3)
 			{
-				magnetic_data_msg.magnetic_field.x = data[0];
-				magnetic_data_msg.magnetic_field.y = data[1];
-				magnetic_data_msg.magnetic_field.z = data[2];
+				magnetic_data_msg.x = data[0];
+				magnetic_data_msg.y = data[1];
+				magnetic_data_msg.z = data[2];
 			}
 
 			no_data = SendRecv("e\n", data, max_data);	// Read Euler angle
@@ -397,8 +399,8 @@ int main (int argc, char** argv)
 			// calculate measurement time
             		ros::Time measurement_time = ros::Time::now() + ros::Duration(time_offset_in_seconds);
 
-			imu_data_msg.header.stamp = magnetic_data_msg.header.stamp = measurement_time;
-			imu_data_msg.header.frame_id = magnetic_data_msg.header.frame_id = tf_prefix_ + "imu_link";  // "imu_link"
+			// imu_data_msg.header.stamp = magnetic_data_msg.header.stamp = measurement_time;
+			// imu_data_msg.header.frame_id = magnetic_data_msg.header.frame_id = tf_prefix_ + "imu_link";  // "imu_link"
 
 			// publish the IMU data
 			imu_data_pub.publish(imu_data_msg);

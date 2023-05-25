@@ -6,6 +6,7 @@
   <maintainer email="wbjin@hyulimrobot.com">wbjin</maintainer>
   <license>BSD</license>
   <buildtool_depend>catkin</buildtool_depend>
+  <depend>sensor_msgs_ext</depend>
   <build_depend>roscpp</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>std_srvs</build_depend>

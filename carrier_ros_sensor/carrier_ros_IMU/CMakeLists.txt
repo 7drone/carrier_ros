@@ -11,6 +11,7 @@ find_package(catkin REQUIRED
   sensor_msgs
   tf
   geometry_msgs
+  sensor_msgs_ext
   message_generation
 )
 
