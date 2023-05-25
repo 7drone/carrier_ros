@@ -322,7 +322,7 @@ int main (int argc, char** argv)
 
 	ros::NodeHandle nh;
 	ros::Publisher imu_data_pub = nh.advertise<sensor_msgs::Imu>("imu/data", 1);
-	ros::Publisher imu_magnetic_pub = nh.advertise<sensor_msgs::MagneticField>("imu/magnetic_data",1);
+	ros::Publisher imu_magnetic_pub = nh.advertise<sensor_msgs::MagneticField>("imu/magnetometer",1);
 	//IMU Service///////////////////////////////////////////////////////////////////////////////////////////////
 	ros::NodeHandle sh;
 	all_data_reset_service = sh.advertiseService("all_data_reset_cmd", All_Data_Reset_Command);

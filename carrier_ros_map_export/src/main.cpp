@@ -111,7 +111,7 @@ bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,
 
   //Publish latched topics
   metadata_pub_.publish( meta_data_message_ );
-  map_pub_.publish( map_resp_.map );
+  // map_pub_.publish( map_resp_.map );
   partition_map_pub_.publish(modified_map);
   return true;
 }
