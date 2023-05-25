@@ -66,7 +66,10 @@ class ntripconnect(Thread):
         buf = ""
         rmsg = Message()
         restart_count = 0
+        rospy.loginfo("fucking shit")
+        rospy.loginfo(self.stop)
         while not self.stop:
+            rospy.loginfo("while 문")
             '''
             data = response.read(100)
             pos = data.find('\r\n')
@@ -81,6 +84,8 @@ class ntripconnect(Thread):
 
             ''' This now separates individual RTCM messages and publishes each one on the same topic '''
             data = response.read(1)
+            rospy.loginfo("fucking Data")
+            rospy.loginfo(data)
             if len(data) != 0:
                 if data[0] == 211:
                     buf = []
@@ -98,6 +103,8 @@ class ntripconnect(Thread):
                     for x in range(cnt):
                         data = response.read(1)
                         buf.append(data[0])
+                        rospy.loginfo("fucking buf")
+                        rospy.loginfo(buf)
                     rmsg.message = buf
                     rmsg.header.seq += 1
                     rmsg.header.stamp = rospy.get_rostime()
