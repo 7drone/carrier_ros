@@ -15,6 +15,27 @@ from http.client import IncompleteRead
 ''' This is to fix the IncompleteRead error
     http://bobrochel.blogspot.com/2010/11/bad-servers-chunked-encoding-and.html'''
 import http.client
+
+import requests
+from requests.auth import HTTPBasicAuth
+
+
+
+def NiceToICY(self):
+    class InterceptedHTTPResponse():
+        pass
+    import io
+    line = self.fp.readline().replace(b"ICY 200 OK\r\n", b"HTTP/1.0 200 OK\r\n")
+    InterceptedSelf = InterceptedHTTPResponse()
+    InterceptedSelf.fp = io.BufferedReader(io.BytesIO(line))
+    InterceptedSelf.debuglevel = self.debuglevel
+    InterceptedSelf._close_conn = self._close_conn
+    return ORIGINAL_HTTP_CLIENT_READ_STATUS(InterceptedSelf)
+
+ORIGINAL_HTTP_CLIENT_READ_STATUS = http.client.HTTPResponse._read_status
+http.client.HTTPResponse._read_status = NiceToICY
+
+
 def patch_http_response_read(func):
     def inner(*args):
         try:
@@ -31,15 +52,14 @@ class ntripconnect(Thread):
         self.stop = False
 
     def run(self):
-
         headers = {
             'Ntrip-Version': 'Ntrip/2.0',
             'User-Agent': 'NTRIP ntrip_ros',
             'Connection': 'close',
-            'Authorization': 'Basic ' + b64encode((self.ntc.ntrip_user + ':' + str(self.ntc.ntrip_pass)).encode('utf-8')).decode('utf-8')
-            # 'Authorization': 'Basic ' + b64encode(self.ntc.ntrip_user + ':' + str(self.ntc.ntrip_pass))
-        }
-        connection = HTTPConnection(self.ntc.ntrip_server, port='2101')
+            'Authorization': 'Basic ' + b64encode((self.ntc.ntrip_user + ':' + self.ntc.ntrip_pass).encode()).decode("ascii")
+            }
+        connection = HTTPConnection(self.ntc.ntrip_server)
+        connection.set_debuglevel(1)
         connection.request('GET', '/'+self.ntc.ntrip_stream, self.ntc.nmea_gga, headers)
         response = connection.getresponse()
         if response.status != 200: raise Exception("blah")
@@ -62,24 +82,27 @@ class ntripconnect(Thread):
             ''' This now separates individual RTCM messages and publishes each one on the same topic '''
             data = response.read(1)
             if len(data) != 0:
-                if ord(data[0]) == 211:
-                    buf += data
+                if data[0] == 211:
+                    buf = []
+                    buf.append(data[0])
                     data = response.read(2)
-                    buf += data
-                    cnt = ord(data[0]) * 256 + ord(data[1])
+                    buf.append(data[0])
+                    buf.append(data[1])
+                    cnt = data[0] * 256 + data[1]
                     data = response.read(2)
-                    buf += data
-                    typ = (ord(data[0]) * 256 + ord(data[1])) / 16
-                    print (str(datetime.now()), cnt, typ)
+                    buf.append(data[0])
+                    buf.append(data[1])
+                    typ = (data[0] * 256 + data[1]) / 16
+                    print(str(datetime.now()), cnt, typ)
                     cnt = cnt + 1
                     for x in range(cnt):
                         data = response.read(1)
-                        buf += data
+                        buf.append(data[0])
                     rmsg.message = buf
                     rmsg.header.seq += 1
                     rmsg.header.stamp = rospy.get_rostime()
                     self.ntc.pub.publish(rmsg)
-                    buf = ""
+                    buf = []
                 else: print (data)
             else:
                 ''' If zero length data, close connection and reopen it '''
@@ -121,4 +144,3 @@ class ntripclient:
 if __name__ == '__main__':
     c = ntripclient()
     c.run()
-
