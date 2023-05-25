@@ -147,7 +147,7 @@ private:
   }
   else
   {
-    navigateToGoal(initial_state_x, initial_state_y); // Initail Station Set -> UTM Transformation
+    navigateToGoal(station_latitude, station_longitude); // Initail Station Set -> UTM Transformation
     for(size_t i = currentGoalIndex + 1; i < dest_que_x.size(); i++)
     {
       navigateToGoal(dest_que_x[i], dest_que_y[i]);
