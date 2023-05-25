@@ -99,7 +99,7 @@ bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,
   // To make sure get a consistent time in simulation
   modified_map.info.map_load_time =ros::Time::now();
   map_resp_.map.info.map_load_time =ros::Time::now();
-  map_resp_.map.header.frame_id = "map";
+  map_resp_.map.header.frame_id = "utm";
   modified_map.header.frame_id = map_frame_id_;
   modified_map.header.stamp = ros::Time::now();
   map_resp_.map.header.stamp = ros::Time::now();
@@ -111,7 +111,7 @@ bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,
 
   //Publish latched topics
   metadata_pub_.publish( meta_data_message_ );
-  map_pub_.publish( map_resp_.map );
+  // map_pub_.publish( map_resp_.map );
   partition_map_pub_.publish(modified_map);
   return true;
 }
