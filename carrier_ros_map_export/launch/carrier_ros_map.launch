@@ -3,12 +3,19 @@
   <arg name="open_rviz" default="true"/>
 <!-- name="map_to_odom" -> name="world_map" (tf definition) -->
   <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
-    args="0.0 0.0 0.0 0.0 0.0 0.0 /world /map 40" />
+    args="5.0 5.0 0.0 0.0 0.0 0.0 /map /odom 40" />
+
+  <node pkg="tf" type="static_transform_publisher" name="odomT_to_baselink"
+    args="5.0 5.0 0.0 0.0 0.0 0.0 /odom /base_footprint 40" />
+
+  <node pkg="tf" type="static_transform_publisher" name="utm_to_map"
+    args="0.0 0.0 0.0 0.0 0.0 0.0 /utm /map 40" />
 
   <node pkg="carrier_ros_map_export" name="map_server" type="map_server" args="$(arg map_file)" output="screen">
-    <param name="map_frame_id"  value="map" />
+    <param name="map_frame_id"  value="utm" />
     <param name="robot_frame_id"  value="base_footprint" />
     <param name="threshold"       value="50"/>
+    <param name="meter_pixel"     value="4"/>
   </node>
 
 </launch>
