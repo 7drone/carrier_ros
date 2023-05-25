@@ -24,4 +24,4 @@ global_costmap:
   publish_frequency: 2.0
   transform_tolerance: 1.0
 
-  resolution : 0.01
+  resolution : 0.05
