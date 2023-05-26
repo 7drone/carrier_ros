@@ -2,13 +2,8 @@
   <arg name="map_file" default="$(find carrier_ros_map_export)/maps/map.yaml"/>
   <arg name="open_rviz" default="true"/>
 <!-- name="map_to_odom" -> name="world_map" (tf definition) -->
-<<<<<<< HEAD
-  <node pkg="tf" type="static_transform_publisher" name="world_map"
-    args="0.0 0.0 0.0 0.0 0.0 0.0 /world /map 40" />
-=======
   <!-- <node pkg="tf" type="static_transform_publisher" name="map_to_odom"
     args="0.0 0.0 0.0 0.0 0.0 0.0 /world /map 40" /> -->
->>>>>>> 5fb64918b9d5453cd5f1ce7f00b9b040637a355f
 
   <node pkg="carrier_ros_map_export" name="map_server" type="map_server" args="$(arg map_file)" output="screen">
     <param name="map_frame_id"  value="utm" />

@@ -1,11 +1,6 @@
 image: ./3070_0531.png
-<<<<<<< HEAD
 resolution: 0.25
 origin: [307712.201,4129597.726,0.0] #308297
-=======
-resolution: 0.25
-origin: [307712.201,4129597.726,0.0] #308297
->>>>>>> 5fb64918b9d5453cd5f1ce7f00b9b040637a355f
 negate: 0
 occupied_thresh: 0.65
 free_thresh: 0.0442
