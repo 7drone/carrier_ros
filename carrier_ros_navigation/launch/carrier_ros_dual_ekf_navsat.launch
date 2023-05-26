@@ -27,8 +27,8 @@
   <node pkg="robot_localization" type="navsat_transform_node" name="carrier_ros_navsat_transform" clear_params="true">
     <remap from="odometry/filtered" to="odometry/filtered_map"/>
           <!-- Placeholders for input remapping. Set your topic names as the "to" values. -->
-      <!-- <remap from="imu/data" to=""/>
-      <remap from="odometry/filtered" to=""/> -->
+      <remap from="imu/data" to="imu/heading_data"/>
+      <!-- <remap from="odometry/filtered" to=""/> -->
       <remap from="gps/fix" to="carrier_ros_gps/fix"/>
      
   </node>

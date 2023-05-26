@@ -11,6 +11,7 @@ find_package(catkin REQUIRED
   sensor_msgs
   tf
   geometry_msgs
+  sensor_msgs_ext
   message_generation
 )
 
@@ -50,3 +51,7 @@ include_directories(
 add_executable(carrier_ros_imu src/iahrs_driver.cpp)
 add_dependencies(carrier_ros_imu ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(carrier_ros_imu ${catkin_LIBRARIES})
+
+add_executable(carrier_ros_imu_heading src/imu_heading.cpp)
+add_dependencies(carrier_ros_imu_heading ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(carrier_ros_imu_heading ${catkin_LIBRARIES})
