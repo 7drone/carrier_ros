@@ -22,5 +22,8 @@
 
     <!-- robot battery -->
     <include file="$(find carrier_ros_battery)/launch/carrier_ros_battery.launch"/>
+
+    <!-- robot battery -->
+    <node name="carrier_ros_nav_interface.cpp" pkg="carrier_ros_navigation" type="carrier_ros_nav_interface" output="screen"/>
     
 </launch>

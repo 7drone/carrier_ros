@@ -81,7 +81,6 @@ class ntripconnect(Thread):
                 self.ntc.pub.publish(rmsg)
             else: buf += data
             '''
-
             ''' This now separates individual RTCM messages and publishes each one on the same topic '''
             data = response.read(1)
             rospy.loginfo("fucking Data")
