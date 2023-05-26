@@ -6,7 +6,7 @@
   <node pkg="ntrip_ros" type="ntripclient.py" name="ntrip_ros" output="screen">
 	 <!-- <param name="rtcm_topic" value="/rtcm"/> -->
  	 <param name="rtcm_topic" value="/carrier_ros_gps/rtcm"/>
- 	 <param name="ntrip_server" value="RTS2.ngii.go.kr:2101"/>
+ 	 <param name="ntrip_server" value="RTS1.ngii.go.kr:2101"/>
 	 <!-- <param name="ntrip_server" value="vrs3.ngii.go.kr:2101"/> -->
  	 <param name="ntrip_user" value="facility1"/>
  	 <param name="ntrip_pass" value="ngii"/>
