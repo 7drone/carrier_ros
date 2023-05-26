@@ -19,4 +19,6 @@
     <param name="m_bSingle_TF_option" type="bool" value="false" /> <!--false-->
   </node>
 
+  <include file="$(find imu_filter_madgwick)/launch/imu_filter_madgwick.launch"/>
+
 </launch> 
