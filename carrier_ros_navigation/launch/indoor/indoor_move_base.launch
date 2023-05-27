@@ -5,7 +5,7 @@
   <arg name="move_forward_only" default="true"/>
   <arg name="machine" default=""/>  
   <!-- move_base -->
-  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" machine="$(arg machine)">
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen" >
     <param name="base_local_planner" value="dwa_local_planner/DWAPlannerROS" />
     <rosparam file="$(find carrier_ros_navigation)/param/indoor/costmap_common_params.yaml" command="load" ns="global_costmap" />
     <rosparam file="$(find carrier_ros_navigation)/param/indoor/costmap_common_params.yaml" command="load" ns="local_costmap" />
