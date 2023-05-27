@@ -1,9 +1,0 @@
-<launch>
-    <arg name="machine" default=""/>
-    <!-- ekf_localization -->
-    <node pkg="robot_localization" type="ekf_localization_node" name="carrier_ros_ekf_kalman" clear_params="true" machine="$(arg machine)"> 
-        <rosparam command="load" file="$(find carrier_ros_navigation)/param/indoor/ekf_localization.yaml" />
-    </node>
-
-    <node pkg="eric_a_navigation" type="init_pose.py" name="eric_a_init_pose" machine="$(arg machine)"/>
-</launch>
