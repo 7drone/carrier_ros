@@ -299,7 +299,7 @@
 
   <joint name="left_scan_joint" type="fixed">
     <origin
-      xyz="-0.395 0.235 0.3362"
+      xyz="-0.435 0.235 0.3362"
       rpy="0 0 3.1416" />
     <parent
       link="base_link" />
