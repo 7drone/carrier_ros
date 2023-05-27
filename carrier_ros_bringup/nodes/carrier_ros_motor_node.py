@@ -193,7 +193,8 @@ class CarrierRosMotorNode:
          rospy.loginfo('Entered model name:{} is not supported!'.format(self.model_name))
          sys.exit()
 
-      
+      self.odom_frame_id = "odom"
+      self.base_footprint_frame_id = "base_footprint"
       # Storaging
       self.odom_pose = OdomPose()
       self.odom_vel = OdomVel()
@@ -244,6 +245,7 @@ class CarrierRosMotorNode:
       self.odom_pose.timestamp = rospy.Time.now().to_nsec()
       self.odom_pose.pre_timestamp = rospy.Time.now()
       self.reset_odometry()
+      # rospy.loginfo(enc_left_diff, enc_right_diff)
       rospy.on_shutdown(self.__del__)
 
    def pub_battery_topic(self, battery_data):
@@ -323,46 +325,58 @@ class CarrierRosMotorNode:
       self.ph.write_base_velocity(lin_vel_x*1000, ang_vel_z*1000)
 
    def updatePoseUsingWheel(self, enc_left_tot, enc_right_tot):
-      enc_left_diff = enc_left_tot - self.enc_left_tot_prev
-      enc_right_diff = enc_right_tot - self.enc_right_tot_prev
-      self.enc_left_tot_prev = enc_left_tot
-      self.enc_right_tot_prev = enc_right_tot
+      try:
+         enc_left_diff = enc_left_tot - self.enc_left_tot_prev
+         enc_right_diff = enc_right_tot - self.enc_right_tot_prev
+         if enc_left_diff == 0 and enc_right_diff == 0:
+               timestamp_now = rospy.Time.now()
+               odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
+               # self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now , self.base_footprint_frame_id, self.odom_frame_id)
+               odom = Odometry()
+               odom.header.stamp = timestamp_now
+               odom.header.frame_id = self.odom_frame_id
+               odom.child_frame_id = self.base_footprint_frame_id
+               odom.pose.pose = Pose(Point(self.odom_pose.x, self.odom_pose.y, 0.), Quaternion(*odom_orientation_quat))
+               odom.twist.twist = Twist(Vector3(self.odom_vel.x, self.odom_vel.y, 0), Vector3(0, 0, self.odom_vel.w))
+               self.odom_pub.publish(odom)
+         else:
+               self.enc_left_tot_prev = enc_left_tot
+               self.enc_right_tot_prev = enc_right_tot
 
-      timestamp_now = rospy.Time.now()
-      timestamp_now_nsec = timestamp_now.to_nsec()
-      d_time = (timestamp_now_nsec - self.odom_pose.timestamp) / 1000000000.0
-      self.odom_pose.timestamp = timestamp_now_nsec
+               timestamp_now = rospy.Time.now()
+               timestamp_now_nsec = timestamp_now.to_nsec()
+               d_time = (timestamp_now_nsec - self.odom_pose.timestamp) / 1000000000.0
+               self.odom_pose.timestamp = timestamp_now_nsec
 
-      d_s = (enc_left_diff + enc_right_diff) * self.config.encoder_step / 2.0
+               d_s = (enc_left_diff + enc_right_diff) * self.config.encoder_step / 2.0
 
-      b_l = enc_left_diff * self.config.encoder_step
-      b_r = enc_right_diff * self.config.encoder_step
+               b_l = enc_left_diff * self.config.encoder_step
+               b_r = enc_right_diff * self.config.encoder_step
 
-      r = (b_r + b_l) / 2.0
-      d_theta = (b_r - b_l) / self.config.wheel_separation
+               r = (b_r + b_l) / 2.0
+               d_theta = (b_r - b_l) / self.config.wheel_separation
 
-      self.odom_pose.theta += d_theta
-      self.odom_pose.x += math.cos(self.odom_pose.theta) * r
-      self.odom_pose.y += math.sin(self.odom_pose.theta) * r
+               self.odom_pose.theta += d_theta
+               self.odom_pose.x += math.cos(self.odom_pose.theta) * r
+               self.odom_pose.y += math.sin(self.odom_pose.theta) * r
 
-      self.odom_vel.x = d_s / d_time
-      self.odom_vel.y = 0.0
-      self.odom_vel.w = d_theta / d_time
+               self.odom_vel.x = d_s / d_time
+               self.odom_vel.y = 0.0
+               self.odom_vel.w = d_theta / d_time
 
-      parent_frame_id = self.tf_prefix+"odom"
-      child_frame_id = self.tf_prefix+"base_footprint"
-
-      odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
-      # self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, child_frame_id, parent_frame_id)
-      
-      odom = Odometry()
-      odom.header.stamp = timestamp_now
-      odom.header.frame_id = parent_frame_id
-      odom.child_frame_id = child_frame_id
-      odom.pose.pose = Pose(Point(self.odom_pose.x, self.odom_pose.y, 0.), Quaternion(*odom_orientation_quat))
-      odom.twist.twist = Twist(Vector3(self.odom_vel.x, self.odom_vel.y, 0), Vector3(0, 0, self.odom_vel.w))
-      
-      self.odom_pub.publish(odom)
+               odom_orientation_quat = quaternion_from_euler(0, 0, self.odom_pose.theta)
+               # self.odom_broadcaster.sendTransform((self.odom_pose.x, self.odom_pose.y, 0.), odom_orientation_quat, timestamp_now, self.base_footprint_frame_id, self.odom_frame_id)
+               
+               odom = Odometry()
+               odom.header.stamp = timestamp_now
+               odom.header.frame_id = self.odom_frame_id
+               odom.child_frame_id = self.base_footprint_frame_id
+               odom.pose.pose = Pose(Point(self.odom_pose.x, self.odom_pose.y, 0.), Quaternion(*odom_orientation_quat))
+               odom.twist.twist = Twist(Vector3(self.odom_vel.x, self.odom_vel.y, 0), Vector3(0, 0, self.odom_vel.w))
+               
+               self.odom_pub.publish(odom)
+      except Exception as e:
+         rospy.logerr("[odompublihser] ")
 
    def updateJointStates(self, enc_left_tot, enc_right_tot, lin_vel_left_wheel, lin_vel_right_wheel):
       wheel_ang_left = enc_left_tot * self.config.encoder_step / self.config.wheel_radius
