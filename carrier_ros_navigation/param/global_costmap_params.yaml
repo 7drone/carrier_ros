@@ -1,27 +1,27 @@
 global_costmap:
-  global_frame: odom
+  global_frame: utm
   robot_base_frame: base_footprint
   
   plugins:
-    - {name: obstacles,  type: "costmap_2d::ObstacleLayer" }
+    - {name: static,  type: "costmap_2d::StaticLayer" }
     - {name: inflation,  type: "costmap_2d::InflationLayer" }
 
-  rolling_window: true  
+  # rolling_window: /  
   track_unknown_space: true
   always_send_full_costmap: false
   # 만약 실외에서 장애물인식이 안될경우 true로 바꿀수 있음
-  static_map: false
+  # static_map: false
   map_type: costmap
   footprint_topic : footprint_topic
   published_footprint_topic : published_footprint
   
   max_obstacle_height: 1.0
 
-  width: 12.0
-  height: 12.0
+  width: 30.0
+  height: 30.0
 
   update_frequency: 2.0
   publish_frequency: 2.0
   transform_tolerance: 1.0
 
-  resolution : 0.05
+  resolution : 0.5
