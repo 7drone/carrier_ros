@@ -1,0 +1,15 @@
+<launch>
+  <include file="$(find eric_a_navigation)/launch/move_base.launch">
+    <arg name="machine" default="$(arg machine)"/>
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+  <node pkg="eric_a_navigation" type="init_pose.py" name="eric_a_init_pose" machine="$(arg machine)"/>
+
+  <node pkg="eric_a_navigation" name="eric_a_goal" type="eric_a_goal.py" machine="$(arg machine)" output="screen"/>
+  <!-- rviz -->
+  <!-- <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true" machine="$(arg machine)"
+          args="-d $(find eric_a_navigation)/rviz/eric_a_navigation.rviz"/>
+  </group> -->
+</launch>
