@@ -10,7 +10,7 @@ class ImuHeading
 public:
   ImuHeading() : nh_(""), private_nh_("~")
   {
-    imu_sub_ = nh_.subscribe("imu/data", 10, &ImuHeading::imuCallback, this);
+    imu_sub_ = nh_.subscribe("imu/heading_data", 10, &ImuHeading::imuCallback, this);
     magnetic_sub_ = nh_.subscribe("imu/magnetic", 10, &ImuHeading::magneticCallback, this);
 
     timer_ = nh_.createTimer(ros::Duration(0.02), &ImuHeading::timerCallback, this);
