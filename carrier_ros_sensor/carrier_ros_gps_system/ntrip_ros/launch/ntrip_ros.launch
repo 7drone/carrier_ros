@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-  <include file= "$(find carrier_ros_gps)/launch/carrier_ros_gps.launch">
-  </include>
   <node pkg="ntrip_ros" type="ntripclient.py" name="ntrip_ros" output="screen">
 	 <!-- <param name="rtcm_topic" value="/rtcm"/> -->
  	 <param name="rtcm_topic" value="/carrier_ros_gps/rtcm"/>
@@ -14,5 +12,7 @@
  	 <param name="nmea_gga" value="$GPGGA,024539.902,3723.004,N,12639.255,E,1,12,1.0,0.0,M,0.0,M,,*60"/>
 	 <!-- <param name="nmea_gga" value="$GPGGA,024539.902,3723.004,N,12639.255,E,1,12,1.0,0.0,M,0.0,M,,*61"/> -->
   </node>
+  <include file= "$(find carrier_ros_gps)/launch/carrier_ros_gps.launch">
+  </include>
 </launch>
 
