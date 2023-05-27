@@ -1,0 +1,15 @@
+<launch>
+  <arg name="map_file" default="$(find carrier_ros_slam)/map/eric_a.yaml"/>
+  <arg name="move_forward_only" default="true"/>
+
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)" machine="$(arg machine)"/>
+
+  <include file="$(find carrier_ros_navigation)/launch/indoor/indoor_move_base.launch">
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+  <!-- <node pkg="eric_a_navigation" type="init_pose.py" name="eric_a_init_pose"/>
+
+  <node pkg="eric_a_navigation" name="eric_a_goal" type="eric_a_goal.py" output="screen"/> -->
+
+</launch>
