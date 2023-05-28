@@ -5,6 +5,7 @@
 #include "carrier_ros_srv/RobotStart.h"
 #include "carrier_ros_srv/RobotStatus.h"
 #include <geodesy/utm.h>
+#include <ros/rate.h>
 #include <geographic_msgs/GeoPoint.h>
 #include <vector>
 #include <sensor_msgs/NavSatFix.h>
@@ -12,17 +13,20 @@
 class CarrierInterface{
     public:
         CarrierInterface();
-        double station_latitude = 1.0;
-        double station_longitude = 2.0; // utm 변환 값 바꿔줘야함
+        double station_latitude = 308308;
+        double station_longitude = 4130121; // utm 변환 값 바꿔줘야함
         double current_latitude;
         double current_longitude;
         double target_distance = 10.0;
         double target_latitude, target_longitude;
+        double update_latitude, update_longitude;
 
         bool isNavigating = false;
         bool isFirstStart = true;
         int currentGoalIndex = 0;
         int pausedGoalIndex = -1;
+
+        #define pi 3.14159265358979323846
     
     private:
         ros::NodeHandle nh;
@@ -32,7 +36,10 @@ class CarrierInterface{
         ros::ServiceServer robot_recall_server_;
         ros::ServiceServer robot_emergency_server_;
         ros::ServiceClient robot_status_client_;
+        ros::Subscriber carrier_gps_sub_;
         carrier_ros_srv::RobotStatus robot_srv;
+        
+        typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
         boost::shared_ptr<MoveBaseClient> action_client_;
 
         bool startCallback(carrier_ros_srv::RobotStart::Request& req, carrier_ros_srv::RobotStart::Response& res);
@@ -41,9 +48,9 @@ class CarrierInterface{
         bool emergencyCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res);
         void carrierGPSCallback(const sensor_msgs::NavSatFix::ConstPtr& data);
         void navigateToGoal(double x, double y);
-        void updatePath(double resolution);
-        double calc_distance(double lat1, double lon1, double lat2, double lon2);
-        double calc_bearing(double lat1, double lon1, double lat2, double long2);
+        void updatePath();
+        double calc_distance(double lat1, double long1, double lat2, double long2);
+        double calc_bearing(double lat1, double long1, double lat2, double long2);
         double deg2rad(double deg);
         double rad2deg(double deg);
 };
@@ -51,22 +58,19 @@ class CarrierInterface{
 CarrierInterface::CarrierInterface(){
     typedef actionlib::SimpleActionClient<move_base_msgs::MoveBaseAction> MoveBaseClient;
 
-    nh.param("station_latitude", station_latitude, 0.0);
-    nh.param("station_longitude", station_longitude, 0.0);
+    robot_start_server_ = nh.advertiseService("/robot/start", &CarrierInterface::startCallback, this);
+    robot_stop_server_ = nh.advertiseService("/robot/stop", &CarrierInterface::stopCallback, this);
+    robot_recall_server_ = nh.advertiseService("/robot/recall", &CarrierInterface::recallCallback, this);
+    robot_emergency_server_ = nh.advertiseService("/robot/emergency", &CarrierInterface::emergencyCallback, this);
 
-    robot_start_server = nh.advertiseService("/robot/start", &CarrierInterface::startCallback, this);
-    robot_stop_server = nh.advertiseService("/robot/stop", &CarrierInterface::stopCallback, this);
-    robot_recall_server = nh.advertiseService("/robot/recall", &CarrierInterface::recallCallback, this);
-    robot_emergency_server = nh.advertiseService("/robot/emergency", &CarrierInterface::emergencyCallback, this);
-
-    robot_status_server = nh.serviceClient<carrier_ros_srv::RobotStatus>("/robot/status");
-    carrier_gps_sub_ = n.subscribe<sensor_msgs::NavSatFix>("/carrier_ros_gps/fix", 10, &CarrierInterface::carrierGPSCallback, this);
+    robot_status_client_ = nh.serviceClient<carrier_ros_srv::RobotStatus>("/robot/status");
+    carrier_gps_sub_ = nh.subscribe<sensor_msgs::NavSatFix>("/carrier_ros_gps/fix", 10, &CarrierInterface::carrierGPSCallback, this);
 
     robot_srv.request.status = 0;
     action_client_.reset(new MoveBaseClient("move_base", true));
 
-    ROS_INFO("Waiting for the move_base action server to come up...");
-    ROS_INFO("The move_base action server is ready.");
+    ROS_INFO("Waiting for the move_base action server_ to come up...");
+    ROS_INFO("The move_base action server_ is ready.");
 }
 
 void CarrierInterface::carrierGPSCallback(const sensor_msgs::NavSatFix::ConstPtr& data) {
@@ -133,7 +137,7 @@ bool CarrierInterface::startCallback(carrier_ros_srv::RobotStart::Request& req, 
             while(ros::ok()){
                 updatePath();
                 ros::spinOnce();
-                rate::sleep();
+                rate.sleep();
             }
             if(i == dest_que_x.size() - 1){
                ROS_INFO("Reached the last waypoint");
@@ -148,7 +152,7 @@ bool CarrierInterface::startCallback(carrier_ros_srv::RobotStart::Request& req, 
             while(ros::ok()){
                 updatePath();
                 ros::spinOnce();
-                rate::sleep();
+                rate.sleep();
             }
             if(i == dest_que_x.size() - 1){
                 ROS_INFO("Reached the last waypoint");
@@ -160,7 +164,7 @@ bool CarrierInterface::startCallback(carrier_ros_srv::RobotStart::Request& req, 
     while(ros::ok()){
         updatePath();
         ros::spinOnce();
-        rate::sleep();
+        rate.sleep();
     }
 
     ROS_INFO("Reached the destination.");
@@ -170,12 +174,11 @@ bool CarrierInterface::startCallback(carrier_ros_srv::RobotStart::Request& req, 
 
 bool CarrierInterface::stopCallback(std_srvs::Trigger::Request& req, std_srvs::Trigger::Response& res){
     pausedGoalIndex = currentGoalIndex;
-    action_client_->cancelAllGoals(); // 그냥 로봇 정지로 바꿔야함
+    action_client_->waitForServer();
     isNavigating = false; 
     robot_srv.request.status = 1; 
     robot_status_client_.call(robot_srv); // carrier stop -> status update
 
-    res.response = true;
     res.message = "Navigaion Stopped";
     return true;
 }
@@ -186,7 +189,7 @@ bool CarrierInterface::recallCallback(std_srvs::Trigger::Request& req, std_srvs:
     robot_srv.request.status = 2;
     robot_status_client_.call(robot_srv);
 
-    navigateToGoal(dest_que_x[0], dest_que_y[0]);
+    navigateToGoal(station_latitude, station_longitude);
 
     res.success = true;
     res.message = "Recall handled, Repathing to station";
@@ -198,7 +201,7 @@ bool CarrierInterface::emergencyCallback(std_srvs::Trigger::Request& req, std_sr
     robot_srv.request.status = 2;
     robot_status_client_.call(robot_srv);
 
-    navigateToGoal(dest_que_x[0], dest_que_y[0]);
+    navigateToGoal(station_latitude, station_longitude);
 
     res.success = true;
     res.message = "Emergency handled, Return to station";
@@ -207,7 +210,7 @@ bool CarrierInterface::emergencyCallback(std_srvs::Trigger::Request& req, std_sr
 
 double CarrierInterface::calc_distance(double lat1, double long1, double lat2, double long2){ 
   double theta, dist = 0;
-  theta = lon1 - lon2;
+  theta = long1 - long2;
   dist = sin(deg2rad(lat1)) * sin(deg2rad(lat2)) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(theta));
   dist = acos(dist);
   dist = rad2deg(dist);
@@ -215,10 +218,10 @@ double CarrierInterface::calc_distance(double lat1, double long1, double lat2, d
   return dist;
   }
 
-double CarrierInterface::calc_bearing(double lat1, double lon1, double lat2, double long2){
+double CarrierInterface::calc_bearing(double lat1, double long1, double lat2, double long2){
     double x, y, theta;
-    y = sin(deg2rad(lon2 - lon1)) * cos(deg2rad(lat2));
-    x = cos(deg2rad(lat1)) * sin(deg2rad(lat2)) - sin(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(lon2 - lon1));
+    y = sin(deg2rad(long2 - long1)) * cos(deg2rad(lat2));
+    x = cos(deg2rad(lat1)) * sin(deg2rad(lat2)) - sin(deg2rad(lat1)) * cos(deg2rad(lat2)) * cos(deg2rad(long2 - long1));
     theta = rad2deg(atan2(y, x));
 
     theta += 360;
@@ -245,6 +248,8 @@ void CarrierInterface::updatePath(){
 
     geographic_msgs::GeoPoint target_geo_point;
     geodesy::UTMPoint target_utm_point;
+    geodesy::UTMPoint current_utm_point;
+    geodesy::fromMsg(target_geo_point, target_utm_point);
 
     if(distance > target_distance){
         double target_ratio = target_distance / distance;
