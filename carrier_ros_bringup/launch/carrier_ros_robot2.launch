@@ -1,0 +1,10 @@
+
+<launch>
+
+    <include file="$(find carrier_ros_camera)/launch/carrier_ros_right_camera.launch"/>
+
+    <include file="$(find carrier_ros_lidar)/launch/carrier_ros_lidar.launch"/>
+
+    <include file="$(find carrier_ros_camera)/launch/carrier_ros_left_camera.launch"/>
+
+</launch>

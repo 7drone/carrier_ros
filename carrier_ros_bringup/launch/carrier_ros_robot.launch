@@ -14,16 +14,10 @@
             args="-d $(find carrier_ros_navigation)/rviz/carrier_ros_navigation.rviz"/>
     </group>
 
-    <!-- map export -->
-    <include file="$(find carrier_ros_map_export)/launch/carrier_ros_map.launch"/>
-
-    <!-- kalman_filter -->
-    <include file="$(find carrier_ros_navigation)/launch/carrier_ros_dual_ekf_navsat.launch"/>
-
     <!-- robot battery -->
     <include file="$(find carrier_ros_battery)/launch/carrier_ros_battery.launch"/>
 
-    <!-- robot battery -->
+    <!-- robot interface -->
     <node name="carrier_ros_nav_interface" pkg="carrier_ros_navigation" type="carrier_ros_nav_interface" output="screen"/>
     
 </launch>
