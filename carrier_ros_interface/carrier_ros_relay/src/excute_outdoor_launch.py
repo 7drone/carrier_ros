@@ -3,15 +3,13 @@
 import rospy
 import roslaunch
 import os
-from std_srvs.srv import Trigger, TriggerResponse
+from std_msgs.msg import Bool
 
-def excute_outdoor_server(req):
-    os.system("roslaunch carrier_ros_bringup carrier_ros_outdoor.launch")
-
-    return TriggerResponse(success=True, message="True")
-
+def excuteOutdoorCallback(data):
+    if (data.data == True):
+        os.system("roslaunch carrier_ros_bringup carrier_ros_outdoor.launch")
 
 if __name__ == "__main__":
     rospy.init_node('excute_outdoor_launch')
-    srv = rospy.Service('/excute/outdoor', Trigger, excute_outdoor_server)
+    rospy.Subscriber('/excute/outdoor', Bool, excuteOutdoorCallback)
     rospy.spin()

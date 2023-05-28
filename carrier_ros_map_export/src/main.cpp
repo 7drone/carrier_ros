@@ -77,6 +77,14 @@ void MapServer::initService(void)
   //When called this service returns a copy of the current map
   robot_map_update = nh_.advertiseService("map_update", &MapServer::UpdateCallback, this);
 
+  shutdown_node_srv_= nh_.advertiseService("outdoor_map_server/shutdown_node", &MapServer::shutdownNodeService, this);
+
+}
+
+bool MapServer::shutdownNodeService(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res){
+    ros::shutdown();
+    res.success = true;
+    return true;
 }
 
 bool MapServer::loadMapFromValues(std::string map_file_name, double resolution,

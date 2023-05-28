@@ -23,6 +23,7 @@
 #include "nav_msgs/MapMetaData.h"
 #include "nav_msgs/LoadMap.h"
 #include "nav_msgs/GetMap.h"
+#include "std_srvs/Trigger.h"
 #include "yaml-cpp/yaml.h"
 
 #ifdef HAVE_YAMLCPP_GT_0_5_0
@@ -62,7 +63,7 @@ class MapServer
 
 
         // ROS Service Server
-        ros::ServiceServer robot_map_update;
+        ros::ServiceServer robot_map_update, shutdown_node_srv_;
 
         // ROS Service Client
 
@@ -95,6 +96,7 @@ class MapServer
         ~MapServer();
         
         void map_export(const std::string& fname, double res);
+        bool shutdownNodeService(std_srvs::Trigger::Request &req, std_srvs::Trigger::Response &res);
 
         bool UpdateCallback(nav_msgs::GetMap::Request  &req,
                          nav_msgs::GetMap::Response &res );

@@ -14,6 +14,7 @@ from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, Pose, Point, Vector3, Quaternion
 from tf.broadcaster import TransformBroadcaster
 from tf.transformations import quaternion_from_euler, euler_from_quaternion
+from std_srvs.srv import Trigger, TriggerResponse
 from carrier_ros_bringup.srv import ResetOdom, ResetOdomResponse
 # from omo_r1_bringup.srv import ResetOdom, ResetOdomResponse
 # from carrier_ros_bringup import ResetOdom
@@ -238,7 +239,7 @@ class CarrierRosMotorNode:
       self.pub_pose = rospy.Publisher(self.tf_prefix+"pose", Pose, queue_size=1000)
       self.battery_pub = rospy.Publisher(self.tf_prefix+'/battery/robot', BatteryOne, queue_size=10)
 
-      rospy.Service(self.tf_prefix+'reset_odom', ResetOdom, self.reset_odom_handle)
+      rospy.Service(self.tf_prefix+'reset_odom', Trigger, self.reset_odom_handle)
       
       # timer
       rospy.Timer(rospy.Duration(0.01), self.cbTimerUpdateDriverData) # 10 hz update
@@ -399,10 +400,13 @@ class CarrierRosMotorNode:
       self.pub_joint_states.publish(joint_states)
 
    def reset_odom_handle(self, req):
-      self.odom_pose.x = req.x
-      self.odom_pose.y = req.y
-      self.odom_pose.theta = req.theta
-
+      self.ph.write_odometry_reset()
+      self.ph.write_encoder_reset()
+      self.odom_pose = OdomPose()
+      self.odom_vel = OdomVel()
+      self.joint = Joint() 
+      self.reset_odometry()
+      
       return ResetOdomResponse()
 
    def main(self):
