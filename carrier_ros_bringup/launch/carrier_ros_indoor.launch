@@ -1,7 +1,7 @@
 <launch>
 
     <!-- map export -->
-    <include file="$(find carrier_ros_map_export)/launch/carrier_ros_map.launch"/>
+    <include file="$(find carrier_ros_navigation)/launch/indoor/carrier_ros_indoor_configuration.launch"/>
 
     <!-- indoor nav -->
     <include file="$(find carrier_ros_navigation)/launch/indoor/carrier_ros_indoor_nav.launch"/>

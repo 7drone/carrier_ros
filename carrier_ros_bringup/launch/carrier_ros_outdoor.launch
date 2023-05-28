@@ -1,0 +1,13 @@
+<launch>
+    <arg name="open_rviz" default="false"/>
+    <!-- kalman_filter -->
+    <include file="$(find carrier_ros_navigation)/launch/carrier_ros_dual_ekf_navsat_test.launch"/>
+
+    <!-- map export -->
+    <include file="$(find carrier_ros_map_export)/launch/carrier_ros_map.launch"/>
+
+    <!-- amcl -->
+    <include file="$(find carrier_ros_navigation)/launch/move_base.launch"/>
+
+   
+</launch>
