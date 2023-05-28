@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <launch>
-  <node pkg="ntrip_ros" type="ntripclient.py" name="ntrip_ros" output="screen">
+  <node pkg="ntrip_ros" type="ntripclient.py" name="ntrip_ros" >
 	 <!-- <param name="rtcm_topic" value="/rtcm"/> -->
  	 <param name="rtcm_topic" value="/carrier_ros_gps/rtcm"/>
  	 <param name="ntrip_server" value="RTS1.ngii.go.kr:2101"/>
