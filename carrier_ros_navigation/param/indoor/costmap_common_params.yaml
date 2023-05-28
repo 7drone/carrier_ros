@@ -5,7 +5,7 @@ raytrace_range: 6.0
 footprint: [[-0.450, -0.275], [-0.450, 0.275], [0.125, 0.275], [0.125, -0.275]] # Wall-E
 
 
-inflation_radius: 1.0
+inflation_radius: 1.5
 cost_scaling_factor: 3.0
 
 map_type: costmap
