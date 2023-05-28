@@ -5,7 +5,7 @@ from geometry_msgs.msg import Twist
 from std_msgs.msg import Empty
 from std_srvs.srv import Trigger, TriggerRequest
 import math
-import roslib; roslib.load_manifest('teleop_ardrone')
+import roslib; roslib.load_manifest('carrier_ros_aruco')
 
 class aruco():
 
