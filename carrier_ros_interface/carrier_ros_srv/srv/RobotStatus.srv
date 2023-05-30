@@ -1,0 +1,5 @@
+int8 status #0 : go
+            #1 : stop
+            #2 : come back
+---
+bool success

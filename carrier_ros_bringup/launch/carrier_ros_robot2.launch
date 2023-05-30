@@ -1,0 +1,12 @@
+
+<launch>
+
+    <!-- sensor -->
+    <include file="$(find carrier_ros_camera)/launch/carrier_ros_right_camera.launch"/>
+    <include file="$(find carrier_ros_lidar)/launch/carrier_ros_lidar.launch"/>
+    <include file="$(find carrier_ros_camera)/launch/carrier_ros_left_camera.launch"/>
+
+    <!-- aruco -->
+    <include file="$(find aruco_detect)/launch/aruco_detect.launch"/>
+    <node name="carrier_ros_aruco" pkg="carrier_ros_aruco" type="carrier_ros_aruco"/>
+</launch>

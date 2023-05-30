@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>carrier_ros_interface</name>
+  <version>0.0.0</version>
+  <description>carrier_ros message metapackage</description>
+  <author email="kimjh9813@naver.com">jeonghan</author>
+  <maintainer email="kimjh9813@naver.com">jeonghan</maintainer>  
+  <license>MIT</license>
+  <buildtool_depend>catkin</buildtool_depend>
+  <exec_depend>carrier_ros_srv</exec_depend>
+  <exec_depend>carrier_ros_msg</exec_depend>
+  <exec_depend>carrier_ros_battery</exec_depend>
+  <export><metapackage/></export>
+</package>

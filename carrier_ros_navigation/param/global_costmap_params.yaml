@@ -1,24 +1,27 @@
 global_costmap:
-  global_frame: odom
+  global_frame: utm
   robot_base_frame: base_footprint
-  static_map: true
-  rolling_window: false
-
-  update_frequency: 20.0
-  publish_frequency: 5.0
-  raytrace_range: 2.0
-  resolution: 0.05
-  z_resolution: 0.2
-  z_voxels: 10
-  inflation:
-    cost_scaling_factor:  1.0  # Exponential rate at which the obstacle cost drops off (default: 10). Must be chosen so that the cost value is > 0 at robot's circumscribed radius.
-    inflation_radius:     3.0 # Max. distance from an obstacle at which costs are incurred for planning paths. Must be > robot's circumscribed radius.
-
-  width: 40.0
-  height: 40.0
-  origin_x: -20.0
-  origin_y: -20.0
-
+  
   plugins:
-    - {name: obstacles,  type: "costmap_2d::VoxelLayer" }
+    - {name: static,  type: "costmap_2d::StaticLayer" }
     - {name: inflation,  type: "costmap_2d::InflationLayer" }
+
+  # rolling_window: /  
+  track_unknown_space: true
+  always_send_full_costmap: false
+  # 만약 실외에서 장애물인식이 안될경우 true로 바꿀수 있음
+  # static_map: false
+  map_type: costmap
+  footprint_topic : footprint_topic
+  published_footprint_topic : published_footprint
+  
+  max_obstacle_height: 1.0
+
+  width: 30.0
+  height: 30.0
+
+  update_frequency: 2.0
+  publish_frequency: 2.0
+  transform_tolerance: 1.0
+
+  resolution : 0.5

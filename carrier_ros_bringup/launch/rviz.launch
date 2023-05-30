@@ -1,0 +1,7 @@
+<launch>
+    <arg name="open_rviz" default="true"/>
+    <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+            args="-d $(find carrier_ros_navigation)/rviz/carrier_ros_navigation.rviz"/>
+    </group>
+</launch>

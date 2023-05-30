@@ -1,0 +1,35 @@
+obstacle_range: 6.0
+raytrace_range: 6.0
+
+# footprint: [[-0.475, -0.355], [-0.475, 0.355], [0.201, 0.355], [0.201, -0.355]]
+footprint: [[-0.450, -0.275], [-0.450, 0.275], [0.125, 0.275], [0.125, -0.275]] # Wall-E
+
+
+inflation_radius: 1.5
+cost_scaling_factor: 3.0
+
+map_type: costmap
+observation_sources: lidar_sensor camera_sensor
+lidar_sensor: {
+  topic: lidar_point_cloud2, 
+  sensor_frame: base_footprint, 
+  data_type: PointCloud2, 
+  min_obstacle_height: 0.1,
+  max_obstacle_height: 2.0,
+  clearing: true,
+  marking: true,
+  obstacle_range: 10.0,
+  raytrace_range: 11.0
+  }
+
+camera_sensor: {
+  topic: diff_filter_cloud, 
+  sensor_frame: base_footprint, 
+  data_type: PointCloud2, 
+  min_obstacle_height: -1.0,
+  max_obstacle_height: 2.0,
+  clearing: true,
+  marking: true,
+  obstacle_range: 5.0,
+  raytrace_range: 5.5
+}

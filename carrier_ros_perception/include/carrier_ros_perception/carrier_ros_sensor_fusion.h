@@ -28,7 +28,8 @@ class Pcl_to_pcl2
                     output_topic;
 
         // ROS Topic Publisher
-        ros::Publisher pcl2_pub;
+        ros::Publisher pcl2_pub,
+                       pcl_pub;
 
         // ROS Topic Subscriber
         ros::Subscriber sensor1_sub,

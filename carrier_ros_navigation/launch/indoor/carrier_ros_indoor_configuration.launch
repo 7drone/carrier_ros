@@ -1,0 +1,9 @@
+<launch>
+
+    <!-- ekf_localization -->
+    <node pkg="robot_localization" type="ekf_localization_node" name="carrier_ros_ekf_kalman" clear_params="true" output="screen"> 
+        <rosparam command="load" file="$(find carrier_ros_navigation)/param/indoor/ekf_localization.yaml" />
+    </node>
+
+    <node pkg="carrier_ros_navigation" type="init_pose.py" name="carrier_ros_init_pose" />
+</launch>

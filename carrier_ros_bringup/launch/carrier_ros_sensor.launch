@@ -3,11 +3,14 @@
     <include file="$(find carrier_ros_imu)/launch/carrier_ros_imu.launch"/>
 
     <!-- lidar -->
-    <include file="$(find carrier_ros_lidar)/launch/carrier_ros_lidar.launch"/>
+    <!-- <include file="$(find carrier_ros_lidar)/launch/carrier_ros_lidar.launch"/> -->
     <include file="$(find carrier_ros_perception)/launch/carrier_ros_sensor_fusion.launch"/>
 
     <!-- camera -->
-    
-    <include file="$(find carrier_ros_perception)/launch/carrier_ros_obstacle_detection.launch"/>
+    <include file="$(find carrier_ros_camera)/launch/carrier_ros_front_camera.launch"/>
+    <include file="$(find carrier_ros_perception)/launch/carrier_ros_env_perception.launch"/>
+
+    <!-- gps -->
+    <include file="$(find ntrip_ros)/launch/ntrip_ros.launch"/>
 
 </launch>

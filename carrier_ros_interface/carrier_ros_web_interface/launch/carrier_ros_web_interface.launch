@@ -1,0 +1,3 @@
+<launch> 
+   <node pkg="carrier_ros_web_interface" type="carrier_ros_web_interface" name="carrier_ros_web_interface" />
+</launch>

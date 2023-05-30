@@ -1,0 +1,14 @@
+<launch>
+
+    <!-- map export -->
+    <include file="$(find carrier_ros_navigation)/launch/indoor/carrier_ros_indoor_configuration.launch"/>
+
+    <!-- indoor nav -->
+    <include file="$(find carrier_ros_navigation)/launch/indoor/carrier_ros_indoor_nav.launch"/>
+
+    <!-- amcl -->
+    <include file="$(find carrier_ros_navigation)/launch/indoor/amcl.launch"/>
+
+
+    <include file="$(find carrier_ros_web_interface)/launch/carrier_ros_web_indoormap.launch"/>
+</launch>

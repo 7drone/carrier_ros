@@ -12,7 +12,12 @@ sudo apt install -y ros-noetic-rosserial \
  ros-noetic-actionlib \
  ros-noetic-tf2-ros \
  ros-noetic-tf2 \
- ros-noetic-geographic-msgs
-
+ ros-noetic-geographic-msgs \
+ ros-noetic-teb-local-planner \
+ ros-noetic-map-server \
+ ros-noetic-robot-state-publisher \
+ ros-noetic-joint-state-publisher \
+ros-noetic-librealsense2 \
+ros-noetic-ddynamic-reconfigure \
 
 

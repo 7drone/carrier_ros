@@ -190,9 +190,9 @@ add_executable(carrier_ros_sensor_fusion src/carrier_ros_sensor_fusion.cpp)
 add_dependencies(carrier_ros_sensor_fusion ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 target_link_libraries(carrier_ros_sensor_fusion ${catkin_LIBRARIES} )
 
-add_executable(carrier_ros_obstacle_detect src/carrier_ros_obstacle_detect.cpp)
-add_dependencies(carrier_ros_obstacle_detect ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(carrier_ros_obstacle_detect ${catkin_LIBRARIES} )
+add_executable(carrier_ros_env_perception src/carrier_ros_env_perception.cpp)
+add_dependencies(carrier_ros_env_perception ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(carrier_ros_env_perception ${catkin_LIBRARIES} )
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html
 # install(TARGETS ${PROJECT_NAME}
