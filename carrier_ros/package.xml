@@ -11,7 +11,7 @@
   <exec_depend>carrier_ros_description</exec_depend>
   <exec_depend>carrier_ros_gazebo</exec_depend>
   <exec_depend>carrier_ros_interface</exec_depend>
-  <exec_depend>carrier_ros_map_export</exec_depend>
+  <!-- <exec_depend>carrier_ros_map_export</exec_depend> -->
   <exec_depend>carrier_ros_navigation</exec_depend>
   <exec_depend>carrier_ros_perception</exec_depend>
   <exec_depend>carrier_ros_sensor</exec_depend>
