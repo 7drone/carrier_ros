@@ -5,5 +5,5 @@
         <rosparam command="load" file="$(find carrier_ros_navigation)/param/indoor/ekf_localization.yaml" />
     </node>
 
-    <node pkg="carrier_ros_navigation" type="init_pose.py" name="eric_a_init_pose" />
+    <node pkg="carrier_ros_navigation" type="init_pose.py" name="carrier_ros_init_pose" />
 </launch>

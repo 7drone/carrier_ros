@@ -10,8 +10,8 @@
     <arg name="move_forward_only" value="$(arg move_forward_only)"/>
   </include>
 
-  <!-- <node pkg="eric_a_navigation" type="init_pose.py" name="eric_a_init_pose"/>
+  <!-- <node pkg="eric_a_navigation" type="init_pose.py" name="eric_a_init_pose"/> -->
 
-  <node pkg="eric_a_navigation" name="eric_a_goal" type="eric_a_goal.py" output="screen"/> -->
+  <node pkg="carrier_ros_navigation" name="carrier_ros_goal" type="carrier_ros_goal.py" output="screen"/>
 
 </launch>
