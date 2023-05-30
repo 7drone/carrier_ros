@@ -6,13 +6,16 @@ import math
 import os
 from std_srvs.srv import Trigger, TriggerResponse
 from std_srvs.srv import Trigger, TriggerRequest
-from std_msgs.msg import Bool
+from std_msgs.msg import Bool, Char
 from geometry_msgs.msg import PoseWithCovarianceStamped
 import tf.transformations
+
+global system
 
 def outdoor_server(req):
     # indoor -> outdoor
     # shutdown indoor node
+    system='o'
     amcl_client()
     init_pose_client()
     move_base_client()
@@ -21,14 +24,21 @@ def outdoor_server(req):
 
     rospy.sleep(10)
 
+    system_change_out2in_client()
+
     # excute outdoor launch
     excute_outdoor_pub.publish(True)
+
+    rospy.sleep(10)
+
+    reset_odom_client()
 
     rospy.loginfo("--------------------------------")
 
     return TriggerResponse(success=True, message="True")
 
 def indoor_server(req):
+    system='i'
     # outdoor -> indoor
     # shutdown outdoor node
     # amcl_client()
@@ -39,10 +49,16 @@ def indoor_server(req):
 
     rospy.sleep(10)
 
+    system_change_out2in_client()
+
     # excute outdoor launch
     excute_indoor_pub.publish(True)
 
-    publish_outdoor_to_indoor_pose()
+    rospy.sleep(10)
+
+    reset_odom_client()
+    publish_outdoor_to_indoor_pose() ##이거 제대로 안돌꺼임 확인하셈 amcl켜지고 나서 해야됨
+    
 
     rospy.loginfo("--------------------------------")
 
@@ -55,7 +71,7 @@ def amcl_client():
         return amcl()
     except rospy.ServiceException as e:
         rospy.loginfo("amcl service call failed ")
-
+    # try:
 def init_pose_client():
     try:
         init_pose = rospy.ServiceProxy('/init_pose/shutdown_node', Trigger)
@@ -70,7 +86,7 @@ def move_base_client():
         rospy.loginfo("move_base shutdown")
         return move_base()
     except rospy.ServiceException as e:
-        rospy.loginfo("move_base service call failed ")
+        rospy.loginfo("mov    try:e_base service call failed ")
 
 def map_server_client():
     try:
@@ -104,6 +120,22 @@ def navsat_transform_node_client():
     except rospy.ServiceException as e:
         rospy.loginfo("navsat_transform_node service call failed ")
 
+def system_change_out2in_client():
+    # out -> in
+    try:
+        system_change_out2in = rospy.ServiceProxy('/robot/systemchange', Trigger)
+        rospy.loginfo("system_change_out2in shutdown")
+        return system_change_out2in()
+    except rospy.ServiceException as e:
+        rospy.loginfo("system_change_out2in service call failed ")
+
+def reset_odom_client():
+    try:
+        reset_odom = rospy.ServiceProxy('/reset_odom', Trigger)
+        rospy.loginfo("reset_odom")
+        return reset_odom()
+    except rospy.ServiceException as e:
+        rospy.loginfo("reset_odom service call failed ")
 
 def publish_outdoor_to_indoor_pose():
     # 메시지 객체 생성
@@ -119,15 +151,19 @@ def publish_outdoor_to_indoor_pose():
     # 메시지 퍼블리시
     initial_pose_publisher.publish(initial_pose_msg)
 
+def systemUpdate(event):
+    robot_system_pub.publish(system)
 
 if __name__ == '__main__':
     rospy.init_node('node_shutdown')
-
+    system='i'
     outdoor_srv = rospy.Service('/carrier_ros/outdoor', Trigger, outdoor_server)
     indoor_srv = rospy.Service('/carrier_ros/indoor', Trigger, indoor_server)
 
     excute_indoor_pub = rospy.Publisher('/excute/indoor', Bool, queue_size=1)
     excute_outdoor_pub = rospy.Publisher('/excute/outdoor', Bool, queue_size=1)
     initial_pose_publisher = rospy.Publisher('/initialpose', PoseWithCovarianceStamped, queue_size=10)
+    robot_system_pub = rospy.Publisher('/robot/system', Char, queue_size=10)
+    rospy.Timer(rospy.Duration(0.05), systemUpdate)
 
     rospy.spin()

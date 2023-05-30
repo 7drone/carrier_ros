@@ -12,3 +12,10 @@ catkin_package(
 include_directories(
   ${catkin_INCLUDE_DIRS}
 )
+
+catkin_install_python(PROGRAMS
+  src/node_shutdown.py
+  src/excute_outdoor_launch.py
+  src/excute_indoor_launch.py
+  DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)

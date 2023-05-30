@@ -1,0 +1,5 @@
+<launch> 
+   <node pkg="carrier_ros_relay" type="node_shutdown.py" name="carrier_ros_node_shutdown" />
+   <node pkg="carrier_ros_relay" type="excute_outdoor_launch.py" name="carrier_ros_outdoor_excute" />
+   <node pkg="carrier_ros_relay" type="excute_indoor_launch.py" name="carrier_ros_indoor_excute" />
+</launch>
