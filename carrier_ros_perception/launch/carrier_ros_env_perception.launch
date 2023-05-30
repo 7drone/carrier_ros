@@ -13,6 +13,7 @@
         <param name="output_topic" type="string" value="camera_pointcloud2"/>
         <param name="downthershold"  value="-0.1"/>
         <param name="upthershold"  value="0.4"/>
+        <param name="wheelthershold" value="0.02"/>
     </node>
 
 </launch>
