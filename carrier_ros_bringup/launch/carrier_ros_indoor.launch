@@ -9,5 +9,6 @@
     <!-- amcl -->
     <include file="$(find carrier_ros_navigation)/launch/indoor/amcl.launch"/>
 
-   
+
+    <include file="$(find carrier_ros_web_interface)/launch/carrier_ros_web_indoormap.launch"/>
 </launch>

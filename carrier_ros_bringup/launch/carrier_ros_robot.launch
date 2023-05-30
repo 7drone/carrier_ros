@@ -18,6 +18,11 @@
     <include file="$(find carrier_ros_battery)/launch/carrier_ros_battery.launch"/>
 
     <!-- robot interface -->
-    <node name="carrier_ros_nav_interface" pkg="carrier_ros_navigation" type="carrier_ros_nav_interface" output="screen"/>
+    <!-- <node name="carrier_ros_nav_interface" pkg="carrier_ros_navigation" type="carrier_ros_nav_interface" output="screen"/> -->
     
+    <!-- robot relay -->
+    <include file="$(find carrier_ros_relay)/launch/carrier_ros_relay.launch"/>
+
+    <!-- web interface -->
+    <include file="$(find carrier_ros_web_interface)/launch/carrier_ros_web_interface.launch"/>
 </launch>
