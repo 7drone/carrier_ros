@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# license removed for brevity
+
 
 import rospy
 import actionlib
@@ -7,20 +7,18 @@ from move_base_msgs.msg import MoveBaseAction, MoveBaseGoal
 import numpy as np
 from std_srvs.srv import Trigger, TriggerRequest, TriggerResponse
 from std_srvs.srv import Empty, EmptyRequest
-from eric_a_navigation.srv import Speak, SpeakRequest
 
 class Dest():
-    start=(0,0,3.14)
-    middle=(22.8,10.2,0)
-    final=(29.0,8.5,1.72)
+    start=(36.63743929986959, 8.153148086866908,2.3464171)
+    final=(2.151869773864746,24.02182960510254,-0.0257961)
 
 class MoveClient():
     def __init__(self):
         self.cnt=0
         self.srvs = [] 
-        self.srvs.append(rospy.Service('start', Trigger, self.start)) 
+        self.srvs.append(rospy.Service('robot/indoor/recall', Trigger, self.start)) 
         # self.srvs.append(rospy.Service('middle', Trigger, self.middle)) 
-        self.srvs.append(rospy.Service('final', Trigger, self.final)) 
+        self.srvs.append(rospy.Service('robot/indoor/start', Trigger, self.final)) 
         self.actionclient = actionlib.SimpleActionClient('move_base',MoveBaseAction)
         self.timer=rospy.Timer(rospy.Duration(5), self.clear_callback)
 
@@ -28,16 +26,11 @@ class MoveClient():
         self.qx = np.sin(0) * np.cos(0) * np.cos(self.theta) - np.cos(0) * np.sin(0) * np.sin(self.theta)
         self.qy = np.cos(0) * np.sin(0) * np.cos(self.theta) + np.sin(0) * np.cos(0) * np.sin(self.theta)
         self.qz = np.cos(0) * np.cos(0) * np.sin(self.theta) - np.sin(0) * np.sin(0) * np.cos(self.theta)
-        self.qw = np.cos(0) * np.cstart(self,req):
-        self.x=Dest.start[0]
-        self.y=Dest.start[1]
-        self.theta=Dest.start[2]
-        self.euler2quat()
-        return TriggerResponse(True,'first finish'os(0) * np.cos(self.theta) + np.sin(0) * np.sin(0) * np.sin(self.theta)
+        self.qw = np.cos(0) * np.cos(0) * np.cos(self.theta) + np.sin(0) * np.sin(0) * np.sin(self.theta)
         self.movebase_client()
 
     def movebase_client(self):
-        # self.actionclient.wait_for_server()
+        # self.actionclient.wait_for_server()final
         goal = MoveBaseGoal()
         goal.target_pose.header.frame_id = "map"
         goal.target_pose.header.stamp = rospy.Time.now()
@@ -51,33 +44,33 @@ class MoveClient():
         self.actionclient.send_goal(goal)
         wait = self.actionclient.wait_for_result()
 
-        if not wait:
-            rospy.logerr("Action server not available!")
-            rospy.signal_shutdown("Action server not available!")
+        # if not wait:
+        #     rospy.logerr("Action server not available!")
+        #     rospy.signal_shutdown("Action server not available!")
         
-        else:
-            state= self.actionclient.get_state()
+        # else:
+        #     state= self.actionclient.get_state()web_client_1
 
-            if state == 3:
-                # self.costmap_clear()
-                # rospy.loginfo("self.cnt")
-                # rospy.loginfo(self.cnt)
+        #     if state == 3:
+        #         # self.costmap_clear()
+        #         # rospy.loginfo("self.cnt")
+        #         # rospy.loginfo(self.cnt)
 
-                if self.cnt==0:
-                    self.cnt+=1
-                    self.web_client_1()
+        #         if self.cnt==0:
+        #             self.cnt+=1
+        #             self.web_client_1()
                     
-                elif self.cnt==1: 
-                    self.cnt+=1
-                    self.web_client_2()
+        #         elif self.cnt==1: 
+        #             self.cnt+=1
+        #             self.web_client_2()
                     
-                elif self.cnt==2: 
-                    self.web_client_3()
+        #         elif self.cnt==2: 
+        #             self.web_client_3()
 
             # else:
             #     return self.restart()
 
-    # def restart(self):
+    # def restart(self):3.11
     #     rospy.loginfo("restart")
     #     rospy.sleep(5)
     #     self.movebase_client()
@@ -108,6 +101,15 @@ class MoveClient():
         except rospy.ServiceException as e:
             print("Service call failed: %s"%e)
 
+    def indoor_finish(self):
+        try:    
+            indoorfinish = rospy.ServiceProxy('carrier_ros/outdoor', Trigger)
+            rospy.loginfo("indoor finish")
+            return indoorfinish()
+
+        except rospy.ServiceException as e:
+            print("Service call failed: %s"%e)
+
     def start(self,req):
         self.x=Dest.start[0]
         self.y=Dest.start[1]
@@ -124,11 +126,11 @@ class MoveClient():
     #     return TriggerResponse(True,'middle finish')
 
     def final(self, req):
-        self.speakclient(4)
         self.x=Dest.final[0]
         self.y=Dest.final[1]
         self.theta=Dest.final[2]
         self.euler2quat()
+        self.indoor_finish()
         return TriggerResponse(True,'final finish')
 
 
