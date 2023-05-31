@@ -11,6 +11,6 @@
     <include file="$(find carrier_ros_perception)/launch/carrier_ros_env_perception.launch"/>
 
     <!-- gps -->
-    <include file="$(find ntrip_ros)/launch/ntrip_ros.launch"/>
+    <!-- <include file="$(find ntrip_ros)/launch/ntrip_ros.launch"/> -->
 
 </launch>

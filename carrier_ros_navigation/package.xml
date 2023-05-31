@@ -23,7 +23,7 @@
   <depend>roscpp</depend>
   <depend>carrier_ros_srv</depend>
   <depend>geodesy</depend>
-  <exec_depend>robot_localization</exec_depend>
+  <depend>robot_localization</depend>
   <exec_depend>amcl</exec_depend>
   <exec_depend>map_server</exec_depend>
   <exec_depend>move_base</exec_depend>

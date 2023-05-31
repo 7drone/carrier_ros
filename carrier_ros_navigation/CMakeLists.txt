@@ -19,6 +19,7 @@ find_package(catkin REQUIRED COMPONENTS
     tf2
     tf2_ros
     carrier_ros_srv
+    robot_localization
 )
 
 ################################################################################

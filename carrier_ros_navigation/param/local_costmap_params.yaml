@@ -14,8 +14,8 @@ local_costmap:
 
   static_map: false  
   rolling_window: true
-  width: 6
-  height: 6
+  width: 5
+  height: 5
   resolution: 0.05 # default 0.05
   footprint_padding: 0.1
   

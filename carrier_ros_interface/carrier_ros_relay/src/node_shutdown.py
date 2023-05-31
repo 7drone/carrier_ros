@@ -27,11 +27,11 @@ def outdoor_server(req):
     system_change_out2in_client()
 
     # excute outdoor launch
-    excute_outdoor_pub.publish(True)
+    # excute_outdoor_pub.publish(True)      # if, you want test outdoor, 
 
-    rospy.sleep(10)
+    # rospy.sleep(10)
 
-    reset_odom_client()
+    # reset_odom_client()
 
     rospy.loginfo("--------------------------------")
 
@@ -152,7 +152,8 @@ def publish_outdoor_to_indoor_pose():
     initial_pose_publisher.publish(initial_pose_msg)
 
 def systemUpdate(event):
-    robot_system_pub.publish(system)
+    char system_char = systme
+    robot_system_pub.publish(system_char)
 
 if __name__ == '__main__':
     rospy.init_node('node_shutdown')

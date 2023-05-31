@@ -10,7 +10,7 @@ from std_srvs.srv import Empty, EmptyRequest
 
 class Dest():
     start=(36.63743929986959, 8.153148086866908,2.3464171)
-    final=(2.151869773864746,24.02182960510254,-0.0257961)
+    final=(2.151869773864746,24.02182960510254,0.0)
 
 class MoveClient():
     def __init__(self):
@@ -21,6 +21,10 @@ class MoveClient():
         self.srvs.append(rospy.Service('robot/indoor/start', Trigger, self.final)) 
         self.actionclient = actionlib.SimpleActionClient('move_base',MoveBaseAction)
         self.timer=rospy.Timer(rospy.Duration(5), self.clear_callback)
+        self.srv=rospy.Service('robot/indoor/stop',Trigger, self.action_callback)
+
+    def action_callback(self):
+        self.actionclient.cancel_goal()
 
     def euler2quat(self):
         self.qx = np.sin(0) * np.cos(0) * np.cos(self.theta) - np.cos(0) * np.sin(0) * np.sin(self.theta)

@@ -2,7 +2,7 @@
   <arg name="map_file" default="$(find carrier_ros_slam)/map/station_map.yaml"/>
   <arg name="move_forward_only" default="true"/>
 
-  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+  <node pkg="map_server" name="map_server" type="map_server" clear_params="true" args="$(arg map_file)"/>
 
 
 

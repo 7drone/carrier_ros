@@ -87,7 +87,7 @@ carrier_ros_navsat_transform:
   frequency: 30
   delay: 3.0
   magnetic_declination_radians: 0.1544616  # For lat/long 55.944831, -3.186998
-  yaw_offset: 1.57079632680  # IMU reads 0 facing magnetic north, not east
+  yaw_offset: 0.0  # IMU reads 0 facing magnetic north, not east
   zero_altitude: true
   broadcast_cartesian_transform: true
   broadcast_cartesian_transform_as_parent_frame : true
