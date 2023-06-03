@@ -25,7 +25,8 @@ interface mechanism for a drone-mobile robot as an integrated robot system to co
 
 ## System Architecture
 
-## Mobile robot Autonomous system
+### Mobile robot Autonomous system
+<img src="https://github.com/7drone/carrier_ros/assets/98142496/ccf4a559-7b8e-4c78-a6f2-c69b549aee5d" width=80%/>
 
 ## Hardware System
 
