@@ -2,9 +2,7 @@
 
 ## project Team : 7drone
 
-### Member : 
-
-[김정한(Jeonghan Kim)](https://github.com/Kim-JeongHan), [박종찬(Jongchan Park)](https://github.com/coldbell8918), [이하연(Hayeon Lee)](https://github.com/quokkalover), 박수환(Suhwan Park) [남윤재(Yunjea Nam)](https://github.com/ujma1234), [권기현(Gihyeon Gi)](https://github.com/raisewise0211), [정우현(Woohyeon Jung)](https://github.com/John-woohyeon)
+## Member 
 
 #### Robot Hardware Developer : 
 
