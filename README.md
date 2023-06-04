@@ -17,7 +17,7 @@
 [남윤재(Yunjea Nam)](https://github.com/ujma1234)
 
 #### Web Designer :
-이시연()
+이시연(Shiyeon Lee)
 contact : shiy2on59@naver.com
 
 ## Abstract
