@@ -10,7 +10,7 @@
 
 #### Robot Software Developer : 
 
-[김정한(Jeonghan Kim)](https://github.com/Kim-JeongHan), [박종찬(Jongchan Park)](https://github.com/coldbell8918), [이하연(Hayeon Lee)](https://github.com/quokkalover),  [권기현(Gihyeon Gi)](https://github.com/raisewise0211), [정우현(Woohyeon Jung)](https://github.com/John-woohyeon)
+[김정한(Jeonghan Kim)](https://github.com/Kim-JeongHan), [박종찬(Jongchan Park)](https://github.com/coldbell8918), [이하연(Hayeon Lee)](https://github.com/quokkalover),  [권기현(Gihyeon Kwon)](https://github.com/raisewise0211), [정우현(Woohyeon Jung)](https://github.com/John-woohyeon)
 
 #### Full stack App Developer : 
 
