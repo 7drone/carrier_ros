@@ -24,6 +24,13 @@ contact : shiy2on59@naver.com
 ## Abstract
 Drones and mobile robots are widely used for unmanned patrol and military scout in rugged terrain. While mobile robots cannot penetrate rugged terrain, drones are free from such terrain types and unexpected obstacles on the ground. Yet, drones cannot carry a large-scale battery and suffer a limited battery time to reach the target region for extensive scout. Our goal is to marry these two into a separable integrated drone-mobile robot system where autonomous mobile robot with a large-scale battery charges and carries drones up to the point it can maneuver then let the drone handle the last-mile mission over the rugged terrain. We propose an
 interface mechanism for a drone-mobile robot as an integrated robot system to collaboratively perform localization, perception, detection, planning, charging, and docking tasks. We have implemented on commodity mobile robot and drone platforms and demonstrated its effectiveness in patrol and scout coverage, and time and energy efficiency compared to standalone drones or mobile robots.
+## Hardware System
+
+### Hardware Design
+<img src="https://github.com/7drone/carrier_ros/assets/98142496/50109524-17ae-4795-9309-35fd66c49c79" width=60%/>
+
+### Architecture
+<img src="https://github.com/7drone/carrier_ros/assets/98142496/e6e97487-4d37-4de6-89ce-9bef8b90fdfd" width=80%/>
 
 ## System Architecture
 
@@ -33,7 +40,7 @@ interface mechanism for a drone-mobile robot as an integrated robot system to co
 ### robot system
 <img src="https://github.com/7drone/carrier_ros/assets/98142496/7516d58c-7f4d-486c-9ddf-2dba341af4e4" width=100%/>
 
-## Hardware System
+
 
 ## Additional Resources
 - [7drone Presentation](https://www.canva.com/design/DAFjvD3PurI/lv-KKXTqsAaz5tWrPFcb-A/view?utm_content=DAFjvD3PurI&utm_campaign=designshare&utm_medium=link&utm_source=viewer)
