@@ -21,6 +21,10 @@
 
 contact : shiy2on59@naver.com
 
+## Advisor :
+
+Prof. [이영문(YoungMoon Lee)](https://github.com/RAISELab)
+
 ## Abstract
 Drones and mobile robots are widely used for unmanned patrol and military scout in rugged terrain. While mobile robots cannot penetrate rugged terrain, drones are free from such terrain types and unexpected obstacles on the ground. Yet, drones cannot carry a large-scale battery and suffer a limited battery time to reach the target region for extensive scout. Our goal is to marry these two into a separable integrated drone-mobile robot system where autonomous mobile robot with a large-scale battery charges and carries drones up to the point it can maneuver then let the drone handle the last-mile mission over the rugged terrain. We propose an
 interface mechanism for a drone-mobile robot as an integrated robot system to collaboratively perform localization, perception, detection, planning, charging, and docking tasks. We have implemented on commodity mobile robot and drone platforms and demonstrated its effectiveness in patrol and scout coverage, and time and energy efficiency compared to standalone drones or mobile robots.
