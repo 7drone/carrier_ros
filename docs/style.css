@@ -374,6 +374,23 @@ figcaption span {
   word-break: break-word;
 }
 
+.footer {
+  margin-top: 40px;
+  padding-bottom: 10px;
+  color: var(--muted);
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.footer p + p {
+  margin-top: 8px;
+}
+
 @media (max-width: 800px) {
   body {
     padding: 24px 18px;
