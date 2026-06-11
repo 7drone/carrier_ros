@@ -130,27 +130,45 @@
         <div class="design-grid">
           <article>
             <h3>Mobile robot localization</h3>
-            <p>Wheel odometry, IMU, and RTK GNSS are fused with an Extended Kalman Filter to estimate robot pose on the map.</p>
+            <p>
+              Wheel odometry, IMU, and RTK GNSS are fused with an Extended Kalman Filter to estimate robot pose on the map.
+              <a class="figure-link" href="#fig-autonomy">Autonomy diagram</a>
+            </p>
           </article>
           <article>
             <h3>Environment perception</h3>
-            <p>Three RealSense cameras and front/rear LiDAR support terrain and obstacle understanding; point-cloud height changes are reflected into the costmap.</p>
+            <p>
+              Three RealSense cameras and front/rear LiDAR support terrain and obstacle understanding; point-cloud height changes are reflected into the costmap.
+              <a class="figure-link" href="#fig-autonomy">Autonomy diagram</a>
+            </p>
           </article>
           <article>
             <h3>Obstacle detection</h3>
-            <p>Depth-camera YOLO detections and LiDAR/point-cloud data support obstacle insertion and relative-motion-aware path planning.</p>
+            <p>
+              Depth-camera YOLO detections and LiDAR/point-cloud data support obstacle insertion and relative-motion-aware path planning.
+              <a class="figure-link" href="#fig-obstacle">Figure 1</a>
+            </p>
           </article>
           <article>
             <h3>Global planning</h3>
-            <p>Converted Naver map data is used as a global map for waypoint-based route planning, reducing wasted resources.</p>
+            <p>
+              Converted Naver map data is used as a global map for waypoint-based route planning, reducing wasted resources.
+              <a class="figure-link" href="#fig-map">Figure 2</a>
+            </p>
           </article>
           <article>
             <h3>Wireless charging</h3>
-            <p>A docking station on the mobile robot lets the drone land and charge wirelessly from the robot battery.</p>
+            <p>
+              A docking station on the mobile robot lets the drone land and charge wirelessly from the robot battery.
+              <a class="figure-link" href="#fig-hardware">Hardware figure</a>
+            </p>
           </article>
           <article>
             <h3>Drone docking</h3>
-            <p>ArUco-marker station detection estimates the relative position between drone and station for corrective landing control.</p>
+            <p>
+              ArUco-marker station detection estimates the relative position between drone and station for corrective landing control.
+              <a class="figure-link" href="#fig-hardware">Hardware figure</a>
+            </p>
           </article>
         </div>
       </section>
@@ -158,21 +176,27 @@
       <section class="section">
         <h2 class="section-title">Paper Figures</h2>
         <div class="figure-grid">
-          <figure>
+          <figure id="fig-obstacle">
             <img
               src="assets/obstacle-detection.png"
               alt="Obstacle detection example with marked objects"
               loading="lazy"
             >
-            <figcaption>Obstacle detection example</figcaption>
+            <figcaption>
+              <strong>Figure 1. Obstacle detection.</strong>
+              <span>Depth-camera detections are converted into obstacle information that can be reflected in the navigation costmap.</span>
+            </figcaption>
           </figure>
-          <figure>
+          <figure id="fig-map">
             <img
               src="assets/map-conversion.png"
               alt="Naver map conversion example"
               loading="lazy"
             >
-            <figcaption>Map conversion example</figcaption>
+            <figcaption>
+              <strong>Figure 2. Map conversion.</strong>
+              <span>Naver map data is transformed into a usable planning map, reducing the need for repeated manual SLAM mapping.</span>
+            </figcaption>
           </figure>
         </div>
       </section>
@@ -185,33 +209,42 @@
             docking station, and an automatic wireless charging system for longer autonomous patrol operation.
           </p>
         </div>
-        <figure>
+        <figure id="fig-hardware">
           <img
             src="https://github.com/7drone/carrier_ros/assets/98142496/feb56015-5430-43c6-8eb0-9e315c3a572e"
             alt="Carrier hardware design"
             loading="lazy"
           >
-          <figcaption>Hardware design</figcaption>
+          <figcaption>
+            <strong>Hardware design.</strong>
+            <span>The carrier deck integrates the drone landing area, wireless charging module, cameras, LiDAR, and onboard compute.</span>
+          </figcaption>
         </figure>
       </section>
 
       <section class="section">
         <h2 class="section-title">Architecture</h2>
-        <figure class="wide-figure">
+        <figure class="wide-figure" id="fig-architecture">
           <img
             src="https://github.com/7drone/carrier_ros/assets/98142496/38024dd7-db1f-4350-b283-346f74b34815"
             alt="Carrier high-level architecture"
             loading="lazy"
           >
-          <figcaption>Integrated robot architecture</figcaption>
+          <figcaption>
+            <strong>Integrated robot architecture.</strong>
+            <span>The robot combines drone hardware, ground platform, wireless charging, compute, GNSS, cameras, LiDAR, and communication modules.</span>
+          </figcaption>
         </figure>
-        <figure class="wide-figure">
+        <figure class="wide-figure" id="fig-autonomy">
           <img
             src="https://github.com/7drone/carrier_ros/assets/98142496/294f1f59-383f-465e-bc56-2af597a72f48"
             alt="Mobile robot autonomous system architecture"
             loading="lazy"
           >
-          <figcaption>Mobile robot autonomous system</figcaption>
+          <figcaption>
+            <strong>Mobile robot autonomous system.</strong>
+            <span>Localization, indoor/outdoor navigation, local planning, environment perception, and LiDAR fusion feed the patrol stack.</span>
+          </figcaption>
         </figure>
       </section>
 

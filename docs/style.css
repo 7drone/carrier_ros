@@ -260,6 +260,15 @@ img {
   line-height: 21px;
 }
 
+.figure-link {
+  display: inline-block;
+  margin-top: 5px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+}
+
 .figure-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -300,6 +309,18 @@ figcaption {
   font-size: 13px;
   line-height: 18px;
   text-align: center;
+}
+
+figcaption strong {
+  display: block;
+  color: var(--text);
+  font-weight: 700;
+}
+
+figcaption span {
+  display: block;
+  max-width: 680px;
+  margin: 3px auto 0;
 }
 
 .wide-figure + .wide-figure {
