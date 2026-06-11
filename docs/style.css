@@ -41,16 +41,6 @@ img {
   text-align: center;
 }
 
-.title {
-  margin: 0;
-  color: #4d4d4d;
-  font-family: "Varela Round", "Open Sans", Arial, sans-serif;
-  font-size: 50px;
-  font-weight: 700;
-  line-height: 65px;
-  letter-spacing: 4px;
-}
-
 .subtitle-row {
   display: flex;
   flex-wrap: wrap;
@@ -60,12 +50,23 @@ img {
   margin-top: 0;
 }
 
+.subtitle-row h1,
 .subtitle-row h2 {
   margin: 0;
   color: var(--text);
-  font-size: 25px;
   font-weight: 500;
-  line-height: 44px;
+  text-align: center;
+}
+
+.subtitle-row h1 {
+  flex-basis: 100%;
+  font-size: 30px;
+  line-height: 42px;
+}
+
+.subtitle-row h2 {
+  font-size: 25px;
+  line-height: 36px;
 }
 
 .authors {
@@ -75,8 +76,7 @@ img {
 .authors p,
 .affiliation,
 .venue,
-.expanded-name,
-.footer p {
+.expanded-name {
   margin: 0;
   color: var(--text);
   font-size: 16px;
@@ -362,20 +362,12 @@ figcaption {
   word-break: break-word;
 }
 
-.footer {
-  margin-top: 40px;
-}
-
 @media (max-width: 800px) {
   body {
     padding: 24px 18px;
   }
 
-  .title {
-    font-size: 44px;
-    line-height: 56px;
-  }
-
+  .subtitle-row h1,
   .subtitle-row h2 {
     font-size: 22px;
     line-height: 34px;
@@ -400,12 +392,7 @@ figcaption {
     padding: 20px 14px;
   }
 
-  .title {
-    font-size: 38px;
-    line-height: 48px;
-    letter-spacing: 2px;
-  }
-
+  .subtitle-row h1,
   .subtitle-row h2 {
     width: 100%;
     font-size: 18px;
