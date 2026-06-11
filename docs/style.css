@@ -1,0 +1,410 @@
+:root {
+  --text: #333;
+  --muted: #666;
+  --line: #e6e6e6;
+  --soft: #f5f5f5;
+  --button: #333;
+  --button-hover: #111;
+  --max-width: 960px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 32px;
+  background: #fff;
+  color: var(--text);
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+a {
+  color: var(--text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.hero {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title {
+  margin: 0;
+  color: #4d4d4d;
+  font-family: "Varela Round", "Open Sans", Arial, sans-serif;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 65px;
+  letter-spacing: 4px;
+}
+
+.subtitle-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  column-gap: 10px;
+  row-gap: 0;
+  margin-top: 0;
+}
+
+.subtitle-row h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: 25px;
+  font-weight: 500;
+  line-height: 44px;
+}
+
+.authors {
+  margin-top: 14px;
+}
+
+.authors p,
+.affiliation,
+.expanded-name,
+.footer p {
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.authors p + p {
+  margin-top: 4px;
+}
+
+.authors span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.authors span,
+.authors a,
+.authors strong {
+  margin: 0 7px;
+  white-space: nowrap;
+}
+
+.authors strong {
+  font-weight: 400;
+}
+
+.affiliation {
+  margin-top: 12px;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.action-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  padding: 9px 16px;
+  border-radius: 4px;
+  background: var(--button);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 18px;
+  text-decoration: none;
+  transition: background-color 160ms ease, transform 160ms ease;
+}
+
+.action-button:focus-visible,
+.action-button:hover {
+  background: var(--button-hover);
+  transform: translateY(-1px);
+}
+
+.action-button i {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.section {
+  max-width: var(--max-width);
+  margin: 24px auto 0;
+}
+
+.expanded-name {
+  text-align: center;
+}
+
+.tldr {
+  margin: 0 0 20px;
+  color: var(--text);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 26px;
+}
+
+.code-font {
+  font-family: "Courier New", Courier, monospace;
+  font-size: calc(1em + 2px);
+}
+
+.paragraph {
+  margin: 0;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: left;
+}
+
+.media-frame {
+  position: relative;
+  width: 100%;
+  margin-bottom: 20px;
+  overflow: hidden;
+  border-radius: 15px;
+  background: var(--soft);
+  aspect-ratio: 16 / 9;
+}
+
+.media-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.hero-image,
+.wide-figure,
+.split-section figure {
+  overflow: hidden;
+  border-radius: 15px;
+  background: var(--soft);
+}
+
+.hero-image {
+  width: 100%;
+}
+
+.section-title {
+  margin: 0 0 12px;
+  color: var(--text);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  text-align: center;
+}
+
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding-top: 4px;
+}
+
+.feature-grid article {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.feature-grid h3 {
+  margin: 0 0 8px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.feature-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.split-section {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
+  align-items: center;
+  gap: 28px;
+}
+
+.split-section .section-title {
+  text-align: left;
+}
+
+figure {
+  margin: 0;
+}
+
+figcaption {
+  padding: 9px 12px 11px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.wide-figure + .wide-figure {
+  margin-top: 20px;
+}
+
+.package-table {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  border-spacing: 0;
+  background: #fff;
+}
+
+.package-table caption {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.package-table tr + tr th,
+.package-table tr + tr td {
+  border-top: 1px solid var(--line);
+}
+
+.package-table th,
+.package-table td {
+  padding: 12px 14px;
+  font-size: 15px;
+  line-height: 22px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.package-table th {
+  width: 210px;
+  background: var(--soft);
+  font-weight: 700;
+}
+
+.citation {
+  overflow: hidden;
+  border-radius: 10px;
+  background: #eaeaea;
+}
+
+.citation pre {
+  margin: 0;
+  padding: 16px 18px;
+  overflow-x: auto;
+  color: var(--text);
+  font-family: "Courier New", Courier, monospace;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.footer {
+  margin-top: 40px;
+}
+
+@media (max-width: 800px) {
+  body {
+    padding: 24px 18px;
+  }
+
+  .title {
+    font-size: 44px;
+    line-height: 56px;
+  }
+
+  .subtitle-row h2 {
+    font-size: 22px;
+    line-height: 34px;
+  }
+
+  .feature-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .split-section {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  body {
+    padding: 20px 14px;
+  }
+
+  .title {
+    font-size: 38px;
+    line-height: 48px;
+    letter-spacing: 2px;
+  }
+
+  .subtitle-row h2 {
+    width: 100%;
+    font-size: 18px;
+    line-height: 28px;
+  }
+
+  .authors span,
+  .authors a,
+  .authors strong {
+    display: inline-block;
+    margin: 2px 5px;
+  }
+
+  .button-row {
+    gap: 8px;
+  }
+
+  .action-button {
+    padding: 8px 12px;
+  }
+
+  .feature-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .citation pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .package-table,
+  .package-table tbody,
+  .package-table tr,
+  .package-table th,
+  .package-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .package-table td {
+    border-top: 1px solid var(--line);
+  }
+
+  .section-title {
+    font-size: 22px;
+    line-height: 30px;
+  }
+}

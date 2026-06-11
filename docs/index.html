@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrier: Drone-Mobile Robot System</title>
+    <meta
+      name="description"
+      content="Carrier is a ROS-based separable drone-mobile robot system for autonomous patrol, scout coverage, charging, and docking."
+    >
+    <meta property="og:title" content="Carrier: Drone-Mobile Robot System">
+    <meta
+      property="og:description"
+      content="A ROS-based integrated carrier and drone platform for patrol and scout missions over rugged terrain."
+    >
+    <meta property="og:type" content="website">
+    <meta
+      property="og:image"
+      content="https://github.com/7drone/carrier_ros/assets/98142496/50109524-17ae-4795-9309-35fd66c49c79"
+    >
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Carrier: Drone-Mobile Robot System">
+    <meta
+      name="twitter:description"
+      content="A ROS-based integrated carrier and drone platform for patrol and scout missions over rugged terrain."
+    >
+    <meta
+      name="twitter:image"
+      content="https://github.com/7drone/carrier_ros/assets/98142496/50109524-17ae-4795-9309-35fd66c49c79"
+    >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&amp;family=Varela+Round&amp;display=swap"
+      rel="stylesheet"
+    >
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tabler/icons@latest/iconfont/tabler-icons.min.css"
+    >
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="hero">
+      <h1 class="title">Carrier</h1>
+      <div class="subtitle-row">
+        <h2>Separable Drone-Mobile Robot System</h2>
+        <h2>for Autonomous Patrol and Scout Coverage</h2>
+      </div>
+
+      <div class="authors">
+        <p>
+          <span>Robot Software</span>
+          <a href="https://github.com/Kim-JeongHan" target="_blank" rel="noopener noreferrer">Jeonghan Kim</a>
+          <a href="https://github.com/coldbell8918" target="_blank" rel="noopener noreferrer">Jongchan Park</a>
+          <a href="https://github.com/quokkalover" target="_blank" rel="noopener noreferrer">Hayeon Lee</a>
+          <a href="https://github.com/raisewise0211" target="_blank" rel="noopener noreferrer">Gihyeon Kwon</a>
+          <a href="https://github.com/John-woohyeon" target="_blank" rel="noopener noreferrer">Woohyeon Jung</a>
+        </p>
+        <p>
+          <span>Hardware</span>
+          <strong>Suhwan Park</strong>
+          <span>App</span>
+          <a href="https://github.com/ujma1234" target="_blank" rel="noopener noreferrer">Yunjea Nam</a>
+          <span>Design</span>
+          <a href="mailto:shiy2on59@naver.com">Shiyeon Lee</a>
+        </p>
+      </div>
+
+      <p class="affiliation">
+        7drone, advised by
+        <a href="https://github.com/RAISELab" target="_blank" rel="noopener noreferrer">Prof. YoungMoon Lee</a>
+      </p>
+
+      <nav class="button-row" aria-label="Project links">
+        <a class="action-button" href="https://github.com/7drone/carrier_ros" target="_blank" rel="noopener noreferrer">
+          <i class="ti ti-brand-github" aria-hidden="true"></i>
+          <span>Code</span>
+        </a>
+        <a class="action-button" href="https://youtu.be/49tMCc3HBR0" target="_blank" rel="noopener noreferrer">
+          <i class="ti ti-player-play" aria-hidden="true"></i>
+          <span>Video</span>
+        </a>
+        <a
+          class="action-button"
+          href="https://github.com/7drone/carrier_ros#readme"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <i class="ti ti-book" aria-hidden="true"></i>
+          <span>README</span>
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="section">
+        <p class="expanded-name">
+          (<b>Carrier</b> robot <b>ROS</b> packages for a drone-mobile robot platform)
+        </p>
+      </section>
+
+      <section class="section">
+        <h2 class="tldr">
+          <b>TL;DR</b>: <span class="code-font">Carrier</span> is a ROS-based platform where an autonomous ground robot
+          transports, charges, and deploys a drone for last-mile scouting over rugged terrain.
+        </h2>
+
+        <div class="media-frame">
+          <iframe
+            src="https://www.youtube.com/embed/49tMCc3HBR0"
+            title="Carrier project demo video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          ></iframe>
+        </div>
+
+        <p class="paragraph">
+          Drones and mobile robots are useful for unmanned patrol and military scouting, but each platform has a
+          different weakness: ground robots struggle in rugged terrain, while drones are limited by onboard battery
+          capacity. Carrier combines both systems so the mobile robot can move with a larger battery, carry and charge
+          the drone, then release it for the final scout segment.
+        </p>
+      </section>
+
+      <section class="section">
+        <img
+          class="hero-image"
+          src="https://github.com/7drone/carrier_ros/assets/98142496/50109524-17ae-4795-9309-35fd66c49c79"
+          alt="Carrier integrated drone and mobile robot platform"
+          loading="lazy"
+        >
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">System Focus</h2>
+        <div class="feature-grid">
+          <article>
+            <h3>Integrated autonomy</h3>
+            <p>Localization, perception, detection, planning, charging, and docking tasks are connected through ROS.</p>
+          </article>
+          <article>
+            <h3>Hybrid mobility</h3>
+            <p>The ground carrier handles long-range transport while the drone handles terrain that blocks wheels.</p>
+          </article>
+          <article>
+            <h3>Simulation support</h3>
+            <p>Gazebo worlds, robot descriptions, RViz configs, and launch files support development before deployment.</p>
+          </article>
+          <article>
+            <h3>Mission interfaces</h3>
+            <p>Custom messages, services, web interface nodes, battery fusion, teleoperation, and map export utilities are included.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section split-section">
+        <div>
+          <h2 class="section-title">Hardware System</h2>
+          <p class="paragraph">
+            The platform is built around a commodity mobile robot base and drone, with a mechanical interface for
+            carrying, charging, docking, and separation during scout missions.
+          </p>
+        </div>
+        <figure>
+          <img
+            src="https://github.com/7drone/carrier_ros/assets/98142496/feb56015-5430-43c6-8eb0-9e315c3a572e"
+            alt="Carrier hardware design"
+            loading="lazy"
+          >
+          <figcaption>Hardware design</figcaption>
+        </figure>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Architecture</h2>
+        <figure class="wide-figure">
+          <img
+            src="https://github.com/7drone/carrier_ros/assets/98142496/38024dd7-db1f-4350-b283-346f74b34815"
+            alt="Carrier high-level architecture"
+            loading="lazy"
+          >
+          <figcaption>Integrated robot architecture</figcaption>
+        </figure>
+        <figure class="wide-figure">
+          <img
+            src="https://github.com/7drone/carrier_ros/assets/98142496/294f1f59-383f-465e-bc56-2af597a72f48"
+            alt="Mobile robot autonomous system architecture"
+            loading="lazy"
+          >
+          <figcaption>Mobile robot autonomous system</figcaption>
+        </figure>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">ROS Stack</h2>
+        <table class="package-table">
+          <caption>
+            Carrier ROS packages
+          </caption>
+          <tbody>
+            <tr>
+              <th scope="row">Description</th>
+              <td>URDF, xacro, meshes, and RViz model configuration.</td>
+            </tr>
+            <tr>
+              <th scope="row">Gazebo</th>
+              <td>Simulation launch files, worlds, robot model integration, and environment assets.</td>
+            </tr>
+            <tr>
+              <th scope="row">SLAM and Map Export</th>
+              <td>GMapping launch/config files, station maps, occupancy map saving, and map cropping tools.</td>
+            </tr>
+            <tr>
+              <th scope="row">Navigation</th>
+              <td>Move base, AMCL, EKF localization, indoor/outdoor parameters, and RViz navigation views.</td>
+            </tr>
+            <tr>
+              <th scope="row">Perception and Sensors</th>
+              <td>LiDAR, IMU, RealSense camera launch files, floor detection, sensor fusion, and environment perception.</td>
+            </tr>
+            <tr>
+              <th scope="row">Interfaces</th>
+              <td>Battery aggregation, ArUco support, web interface nodes, custom messages, and services.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2 class="section-title">Project Reference</h2>
+        <div class="citation">
+          <pre><code>@software{carrier_ros,
+  title = {Carrier: A Separable Drone-Mobile Robot System},
+  author = {7drone Team},
+  url = {https://github.com/7drone/carrier_ros},
+  license = {MIT}
+}</code></pre>
+        </div>
+      </section>
+    </main>
+
+    <footer class="section footer">
+      <p>
+        Website style adapted for this project from the compact academic project-page pattern used by
+        <a href="https://pyroki-toolkit.github.io/" target="_blank" rel="noopener noreferrer">PyRoki</a>.
+      </p>
+    </footer>
+  </body>
+</html>
