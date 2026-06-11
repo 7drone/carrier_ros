@@ -207,6 +207,15 @@ img {
   text-align: center;
 }
 
+.section-note {
+  max-width: 780px;
+  margin: -2px auto 18px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 23px;
+  text-align: center;
+}
+
 .feature-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));

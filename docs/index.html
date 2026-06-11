@@ -127,6 +127,11 @@
 
       <section class="section">
         <h2 class="section-title">System Design</h2>
+        <p class="section-note">
+          The design modules below are illustrated by the figures that follow: obstacle detection supports perception
+          and planning, map conversion supports global planning, the hardware figure shows charging and docking, and
+          the architecture diagrams show the localization and navigation flow.
+        </p>
         <div class="design-grid">
           <article>
             <h3>Mobile robot localization</h3>
@@ -178,7 +183,7 @@
             >
             <figcaption>
               <strong>Figure 1. Obstacle detection.</strong>
-              <span>Depth-camera detections are converted into obstacle information that can be reflected in the navigation costmap.</span>
+              <span>Related design: obstacle detection, environment perception, and local path planning. Depth-camera detections are converted into obstacle information that can be reflected in the navigation costmap.</span>
             </figcaption>
           </figure>
           <figure id="fig-map">
@@ -189,7 +194,7 @@
             >
             <figcaption>
               <strong>Figure 2. Map conversion.</strong>
-              <span>Naver map data is transformed into a usable planning map, reducing the need for repeated manual SLAM mapping.</span>
+              <span>Related design: global planning. Naver map data is transformed into a usable planning map, reducing the need for repeated manual SLAM mapping.</span>
             </figcaption>
           </figure>
         </div>
@@ -211,7 +216,7 @@
           >
           <figcaption>
             <strong>Hardware design.</strong>
-            <span>The carrier deck integrates the drone landing area, wireless charging module, cameras, LiDAR, and onboard compute.</span>
+            <span>Related design: wireless charging and drone docking. The carrier deck integrates the drone landing area, wireless charging module, cameras, LiDAR, and onboard compute.</span>
           </figcaption>
         </figure>
       </section>
@@ -226,7 +231,7 @@
           >
           <figcaption>
             <strong>Integrated robot architecture.</strong>
-            <span>The robot combines drone hardware, ground platform, wireless charging, compute, GNSS, cameras, LiDAR, and communication modules.</span>
+            <span>Related design: hardware integration. The robot combines drone hardware, ground platform, wireless charging, compute, GNSS, cameras, LiDAR, and communication modules.</span>
           </figcaption>
         </figure>
         <figure class="wide-figure" id="fig-autonomy">
@@ -237,7 +242,7 @@
           >
           <figcaption>
             <strong>Mobile robot autonomous system.</strong>
-            <span>Localization, indoor/outdoor navigation, local planning, environment perception, and LiDAR fusion feed the patrol stack.</span>
+            <span>Related design: localization, environment perception, and navigation. Localization, indoor/outdoor navigation, local planning, environment perception, and LiDAR fusion feed the patrol stack.</span>
           </figcaption>
         </figure>
       </section>
