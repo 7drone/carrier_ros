@@ -199,16 +199,11 @@ img {
   border: 0;
 }
 
-.hero-image,
 .wide-figure,
 .split-section figure {
   overflow: hidden;
   border-radius: 15px;
   background: var(--soft);
-}
-
-.hero-image {
-  width: 100%;
 }
 
 .section-title {
