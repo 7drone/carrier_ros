@@ -74,6 +74,7 @@ img {
 
 .authors p,
 .affiliation,
+.venue,
 .expanded-name,
 .footer p {
   margin: 0;
@@ -104,8 +105,20 @@ img {
   font-weight: 400;
 }
 
+.authors .contributor-line {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 22px;
+}
+
 .affiliation {
   margin-top: 12px;
+}
+
+.venue {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .button-row {
@@ -240,6 +253,51 @@ img {
   line-height: 21px;
 }
 
+.design-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px 18px;
+}
+
+.design-grid article {
+  border-top: 1px solid var(--line);
+  padding-top: 12px;
+}
+
+.design-grid h3 {
+  margin: 0 0 7px;
+  color: var(--text);
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.design-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 21px;
+}
+
+.figure-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 0.85fr 0.9fr;
+  align-items: stretch;
+  gap: 16px;
+}
+
+.figure-grid figure {
+  overflow: hidden;
+  border-radius: 10px;
+  background: var(--soft);
+}
+
+.figure-grid img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
 .split-section {
   display: grid;
   grid-template-columns: minmax(0, 0.9fr) minmax(280px, 1.1fr);
@@ -319,6 +377,8 @@ figcaption {
   font-family: "Courier New", Courier, monospace;
   font-size: 14px;
   line-height: 20px;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .footer {
@@ -342,6 +402,15 @@ figcaption {
 
   .feature-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .design-grid,
+  .figure-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .figure-grid figure:first-child {
+    grid-column: 1 / -1;
   }
 
   .split-section {
@@ -385,9 +454,17 @@ figcaption {
     grid-template-columns: 1fr;
   }
 
-  .citation pre {
-    white-space: pre-wrap;
-    word-break: break-word;
+  .design-grid,
+  .figure-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .figure-grid figure:first-child {
+    grid-column: auto;
+  }
+
+  .figure-grid img {
+    height: auto;
   }
 
   .package-table,
